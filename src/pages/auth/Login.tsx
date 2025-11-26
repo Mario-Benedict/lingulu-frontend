@@ -2,13 +2,13 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useRef } from 'react';
 import './Login.css'
-import userIcon from '../../assets/auth/user-icon.svg'
-import lockIcon from '../../assets/auth/lock-icon.svg'
-import googleIcon from '../../assets/auth/google-icon.svg'
-import linguluLogo from '../../assets/auth/lingulu-logo.svg'
-import mascotLogin from '../../assets/auth/mascot-login.svg'
-import eyeIcon from '../../assets/auth/eye-icon.png'
-import closedEyeIcon from '../../assets/auth/closedeye-icon.png'
+import userIcon from '../../../public/assets/auth/user-icon.svg'
+import lockIcon from '../../../public/assets/auth/lock-icon.svg'
+import googleIcon from '../../../public/assets/auth/google-icon.svg'
+import linguluLogo from '../../../public/assets/auth/lingulu-logo.svg'
+import mascotLogin from '../../../public/assets/auth/mascot-login.svg'
+import eyeIcon from '../../../public/assets/auth/eye-icon.png'
+import closedEyeIcon from '../../../public/assets/auth/closedeye-icon.png'
 
 
 export default function Login() {
