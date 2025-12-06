@@ -10,6 +10,11 @@ import mascotLogin from '@assets/auth/mascot-login.svg'
 import eyeIcon from '@assets/auth/eye-icon.png'
 import closedEyeIcon from '@assets/auth/closedeye-icon.png'
 
+// 🟩 TARUH DI SINI
+console.log("VITE_API_URL =", import.meta.env.VITE_API_URL);
+
+const API_URL = import.meta.env.VITE_API_URL;
+
 
 export default function Login() {
   const navigate = useNavigate()
@@ -54,46 +59,61 @@ export default function Login() {
     return Object.keys(newErrors).length === 0
   }
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    const newErrors: Record<string, string> = {}
+const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault()
 
-    // Validate form
-    if (!validateForm()) {
-      return
-    }
+  if (!validateForm()) return;
 
-    // ERROR SIMULATION - Uncomment satu case untuk test
-    if (ERROR_SIMULATION.EMAIL_NOT_FOUND) {
-      newErrors.email = 'Email tidak terdaftar'
-    }
-    if (ERROR_SIMULATION.INVALID_PASSWORD) {
-      newErrors.password = 'Password salah'
-    }
-    if (ERROR_SIMULATION.INVALID_EMAIL_FORMAT) {
-      newErrors.email = 'Format email tidak valid'
-    }
-    if (ERROR_SIMULATION.ACCOUNT_LOCKED) {
-      newErrors.submit = 'Akun Anda terkunci. Coba lagi dalam 15 menit.'
-    }
-    if (ERROR_SIMULATION.SERVER_ERROR) {
-      newErrors.submit = 'Terjadi kesalahan server. Silakan coba lagi nanti.'
-    }
+  try {
+    const response = await fetch(`${API_URL}/api/account/login`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        username: email,
+        email: email,
+        password: password
+      }),
+    });
 
-    if (Object.keys(newErrors).length > 0) {
-      setErrors(newErrors)
-      return
+    const result = await response.json();
+    console.log("API Response:", result);
+
+    if (!result.success) {
+      setErrors({ submit: result.message || "Login gagal" });
+      return;
     }
 
-    // TODO: Implementasi login logic dengan API nanti
-    console.log('Login attempt:', { email, password })
-    setErrors({})
+    // Simpan token
+    localStorage.setItem("token", result.data.accessToken);
+    localStorage.setItem("userId", result.data.userId);
+
+    // Redirect
+    navigate("/dashboard");
+
+  } catch (err) {
+    console.error(err);
+    setErrors({ submit: "Tidak dapat menghubungi server" });
   }
+};
+
 
   const handleGoogleLogin = () => {
     // TODO: Implementasi Google login nanti
+
+    // Redirect user ke Backend Spring Boot (sama persis dengan Register)
+    // Asumsi backend jalan di port 8080
+    window.location.href = "http://localhost:8080/oauth2/authorization/google";
+    
+    // Atau kalau mau pakai variabel API_URL yang sudah ada di atas:
+    // Pastikan API_URL mengarah ke root (misal http://localhost:8080), bukan /api
+    // window.location.href = `${API_URL.replace('/api', '')}/oauth2/authorization/google`;
     console.log('Google login attempt')
   }
+
+
+
 
   const handleTogglePassword = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
@@ -142,7 +162,7 @@ export default function Login() {
                 <input
                   id="email"
                   type="email"
-                  placeholder="Username"
+                  placeholder="Email"
                   value={email}
                   onChange={(e) => {
                     setEmail(e.target.value)

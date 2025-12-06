@@ -12,6 +12,8 @@ import confirmIcon from '@assets/auth/confirm-icon.png'
 import eyeIcon from '@assets/auth/eye-icon.png'
 import closedEyeIcon from '@assets/auth/closedeye-icon.png'
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 export default function Register() {
   const navigate = useNavigate()
   const [username, setUsername] = useState('')
@@ -89,44 +91,50 @@ export default function Register() {
     return Object.keys(newErrors).length === 0
   }
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    const newErrors: Record<string, string> = {}
+const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
 
-    // Validate form
-    if (!validateForm()) {
-      return
-    }
+  // Validasi form kamu sendiri
+  if (!validateForm()) return;
 
-    // ERROR SIMULATION - Uncomment satu case untuk test
-    if (ERROR_SIMULATION.EMAIL_ALREADY_EXISTS) {
-      newErrors.email = 'Email sudah terdaftar. Gunakan email lain atau login.'
-    }
-    if (ERROR_SIMULATION.USERNAME_ALREADY_EXISTS) {
-      newErrors.username = 'Username sudah digunakan. Coba username lain.'
-    }
-    if (ERROR_SIMULATION.WEAK_PASSWORD) {
-      newErrors.password = 'Password terlalu lemah. Gunakan kombinasi huruf, angka, dan simbol.'
-    }
-    if (ERROR_SIMULATION.TERMS_NOT_AGREED) {
-      newErrors.terms = 'Anda harus setuju dengan terms & privacy untuk melanjutkan'
-    }
-    if (ERROR_SIMULATION.SERVER_ERROR) {
-      newErrors.submit = 'Terjadi kesalahan server. Silakan coba lagi nanti.'
-    }
+  try {
+    const response = await fetch(`${API_URL}/api/account/register`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        username: username,
+        email: email,
+        password: password,
+        confirmPassword: confirmPassword
+      }),
+    });
 
-    if (Object.keys(newErrors).length > 0) {
-      setErrors(newErrors)
-      return
-    }
+    const result = await response.json();
+    console.log("Register API Response:", result);
 
-    // TODO: Implementasi register logic dengan API nanti
-    console.log('Register attempt:', { username, email, password })
-    setErrors({})
+    if (!result.success) {
+      // BE kamu mengirim error lewat "message"
+      setErrors({ submit: result.message || "Registrasi gagal" });
+      return;
+    }
+    
+    localStorage.setItem("token", result.data.accessToken);
+    localStorage.setItem("userId", result.data.userId);
+    // Berhasil daftar → arahkan user ke login
+    navigate("/dashboard");
+
+  } catch (err) {
+    console.error(err);
+    setErrors({ submit: "Tidak dapat menghubungi server" });
   }
+};
 
   const handleGoogleSignUp = () => {
-    // TODO: Implementasi Google signup nanti
+    // Redirect user ke Backend Spring Boot untuk mulai proses Google
+    // Pastikan port 8080 (atau sesuai port backendmu)
+    window.location.href = "http://localhost:8080/oauth2/authorization/google";
     console.log('Google signup attempt')
   }
 
