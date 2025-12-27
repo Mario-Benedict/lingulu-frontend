@@ -1,116 +1,77 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Rubik:wght@400;500;600;700&display=swap');
 
-:root {
-  font-family: 'Poppins', system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
-
-  --primary-color: #FF7000;
-  --secondary-color:#333;
-  --thirdary-color: #FFAC4A;
-  --background-color: #f6f6f6;
-  --neutral-color: #9E9E9E;
-
-  --fs-body: clamp(14px, 1.2vw, 18px);
-  --fs-heading: clamp(24px, 4vw, 48px);
-  --padding: clamp(8px, 1.5vw, 20px);
-
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-a:hover {
-  color: #535bf2;
-}
-
-html {
-  width: 100%;
-  height: 100vh;
-  overflow: hidden;
-}
-
-body {
-  margin: 0;
-  padding: 0;
-  display: flex;
-  place-items: center;
-  width: 100%;
-  height: 100vh;
-  overflow: hidden;
-}
-
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
-}
-
-button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: #1a1a1a;
-  cursor: pointer;
-  transition: border-color 0.25s;
-}
-
-/* Override for Google Button */
-button.google-btn {
-  background-color: white !important;
-  border: 2px solid #9E9E9E !important;
-  color: #333 !important;
-  padding: 14px !important;
-  font-size: 15px !important;
-  font-weight: 600 !important;
-}
-
-button:hover {
-  border-color: #646cff;
-}
-
-button.google-btn:hover {
-  border-color: #FF7000 !important;
-  background-color: #fff8f5 !important;
-}
-
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
-}
-
-button.google-btn:focus,
-button.google-btn:focus-visible {
-  outline: none !important;
-}
-
-@media (prefers-color-scheme: light) {
+@layer base {
   :root {
-    color: #213547;
-    background-color: #ffffff;
+    font-family: 'Poppins', system-ui, Avenir, Helvetica, Arial, sans-serif;
+    font-synthesis: none;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
-  a:hover {
-    color: #747bff;
+
+  html {
+    @apply w-full h-screen overflow-hidden;
   }
-  button {
-    background-color: #f9f9f9;
-  }
-  
-  button.google-btn {
-    background-color: white !important;
-    border: 2px solid #9E9E9E !important;
-    color: #333 !important;
+
+  body {
+    @apply m-0 p-0 flex place-items-center w-full h-screen overflow-hidden;
   }
 }
+
+@layer components {
+  /* Auth Background Gradient */
+  .auth-gradient {
+    background: radial-gradient(circle at center, #f6f6f6 0%, #FF7000 70%, #FF7000 100%);
+  }
+
+  /* Auth Button - Reusable for Login/Register */
+  .auth-button {
+    @apply w-full px-3 py-3 bg-gradient-to-br from-[#ff8c00] to-primary text-white border-none rounded-lg text-base font-semibold cursor-pointer transition-all duration-300 font-poppins;
+  }
+
+  .auth-button:hover:not(:disabled) {
+    @apply -translate-y-0.5 shadow-[0_8px_16px_rgba(255,107,53,0.3)];
+  }
+
+  .auth-button:disabled {
+    @apply opacity-70 cursor-not-allowed;
+  }
+
+  /* Google Button - Reusable */
+  .google-btn {
+    @apply w-full px-3 py-3 text-secondary border-2 border-neutral bg-white rounded-lg text-sm font-semibold cursor-pointer transition-all duration-300 flex items-center justify-center gap-2.5 mb-3 outline-none shadow-none;
+  }
+
+  .google-btn:hover {
+    @apply border-primary bg-errorLight shadow-[0_4px_12px_rgba(255,107,53,0.2)];
+  }
+
+  .google-btn:focus,
+  .google-btn:focus-visible,
+  .google-btn:active {
+    @apply outline-none shadow-none;
+  }
+
+  /* Auth Checkbox - Reusable for Remember me / Terms agreement */
+  .auth-checkbox {
+    @apply w-[18px] h-[18px] cursor-pointer rounded appearance-none border-2 border-checkboxBorder bg-white transition-all duration-200 relative;
+  }
+
+  .auth-checkbox:hover {
+    @apply border-neutral;
+  }
+
+  .auth-checkbox:checked {
+    @apply border-neutral bg-background;
+  }
+
+  .auth-checkbox:checked::after {
+    content: '✓';
+    @apply absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-secondary text-xs font-bold;
+  }
+}
+
