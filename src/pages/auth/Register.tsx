@@ -25,17 +25,6 @@ export default function Register() {
   const passwordRef = useRef<HTMLInputElement>(null);
   const confirmPasswordRef = useRef<HTMLInputElement>(null);
 
-  // ERROR SIMULATION FLAGS - Toggle untuk test berbagai error cases
-  const ERROR_SIMULATION = {
-    EMAIL_ALREADY_EXISTS: true,    // Email sudah terdaftar
-    USERNAME_ALREADY_EXISTS: false, // Username sudah digunakan
-    WEAK_PASSWORD: false,           // Password terlalu lemah
-    PASSWORD_MISMATCH: false,       // Password tidak cocok
-    INVALID_EMAIL: false,           // Email tidak valid
-    TERMS_NOT_AGREED: false,        // Belum setuju terms
-    SERVER_ERROR: false,            // Server error
-  }
-
   const validateEmail = (email: string): boolean => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
     return emailRegex.test(email)

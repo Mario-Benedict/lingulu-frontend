@@ -8,11 +8,7 @@ import mascotLogin from '@assets/auth/mascot-login.svg'
 import eyeIcon from '@assets/auth/eye-icon.png'
 import closedEyeIcon from '@assets/auth/closedeye-icon.png'
 
-// 🟩 TARUH DI SINI
-console.log("VITE_API_URL =", import.meta.env.VITE_API_URL);
-
 const API_URL = import.meta.env.VITE_API_URL;
-
 
 export default function Login() {
   const navigate = useNavigate()
@@ -21,17 +17,6 @@ export default function Login() {
   const [showPassword, setShowPassword] = useState(false)
   const [errors, setErrors] = useState<Record<string, string>>({})
   const passwordRef = useRef<HTMLInputElement>(null);
-
-  // ERROR SIMULATION FLAGS - Toggle untuk test berbagai error cases
-  const ERROR_SIMULATION = {
-    EMAIL_NOT_FOUND: false,        // Email tidak ditemukan
-    INVALID_PASSWORD: false,       // Password salah
-    EMAIL_EMPTY: false,            // Email kosong
-    PASSWORD_EMPTY: false,         // Password kosong
-    INVALID_EMAIL_FORMAT: false,   // Format email tidak valid
-    ACCOUNT_LOCKED: false,         // Akun terkunci (brute force)
-    SERVER_ERROR: false,           // Server error
-  }
 
   const validateEmail = (email: string): boolean => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
