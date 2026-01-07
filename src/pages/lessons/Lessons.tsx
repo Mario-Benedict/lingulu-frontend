@@ -1,5 +1,5 @@
 import React from 'react';
-import { Home, BookOpen, Trophy, BotMessageSquare, User, Bell, ChartColumn } from 'lucide-react';
+import { Home, BookOpen, BotMessageSquare, User, Bell, ChartColumn } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import sidebarLogo from '@assets/dashboard/sidebar-logo.svg'
 import level1Char from '@assets/dashboard/start-convo.svg'
