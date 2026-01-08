@@ -4,15 +4,18 @@ import './index.css'
 import Login  from '@pages/auth/Login.tsx'
 import Register from '@pages/auth/Register.tsx'
 import NotFoundPage from '@pages/NotFoundPage.tsx'
+import Dashboard from '@pages/dashboard/Dashboard.tsx'
 import OAuthSuccess from './components/OAuthSuccess'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
+import Leaderboard from '@pages/dashboard/Leaderboard.tsx'
 
 const router = createBrowserRouter([
   {path: '/', element: <Login />},
   {path: '/login', element: <Login />},
   {path: '/register', element: <Register />},
+  {path: '/dashboard', element: <Dashboard />},
   {path: '/oauth2/success', element: <OAuthSuccess />},
-  // {path: '/app', element: <App />},
+  {path: '/leaderboard', element: <Leaderboard />},
   {path: '*', element: <NotFoundPage/>}
 ])
 
