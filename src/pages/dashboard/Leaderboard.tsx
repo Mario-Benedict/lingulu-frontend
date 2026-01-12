@@ -174,7 +174,7 @@ export default function Leaderboard() {
 
 				const token = localStorage.getItem('accessToken')
 				// Untuk dummy leaderboard, jangan kirim Authorization jika token tidak ada
-				const headers = token
+				const headers: Record<string, string> = token
 					? { Accept: 'application/json', Authorization: `Bearer ${token}` }
 					: { Accept: 'application/json' };
 				const res = await fetch(`${API_BASE}/api/leaderboard`, {
@@ -199,28 +199,40 @@ export default function Leaderboard() {
 
 				// Normalize leaderboard entries from backend format:
 				// { leaderboardId, user: { userId, userProfile: { username, avatarUrl } }, totalPoints, profileUrl }
-				const normalized: LeaderboardEntry[] = leaderboardData.map((item: any, idx: number) => ({
-					name: item.user?.userProfile?.username ?? item.username ?? item.name ?? `Player ${idx + 1}`,
-					xp: Number(item.totalPoints ?? item.xp ?? item.points ?? 0),
-					avatarUrl: item.profileUrl ?? item.user?.userProfile?.avatarUrl ?? item.avatarUrl ?? null,
-					userId: item.user?.userId ?? item.userId ?? null,
-					rank: idx + 1,
-				}))
+				// Ambil userId login dari localStorage atau context auth
+				const loggedInUserId = localStorage.getItem('userId')
 
-				if (normalized.length > 0) {
-					setEntries(normalized)
-				}
+				const normalized: LeaderboardEntry[] = leaderboardData.map((item: any, idx: number) => {
+					// Username: only use backend-provided username, never fallback to Player N
+					let name = item.user?.username ?? "";
+					return {
+						name,
+						xp: Number(item.totalPoints ?? item.xp ?? item.points ?? 0),
+						avatarUrl: item.profileUrl ?? item.user?.userProfile?.avatarUrl ?? item.avatarUrl ?? undefined,
+						userId: item.user?.userId ?? item.userId ?? undefined,
+						rank: idx + 1,
+					};
+				});
 
-				// Set current user info from backend response
-				if (data?.currentUser) {
-					const cu = data.currentUser
-					setCurrentUser({
-						name: cu.username ?? cu.name ?? 'You',
-						xp: Number(cu.totalPoints ?? cu.xp ?? 0),
-						avatarUrl: cu.avatarUrl ?? null,
-						userId: cu.userId ?? null,
-						rank: cu.rank ?? 0,
-					})
+				setEntries(normalized)
+
+				// Cari current user di leaderboard
+				if (loggedInUserId) {
+					const idx = normalized.findIndex(e => e.userId === loggedInUserId)
+					if (idx !== -1) {
+						const entry = normalized[idx]
+						setCurrentUser({
+							name: entry.name,
+							xp: entry.xp,
+							avatarUrl: entry.avatarUrl,
+							userId: entry.userId,
+							rank: entry.rank ?? (idx + 1),
+						})
+					} else {
+						setCurrentUser(null)
+					}
+				} else {
+					setCurrentUser(null)
 				}
 			} catch (err: any) {
 				// Ignore abort errors (normal behavior when component unmounts or React StrictMode)
@@ -287,7 +299,7 @@ export default function Leaderboard() {
 						</div>
 					)}
 
-					{entries.map((entry, idx) => (
+					{entries.slice(0, 10).map((entry, idx) => (
 						<LeaderboardRow key={`${entry.name}-${idx}`} entry={entry} index={idx} currentUserId={currentUser?.userId} />
 					))}
 				</section>
