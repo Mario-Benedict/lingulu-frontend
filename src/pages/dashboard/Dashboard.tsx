@@ -1,17 +1,19 @@
 import React from 'react';
 import { Home, BookOpen, Trophy, BotMessageSquare, User, Bell, ChartColumn, Flame} from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import startConvo from '@assets/dashboard/start-convo.svg'
 import sidebarLogo from '@assets/dashboard/sidebar-logo.svg'
 
 export default function Dashboard() {
+  const navigate = useNavigate();
   const [activeMenu, setActiveMenu] = React.useState('dashboard');
 
   const menuItems = [
-    { id: 'dashboard', label: 'Dashboard', icon: Home },
-    { id: 'lessons', label: 'Lessons', icon: BookOpen },
-    { id: 'leaderboard', label: 'Leaderboard', icon: ChartColumn },
-    { id: 'conversation', label: 'AI Conversation', icon: BotMessageSquare },
-    { id: 'profile', label: 'Profile', icon: User },
+    { id: 'dashboard', label: 'Dashboard', icon: Home, path: '/dashboard' },
+    { id: 'lessons', label: 'Lessons', icon: BookOpen, path: '/lessons' },
+    { id: 'leaderboard', label: 'Leaderboard', icon: ChartColumn, path: '/leaderboard' },
+    { id: 'conversation', label: 'AI Conversation', icon: BotMessageSquare, path: '/conversation' },
+    { id: 'profile', label: 'Profile', icon: User, path: '/profile' },
   ];
 
   return (
@@ -31,7 +33,10 @@ export default function Dashboard() {
             return (
               <button
                 key={item.id}
-                onClick={() => setActiveMenu(item.id)}
+                onClick={() => {
+                  setActiveMenu(item.id);
+                  navigate(item.path);
+                }}
                 className={`w-full px-6 py-3 flex items-center gap-3 transition-colors ${
                   isActive
                     ? 'bg-orange-500 text-white border-r-4 border-orange-600'
