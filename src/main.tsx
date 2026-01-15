@@ -10,6 +10,7 @@ import LearningMap from '@pages/lessons/LearningMap.tsx'
 import Sublessons from '@pages/lessons/Sublessons.tsx'
 import OAuthSuccess from './components/OAuthSuccess'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
+import Leaderboard from '@pages/dashboard/Leaderboard.tsx'
 
 const router = createBrowserRouter([
   {path: '/', element: <Login />},
@@ -23,6 +24,7 @@ const router = createBrowserRouter([
   {path: '/conversation', element: <div>AI Conversation Page</div>},
   {path: '/profile', element: <div>Profile Page</div>},
   {path: '/oauth2/success', element: <OAuthSuccess />},
+  {path: '/leaderboard', element: <Leaderboard />},
   {path: '*', element: <NotFoundPage/>}
 ])
 
