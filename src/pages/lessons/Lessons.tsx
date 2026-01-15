@@ -1,5 +1,5 @@
 import React from 'react';
-import { Home, BookOpen, BotMessageSquare, User, Bell, ChartColumn, Lock } from 'lucide-react';
+import { Home, BookOpen, BotMessageSquare, User, ChartColumn, Lock } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import sidebarLogo from '@assets/dashboard/sidebar-logo.svg'
 import Beginner from '@assets/lessons/beginner.svg';
@@ -156,6 +156,7 @@ export default function Lessons() {
                           </div>
                         )}
                         <button
+                          onClick={() => navigate(`/lessons/map`)}
                           className={`${level.buttonColor} px-8 py-3 rounded-lg font-semibold transition font-rubik flex-shrink-0`}
                         >
                           {level.buttonText}
