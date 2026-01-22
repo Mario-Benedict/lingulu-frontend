@@ -101,7 +101,16 @@ export default function Sublessons() {
                       </h3>
                     </div>
                   </div>
-                  <button onClick={() => navigate('/material')} className="bg-orange-500 text-white px-10 py-2 rounded-lg font-semibold hover:bg-orange-600 transition">
+                  <button 
+                    onClick={() => {
+                      if (sublesson.type === 'material') {
+                        navigate(`/lessons/materials/${sublesson.id}`);
+                      } else if (sublesson.type === 'exercise') {
+                        navigate(`/lessons/exercises/${sublesson.id}`);
+                      }
+                    }}
+                    className="bg-orange-500 text-white px-10 py-2 rounded-lg font-semibold hover:bg-orange-600 transition"
+                  >
                     Start
                   </button>
                 </div>
