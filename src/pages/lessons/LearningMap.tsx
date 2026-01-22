@@ -52,11 +52,11 @@ export default function LearningMap() {
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'completed':
-        return 'bg-green-500 border-2 border-green-600 hover:shadow-green-700';
+        return 'bg-green-500 border-8 hover:shadow-green-700';
       case 'in-progress':
-        return 'bg-orange-500 border-2 border-orange-600 hover:shadow-orange-700';
+        return 'bg-orange-500 border-8 hover:shadow-orange-700';
       case 'locked':
-        return 'bg-gray-400 border-2 border-gray-500 hover:shadow-red-800';
+        return 'bg-gray-400 border-8 hover:shadow-red-800';
       default:
         return 'bg-blue-500';
     }
@@ -122,7 +122,7 @@ export default function LearningMap() {
             }}
           />
             <div className='bg-white w-fit bg-opacity-70 flex flex-1 gap-5 p-5 mt-5 ml-5 absolute z-10 rounded-lg'>
-                <button className='group transition p-4 hover:bg-gray-50 hover:shadow-orange-500 shadow-lg rounded-lg bg-orange-500'><ArrowLeft className="text-white font-semibold group-hover:text-gray-800" size={28}/></button>
+                <button onClick={() => navigate('/lessons')} className='group transition p-4 hover:bg-gray-50 hover:shadow-orange-500 shadow-lg rounded-lg bg-orange-500'><ArrowLeft className="text-white font-semibold group-hover:text-gray-800" size={28}/></button>
                 <div className='flex flex-1 flex-col'>
                     <h2 className='text-gray-800 text-2xl font-semibold font-rubik'>Basic English Conversation</h2>
                     <p className='text-gray-600 text-lg'>4 Lessons - Beginner</p>
@@ -137,10 +137,10 @@ export default function LearningMap() {
                   <button
                     onClick={() => {
                       if (lesson.status !== 'locked') {
-                        // Navigate to lesson
+                        navigate(`/lessons/${lesson.id}`);
                       }
                     }}
-                    className={`w-20 h-20 rounded-full flex items-center justify-center shadow-xl transition-all hover:scale-110 hover:shadow-2xl border-8 border-gray-100 border-b-12 transform -translate-x-4 ${getStatusColor(
+                    className={`w-20 h-20 rounded-full flex items-center justify-center shadow-xl transition-all hover:scale-110 hover:shadow-2xl border-gray-100 border-b-12 transform -translate-x-4 ${getStatusColor(
                       lesson.status
                     )} ${lesson.status === 'locked' ? 'cursor-not-allowed' : 'cursor-pointer'}`}
                     disabled={lesson.status === 'locked'}
