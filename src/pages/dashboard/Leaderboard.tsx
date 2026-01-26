@@ -35,7 +35,7 @@ function Sidebar({ onClose, className }: { onClose?: () => void; className?: str
 		{ id: 'dashboard', label: 'Dashboard', icon: Home, to: '/dashboard' },
 		{ id: 'lessons', label: 'Lessons', icon: BookOpen, to: '/lessons' },
 		{ id: 'leaderboard', label: 'Leaderboard', icon: ChartColumn, to: '/leaderboard' },
-		{ id: 'conversation', label: 'AI Conversation', icon: BotMessageSquare, to: '/ai' },
+		{ id: 'conversation', label: 'AI Conversation', icon: BotMessageSquare, to: '/conversation' },
 		{ id: 'profile', label: 'Profile', icon: User, to: '/profile' },
 	] as const
 

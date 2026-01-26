@@ -13,6 +13,7 @@ import Exercises from '@pages/lessons/Exercises.tsx'
 import OAuthSuccess from './components/OAuthSuccess'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import Leaderboard from '@pages/dashboard/Leaderboard.tsx'
+import Aiconversation from '@pages/aiconversation/Aiconversation.tsx'
 
 const router = createBrowserRouter([
   {path: '/', element: <Login />},
@@ -25,7 +26,7 @@ const router = createBrowserRouter([
   {path: '/lessons/materials/:materialId', element: <Materials />},
   {path: '/lessons/exercises/:exerciseId', element: <Exercises />},
   {path: '/leaderboard', element: <Leaderboard/>},
-  {path: '/conversation', element: <div>AI Conversation Page</div>},
+  {path: '/conversation', element: <Aiconversation/>},
   {path: '/profile', element: <div>Profile Page</div>},
   {path: '/oauth2/success', element: <OAuthSuccess />},
   {path: '*', element: <NotFoundPage/>}
