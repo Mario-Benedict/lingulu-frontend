@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Home, BookOpen, Trophy, BotMessageSquare, User, ChartColumn, Mic, Volume2, Info } from 'lucide-react';
+import { Home, BookOpen, BotMessageSquare, User, ChartColumn, Mic, Volume2, Info } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import sidebarLogo from '@assets/dashboard/sidebar-logo.svg';
 import Mascot from '@assets/dashboard/start-convo.svg';
