@@ -9,6 +9,35 @@ import Advanced from '@assets/lessons/advance.svg';
 export default function Lessons() {
   const navigate = useNavigate();
   const [activeMenu, setActiveMenu] = React.useState('lessons');
+  // Progress per level, default dummy
+  const [progress, setProgress] = React.useState<{ level1: number; level2: number; level3: number }>({
+    level1: 0,
+    level2: 0,
+    level3: 0,
+  });
+  const [loading, setLoading] = React.useState<boolean>(true);
+  const [error, setError] = React.useState<string | null>(null);
+
+  React.useEffect(() => {
+    async function fetchProgress() {
+      setLoading(true);
+      setError(null);
+      try {
+        // TODO: Ganti dengan fetch ke backend jika sudah tersedia
+        // Contoh:
+        // const token = localStorage.getItem('token');
+        // const headers = token ? { 'Authorization': `Bearer ${token}` } : {};
+        // const res = await fetch('/api/learning/progress-per-level', { headers });
+        // const data = await res.json();
+        // setProgress({ level1: data.level1, level2: data.level2, level3: data.level3 });
+      } catch (err: any) {
+        setError('Gagal fetch progress');
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchProgress();
+  }, []);
 
   const menuItems = [
     { id: 'dashboard', label: 'Dashboard', icon: Home, path: '/dashboard' },
@@ -18,6 +47,9 @@ export default function Lessons() {
     { id: 'profile', label: 'Profile', icon: User, path: '/profile' },
   ];
 
+  // Example logic: unlock next level if previous is completed
+  // You can adjust this logic based on your backend's lesson structure
+  // Logic lock/unlock dan progress per level
   const levels = [
     {
       id: 1,
@@ -28,34 +60,46 @@ export default function Lessons() {
       buttonText: 'Start Learn',
       buttonColor: 'bg-white text-gray-700 hover:bg-gray-100',
       mascotImage: Beginner,
-      progress: 45
+      progress: progress.level1,
     },
     {
       id: 2,
       title: 'Level 2: Intermediate',
       description: 'Conversational skills. Speak with confidence.',
       bgColor: 'bg-gradient-to-br from-teal-300 to-cyan-600',
-      isLocked: true,
-      buttonText: 'Locked',
-      buttonColor: 'bg-gray-300 text-gray-600',
-      lockMessage: 'Unlock by completing Level 2',
-      mascotImage: Intermediate
+      isLocked: progress.level1 < 100,
+      buttonText: progress.level1 < 100 ? 'Locked' : 'Start Learn',
+      buttonColor: progress.level1 < 100 ? 'bg-gray-300 text-gray-600' : 'bg-white text-gray-700 hover:bg-gray-100',
+      lockMessage: 'Unlock by completing Level 1',
+      mascotImage: Intermediate,
+      progress: progress.level1 >= 100 ? progress.level2 : undefined,
     },
     {
       id: 3,
       title: 'Level 3: Advanced',
       description: 'Mastery & fluency. Complex topics.',
       bgColor: 'bg-gradient-to-br from-violet-300 to-purple-700',
-      isLocked: true,
-      buttonText: 'Locked',
-      buttonColor: 'bg-gray-300 text-gray-600',
-      lockMessage: 'Unlock by completing Level 3',
-      mascotImage: Advanced
-    }
+      isLocked: progress.level1 < 100 || progress.level2 < 100,
+      buttonText: (progress.level1 < 100 || progress.level2 < 100) ? 'Locked' : 'Start Learn',
+      buttonColor: (progress.level1 < 100 || progress.level2 < 100) ? 'bg-gray-300 text-gray-600' : 'bg-white text-gray-700 hover:bg-gray-100',
+      lockMessage: 'Unlock by completing Level 2',
+      mascotImage: Advanced,
+      progress: (progress.level1 >= 100 && progress.level2 >= 100) ? progress.level3 : undefined,
+    },
   ];
 
   return (
     <div className="flex h-screen bg-gray-100 w-screen">
+      {loading && (
+        <div className="fixed inset-0 flex items-center justify-center bg-white bg-opacity-60 z-50">
+          <span className="text-2xl text-orange-500 font-bold">Loading progress...</span>
+        </div>
+      )}
+      {error && (
+        <div className="fixed inset-0 flex items-center justify-center bg-white bg-opacity-80 z-50">
+          <span className="text-xl text-red-500 font-bold">{error}</span>
+        </div>
+      )}
       {/* Sidebar */}
       <div className="w-64 bg-white shadow-lg">
         {/* Logo */}
