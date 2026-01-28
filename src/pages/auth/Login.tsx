@@ -8,7 +8,7 @@ import mascotLogin from '@assets/auth/mascot-login.svg'
 import eyeIcon from '@assets/auth/eye-icon.png'
 import closedEyeIcon from '@assets/auth/closedeye-icon.png'
 
-const API_URL = import.meta.env.VITE_API_URL;
+// Gunakan path relatif agar selalu lewat proxy Vite
 
 export default function Login() {
   const navigate = useNavigate()
@@ -48,7 +48,7 @@ const handleSubmit = async (e: React.FormEvent) => {
   if (!validateForm()) return;
 
   try {
-    const response = await fetch(`${API_URL}/api/account/login`, {
+    const response = await fetch(`/api/account/login`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
