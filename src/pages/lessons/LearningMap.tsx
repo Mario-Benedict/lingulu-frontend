@@ -1,15 +1,10 @@
 import React from 'react';
-import { Home, BookOpen, BotMessageSquare, User, ChartColumn, Lock, CheckCircle, ArrowLeft } from 'lucide-react';
+import { ArrowLeft } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import sidebarLogo from '@assets/dashboard/sidebar-logo.svg'
 import learningMapBg from '@assets/lessons/learning-map.svg'
-
-interface Lesson {
-  id: number;
-  title: string;
-  description: string;
-  status: 'completed' | 'in-progress' | 'locked';
-}
+import Sidebar from '../../components/Sidebar';
+import LessonCircleButton from '../../components/LessonCircleButton';
+import { Lesson } from '../../types';
 
 export default function LearningMap() {
   const navigate = useNavigate();
@@ -41,75 +36,11 @@ export default function LearningMap() {
     }
   ]);
 
-  const menuItems = [
-    { id: 'dashboard', label: 'Dashboard', icon: Home, path: '/dashboard' },
-    { id: 'lessons', label: 'Lessons', icon: BookOpen, path: '/lessons' },
-    { id: 'leaderboard', label: 'Leaderboard', icon: ChartColumn, path: '/leaderboard' },
-    { id: 'conversation', label: 'AI Conversation', icon: BotMessageSquare, path: '/conversation' },
-    { id: 'profile', label: 'Profile', icon: User, path: '/profile' },
-  ];
 
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'completed':
-        return 'bg-green-500 border-8 hover:shadow-green-700';
-      case 'in-progress':
-        return 'bg-orange-500 border-8 hover:shadow-orange-700';
-      case 'locked':
-        return 'bg-gray-400 border-8 hover:shadow-red-800';
-      default:
-        return 'bg-blue-500';
-    }
-  };
-
-  const getStatusIcon = (status: string, lessonId: number) => {
-    switch (status) {
-      case 'completed':
-        return <CheckCircle size={40} className="text-white" />;
-      case 'in-progress':
-        return <span className="text-white font-bold text-3xl">{lessonId}</span>;
-      case 'locked':
-        return <Lock size={40} className="text-white" />;
-      default:
-        return null;
-    }
-  };
 
   return (
     <div className="flex h-screen bg-gray-100 w-screen">
-      {/* Sidebar */}
-      <div className="w-64 bg-white shadow-lg">
-        {/* Logo */}
-        <div className="py-2 border-b">
-          <img src={sidebarLogo} alt="Lingulu Logo" className="h-16 mx-auto" />
-        </div>
-
-        {/* Navigation Menu */}
-        <nav className="pt-6">
-          {menuItems.map((item) => {
-            const Icon = item.icon;
-            const isActive = activeMenu === item.id;
-            return (
-              <button
-                key={item.id}
-                onClick={() => {
-                  setActiveMenu(item.id);
-                  navigate(item.path);
-                }}
-                className={`w-full px-6 py-3 flex items-center gap-3 transition-colors ${
-                  isActive
-                    ? 'bg-orange-500 text-white border-r-4 border-orange-600'
-                    : 'text-gray-600 hover:bg-gray-50'
-                }`}
-              >
-                <Icon size={20} />
-                <span className="font-large font-rubik">{item.label}</span>
-              </button>
-            );
-          })}
-        </nav>
-      </div>
-
+      <Sidebar activeMenu="lessons" />
       {/* Main Content */}
       <div className="flex-1 flex flex-col min-w-0 font-poppins">
         {/* Main Learning Map Area */}
@@ -133,26 +64,18 @@ export default function LearningMap() {
             <div className="flex flex-col gap-[5.5rem] items-end pl-10 pt-[6rem]">
               {lessons.map((lesson) => (
                 <div key={lesson.id} className="flex flex-col items-end">
-                  {/* Circle Button */}
-                  <button
-                    onClick={() => {
-                      if (lesson.status !== 'locked') {
-                        navigate(`/lessons/${lesson.id}`);
-                      }
-                    }}
-                    className={`w-20 h-20 rounded-full flex items-center justify-center shadow-xl transition-all hover:scale-110 hover:shadow-2xl border-gray-100 border-b-12 transform -translate-x-4 ${getStatusColor(
-                      lesson.status
-                    )} ${lesson.status === 'locked' ? 'cursor-not-allowed' : 'cursor-pointer'}`}
+                  <LessonCircleButton
+                    status={lesson.status}
+                    lessonId={lesson.id}
+                    onClick={lesson.status !== 'locked' ? () => navigate(`/lessons/${lesson.id}`) : undefined}
                     disabled={lesson.status === 'locked'}
-                  >
-                    {getStatusIcon(lesson.status, lesson.id)}
-                  </button>
+                  />
                 </div>
               ))}
             </div>
           </div>
         </div>
-        </div>
+      </div>
     </div>
   );
 }
