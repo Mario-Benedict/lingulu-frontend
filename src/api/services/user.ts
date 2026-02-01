@@ -1,5 +1,5 @@
-import { api } from "@api/axios";
+import { api } from "@api/axios/index";
 
 export const getAuthenticatedUser = async (): Promise<boolean> => {
-    return await api.get("/api/user/authenticated");
+    return await api.get("/api/account/authenticated");
 }

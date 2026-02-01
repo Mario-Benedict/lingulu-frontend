@@ -61,18 +61,12 @@ const handleSubmit = async (e: React.FormEvent) => {
     });
 
     const result = await response.json();
-    console.log("API Response:", result);
 
     if (!result.success) {
       setErrors({ submit: result.message || "Login gagal" });
       return;
     }
 
-    // Simpan token
-    localStorage.setItem("token", result.data.accessToken);
-    localStorage.setItem("userId", result.data.userId);
-
-    // Redirect
     navigate("/dashboard");
 
   } catch (err) {

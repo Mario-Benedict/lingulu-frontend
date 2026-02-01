@@ -15,7 +15,7 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import Leaderboard from '@pages/dashboard/Leaderboard.tsx';
 import Aiconversation from '@pages/aiconversation/Aiconversation.tsx';
 import { ProtectedRoute } from './routes/ProtectedRoutes';
-import { AuthProvider } from './contexts/AuthContext';
+import { AuthProvider } from './contexts/AuthProvider';
 
 const router = createBrowserRouter([
   { path: '/', element: <Login /> },
@@ -25,9 +25,7 @@ const router = createBrowserRouter([
 
   {
     element: (
-      <ProtectedRoute>
-        <div>App Layout</div> {/* optional layout wrapper */}
-      </ProtectedRoute>
+      <ProtectedRoute />
     ),
     children: [
       { path: '/dashboard', element: <Dashboard /> },
