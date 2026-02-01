@@ -1,4 +1,3 @@
-import React from 'react';
 
 interface LeaderboardRowProps {
   rank: number;
@@ -9,7 +8,7 @@ interface LeaderboardRowProps {
   userId?: string;
 }
 
-function RankBadge({ rank }: { rank: number }) {
+const RankBadge: React.FC<{ rank: number }> = ({ rank }) => {
   const badgeStyle =
     rank === 1
       ? 'bg-[linear-gradient(180deg,#ffe082_0%,#f9bf3b_100%)] border-[#e6a800] text-white'
@@ -27,7 +26,7 @@ function RankBadge({ rank }: { rank: number }) {
       <span style={{ textShadow: '0 2px 8px rgba(0,0,0,0.25), 0 1px 1px rgba(0,0,0,0.15)' }}>{rank}</span>
     </div>
   );
-}
+};
 
 const LeaderboardRow: React.FC<LeaderboardRowProps> = ({ rank, name, xp, avatarUrl, isCurrentUser, userId }) => {
   const innerGradient =

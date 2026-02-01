@@ -1,25 +1,25 @@
-import React from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Beginner from '@assets/lessons/beginner.svg';
 import Intermediate from '@assets/lessons/intermediate.svg';
 import Advanced from '@assets/lessons/advance.svg';
-import Sidebar from '../../components/Sidebar';
-import LessonLevelCard from '../../components/LessonLevelCard';
+import Sidebar from '@components/Sidebar';
+import LessonLevelCard from '@components/LessonLevelCard';
 
 
-export default function Lessons() {
+const Lessons: React.FC = () => {
   const navigate = useNavigate();
   // const [activeMenu, setActiveMenu] = React.useState('lessons');
-  const [progress, setProgress] = React.useState<{ level1: number; level2: number; level3: number }>({
+  const [progress, setProgress] = useState<{ level1: number; level2: number; level3: number }>({
     level1: 0,
     level2: 0,
     level3: 0,
   });
-  const [loading, setLoading] = React.useState<boolean>(true);
-  const [error, setError] = React.useState<string | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
 
-  React.useEffect(() => {
-    async function fetchProgress() {
+  useEffect(() => {
+    const fetchProgress = async () => {
       setLoading(true);
       setError(null);
       try {
@@ -52,7 +52,7 @@ export default function Lessons() {
       } finally {
         setLoading(false);
       }
-    }
+    };
     fetchProgress();
   }, []);
 
@@ -72,8 +72,7 @@ export default function Lessons() {
       id: 1,
       title: 'Level 1: Beginner',
       description: 'Start your journey! Basic words & phrases.',
-      bgColor: 'bg-gradient-to-br from-amber-300 to-orange-600',
-        bgColor: 'bg-gradient-to-br from-lesson-lv1-from to-lesson-lv1-to',
+      bgColor: 'bg-gradient-to-br from-lesson-lv1-from to-lesson-lv1-to',
       isLocked: false,
       buttonText: 'Start Learn',
       buttonColor: 'bg-white text-gray-700 hover:bg-gray-100',
@@ -155,3 +154,6 @@ export default function Lessons() {
     </div>
   );
 }
+
+
+export default Lessons;

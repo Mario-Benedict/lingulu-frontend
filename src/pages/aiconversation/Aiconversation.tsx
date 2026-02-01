@@ -1,12 +1,10 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { Mic, Volume2, Info, Home, BookOpen, ChartColumn, BotMessageSquare, User } from 'lucide-react';
-import Sidebar from '../../components/Sidebar';
-import { useNavigate } from 'react-router-dom';
+import { useState, useRef, useEffect } from 'react';
+import { Mic, Volume2, Info } from 'lucide-react';
+import Sidebar from '@components/Sidebar';
 import Mascot from '@assets/dashboard/start-convo.svg';
-import { Message } from '../../types';
+import type { Message } from '@types';
 
-export default function Aiconversation() {
-  const navigate = useNavigate();
+const Aiconversation: React.FC = () => {
   const [messages, setMessages] = useState<Message[]>([
     {
       id: '1',
@@ -195,3 +193,5 @@ export default function Aiconversation() {
     </div>
   );
 }
+
+export default Aiconversation;

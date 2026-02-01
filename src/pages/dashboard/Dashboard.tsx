@@ -1,10 +1,8 @@
-
-
 import { Flame, Trophy } from 'lucide-react';
 import startConvo from '@assets/dashboard/start-convo.svg';
-import Sidebar from '../../components/Sidebar';
+import Sidebar from '@components/Sidebar';
 
-export default function Dashboard() {
+const Dashboard: React.FC = () => {
   return (
     <div className="flex h-screen w-screen bg-gray-100">
       {/* Desktop sidebar */}
@@ -71,4 +69,6 @@ export default function Dashboard() {
       </main>
     </div>
   );
-}
+};
+
+export default Dashboard;

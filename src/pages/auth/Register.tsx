@@ -1,6 +1,5 @@
-import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { useRef } from 'react';
+import { useState, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import userIcon from '@assets/auth/user-icon.svg'
 import lockIcon from '@assets/auth/lock-icon.svg'
 import googleIcon from '@assets/auth/google-icon.svg'
@@ -12,7 +11,7 @@ import closedEyeIcon from '@assets/auth/closedeye-icon.png'
 
 // Gunakan path relatif agar selalu lewat proxy Vite
 
-export default function Register() {
+const Register: React.FC = () => {
   const navigate = useNavigate()
   const [username, setUsername] = useState('')
   const [email, setEmail] = useState('')
@@ -304,3 +303,5 @@ const handleSubmit = async (e: React.FormEvent) => {
     </div>
   )
 }
+
+export default Register;
