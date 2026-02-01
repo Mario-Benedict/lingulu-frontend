@@ -1,25 +1,25 @@
-import React from 'react';
-import { Home, BookOpen, BotMessageSquare, User, ChartColumn, ArrowLeft, BookOpenText, NotebookPen} from 'lucide-react';
+import { createElement } from 'react';
+import { ArrowLeft, BookOpenText, NotebookPen } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import Sidebar from '../../components/Sidebar';
-export default function Sublessons() {
-  const navigate = useNavigate();
-  const [activeMenu, setActiveMenu] = React.useState('lessons');
+import Sidebar from '@components/Sidebar';
 
+const Sublessons: React.FC = () => {
+  const navigate = useNavigate();
+  // Removed unused activeMenu state for consistency
 
   const sublessons = [
     {
       id: 1,
       title: 'Judul materi',
       icon: BookOpenText,
-      type: 'material'
+      type: 'material',
     },
     {
       id: 2,
       title: 'Judul Soal',
       icon: NotebookPen,
-      type: 'exercise'
-    }
+      type: 'exercise',
+    },
   ];
 
   return (
@@ -27,18 +27,16 @@ export default function Sublessons() {
       <Sidebar activeMenu="lessons" />
       {/* Main Content */}
       <div className="flex-1 flex flex-col min-w-0 font-poppins">
-
         {/* Header */}
         <div className="bg-white shadow-sm sticky top-0 z-10 border-b-primary border-b-2 py-2">
           <div className="flex items-center px-8 py-4 gap-6">
-            <button onClick={() => navigate('/lessons/map')} className='group transition p-4 hover:bg-lessongray-50 hover:shadow-primary shadow-lg rounded-lg bg-primary'><ArrowLeft className="text-white font-semibold group-hover:text-lessongray-800" size={28}/></button>
+            <button onClick={() => navigate('/lessons/map')} className='group transition p-4 hover:bg-lessongray-50 hover:shadow-primary shadow-lg rounded-lg bg-primary'><ArrowLeft className="text-white font-semibold group-hover:text-lessongray-800" size={28} /></button>
             <div>
               <p className="text-lg text-lessongray-600">Level 1: Beginner</p>
               <h2 className="text-5xl font-bold text-primary font-rubik">Lessons 2</h2>
             </div>
           </div>
         </div>
-
         {/* Main Content Area */}
         <div className="flex-1 overflow-y-auto">
           <div className="p-8">
@@ -50,9 +48,9 @@ export default function Sublessons() {
                 >
                   <div className="flex items-center gap-4">
                     <div className="p-3">
-                      {React.createElement(sublesson.icon, {
+                      {createElement(sublesson.icon, {
                         size: 48,
-                        className: "text-primary"
+                        className: "text-primary",
                       })}
                     </div>
                     <div>
@@ -61,7 +59,7 @@ export default function Sublessons() {
                       </h3>
                     </div>
                   </div>
-                  <button 
+                  <button
                     onClick={() => {
                       if (sublesson.type === 'material') {
                         navigate(`/lessons/materials/${sublesson.id}`);
@@ -81,4 +79,6 @@ export default function Sublessons() {
       </div>
     </div>
   );
-}
+};
+
+export default Sublessons;

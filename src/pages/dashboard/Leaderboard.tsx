@@ -1,24 +1,25 @@
-import Sidebar from '../../components/Sidebar';
+import Sidebar from '@components/Sidebar';
 import { useEffect, useState } from 'react'
 import bannerBg from '@assets/leaderboard/banner-leaderboard.svg'
 import lbEmptyImg from '@assets/leaderboard/LB-empty.svg'
-import LeaderboardRow from '../../components/LeaderboardRow';
-import { LeaderboardEntry, LeaderboardApiUser } from '../../types';
+import LeaderboardRow from '@components/LeaderboardRow';
+import type { LeaderboardEntry, LeaderboardApiUser } from '@types';
 
 
 
-export default function Leaderboard() {
-	const [entries, setEntries] = useState<LeaderboardEntry[]>([])
-	const [currentUser, setCurrentUser] = useState<LeaderboardEntry | null>(null)
-	const [loading, setLoading] = useState<boolean>(false)
-	const [error, setError] = useState<string | null>(null)
-	const [mobileMenuOpen, setMobileMenuOpen] = useState<boolean>(false)
+
+const Leaderboard: React.FC = () => {
+	const [entries, setEntries] = useState<LeaderboardEntry[]>([]);
+	const [currentUser, setCurrentUser] = useState<LeaderboardEntry | null>(null);
+	const [loading, setLoading] = useState<boolean>(false);
+	const [error, setError] = useState<string | null>(null);
+	const [mobileMenuOpen, setMobileMenuOpen] = useState<boolean>(false);
 
 	useEffect(() => {
-		const controller = new AbortController()
-		const API_BASE = import.meta.env.VITE_API_URL ?? 'http://localhost:8080'
+		const controller = new AbortController();
+		const API_BASE = import.meta.env.VITE_API_URL ?? 'http://localhost:8080';
 
-		async function fetchLeaderboard() {
+		const fetchLeaderboard = async () => {
 			try {
 				setLoading(true);
 				setError(null);
@@ -46,15 +47,13 @@ export default function Leaderboard() {
 				const data = payload.data;
 				const leaderboardData: LeaderboardApiUser[] = Array.isArray(data) ? data : [];
 				const loggedInUserId = localStorage.getItem('userId');
-				const normalized: LeaderboardEntry[] = leaderboardData.map((item: LeaderboardApiUser, idx: number) => {
-					return {
-						name: item.user?.username || item.user?.userId || "",
-						xp: Number(item.totalPoints ?? 0),
-						avatarUrl: item.profileUrl || item.porfileUrl || undefined,
-						userId: item.user?.userId ?? undefined,
-						rank: idx + 1,
-					};
-				});
+				const normalized: LeaderboardEntry[] = leaderboardData.map((item: LeaderboardApiUser, idx: number) => ({
+					name: item.user?.username || item.user?.userId || "",
+					xp: Number(item.totalPoints ?? 0),
+					avatarUrl: item.profileUrl || item.porfileUrl || undefined,
+					userId: item.user?.userId ?? undefined,
+					rank: idx + 1,
+				}));
 				setEntries(normalized);
 				if (loggedInUserId) {
 					const idx = normalized.findIndex(e => e.userId === loggedInUserId);
@@ -81,54 +80,53 @@ export default function Leaderboard() {
 			} finally {
 				setLoading(false);
 			}
-		}
+		};
 
 		fetchLeaderboard();
+		return () => controller.abort();
+	}, []);
 
-		return () => controller.abort()
-	}, [])
-	 return (
-	 	<div className="flex h-screen w-screen bg-gray-50">
-	 		{/* Desktop sidebar */}
-	 		<div className="hidden md:block">
-	 			<Sidebar activeMenu="leaderboard" />
-	 		</div>
+	return (
+		<div className="flex h-screen w-screen bg-gray-50">
+			{/* Desktop sidebar */}
+			<div className="hidden md:block">
+				<Sidebar activeMenu="leaderboard" />
+			</div>
 
-	 		<main className="flex-1 overflow-y-auto">
-	 			{/* Banner */}
-	 			<header className="relative h-40 overflow-hidden">
-	 				<img src={bannerBg} alt="" className="absolute inset-0 w-full h-full object-cover" />
- 				
-	 				<div className="relative h-full flex items-center px-6">
-	 					<button
-	 						className="md:hidden p-2 mr-4 rounded-lg bg-white/20 backdrop-blur text-white border border-white/40"
-	 						onClick={() => setMobileMenuOpen(true)}
-	 						aria-label="Open menu"
-	 					>
-	 						☰
-	 					</button>
-	 					<div>
-	 						<h1 className="text-3xl md:text-5xl font-rubik font-medium text-orange-500">Leaderboard</h1>
-	 						<p className="text-sm md:text-base text-gray-800 mt-1">Based on XP from completed lessons</p>
-	 					</div>
-	 				</div>
-	 			</header>
+			<main className="flex-1 overflow-y-auto">
+				{/* Banner */}
+				<header className="relative h-40 overflow-hidden">
+					<img src={bannerBg} alt="" className="absolute inset-0 w-full h-full object-cover" />
+					<div className="relative h-full flex items-center px-6">
+						<button
+							className="md:hidden p-2 mr-4 rounded-lg bg-white/20 backdrop-blur text-white border border-white/40"
+							onClick={() => setMobileMenuOpen(true)}
+							aria-label="Open menu"
+						>
+							☰
+						</button>
+						<div>
+							<h1 className="text-3xl md:text-5xl font-rubik font-medium text-orange-500">Leaderboard</h1>
+							<p className="text-sm md:text-base text-gray-800 mt-1">Based on XP from completed lessons</p>
+						</div>
+					</div>
+				</header>
 
-	 			<section className="px-4 sm:px-6 py-6 space-y-3">
-	 				{loading && (
-	 					<div className="text-gray-600">Loading leaderboard...</div>
-	 				)}
+				<section className="px-4 sm:px-6 py-6 space-y-3">
+					{loading && (
+						<div className="text-gray-600">Loading leaderboard...</div>
+					)}
 
-	 				{error && (
-	 					<div className="text-sm text-red-600">{error}</div>
-	 				)}
+					{error && (
+						<div className="text-sm text-red-600">{error}</div>
+					)}
 
-	 				{!loading && !error && entries.length === 0 && (
-	 					<div className="flex flex-col items-center justify-center py-12">
-	 						<img src={lbEmptyImg} alt="No data" className="w-40 h-40 mb-4 opacity-70" />
-	 						<div className="text-lg font-semibold text-gray-600 mb-2">Belum ada data leaderboard</div>
-	 						<div className="text-sm text-gray-400 mb-4">Ayo selesaikan pelajaran untuk masuk leaderboard!</div>
-	 						<button
+					{!loading && !error && entries.length === 0 && (
+						<div className="flex flex-col items-center justify-center py-12">
+							<img src={lbEmptyImg} alt="No data" className="w-40 h-40 mb-4 opacity-70" />
+							<div className="text-lg font-semibold text-gray-600 mb-2">Belum ada data leaderboard</div>
+							<div className="text-sm text-gray-400 mb-4">Ayo selesaikan pelajaran untuk masuk leaderboard!</div>
+							<button
 								className="px-4 py-2 bg-orange-500 text-white rounded-lg shadow hover:bg-orange-600 transition"
 								onClick={() => window.location.reload()}
 							>
@@ -146,7 +144,6 @@ export default function Leaderboard() {
 							avatarUrl={entry.avatarUrl}
 							isCurrentUser={!!(currentUser?.userId && entry.userId && currentUser.userId === entry.userId)}
 						/>
-						// import { useNavigate } from 'react-router-dom' // Unused import
 					))}
 				</section>
 
@@ -200,6 +197,8 @@ export default function Leaderboard() {
 				</>
 			)}
 		</div>
-	)
-}
+	);
+};
+
+export default Leaderboard;
 

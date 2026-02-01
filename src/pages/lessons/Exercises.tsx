@@ -1,11 +1,10 @@
-import React, { useState } from 'react';
-import { Home, BookOpen, BotMessageSquare, User, ChartColumn, ArrowLeft, Mic } from 'lucide-react';
+import { useState } from 'react';
+import { ArrowLeft, Mic } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import Sidebar from '../../components/Sidebar';
+import Sidebar from '@components/Sidebar';
 
-export default function Exercise() {
+const Exercise: React.FC = () => {
   const navigate = useNavigate();
-  const [activeMenu, setActiveMenu] = React.useState('lessons');
   const [currentQuestion, setCurrentQuestion] = useState(1);
   const [isListening, setIsListening] = useState(false);
   const totalQuestions = 10;
@@ -141,3 +140,6 @@ export default function Exercise() {
     </div>
   );
 }
+
+
+export default Exercise;

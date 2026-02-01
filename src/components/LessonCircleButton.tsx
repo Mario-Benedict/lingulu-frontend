@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { type FC } from 'react';
 import { Lock, CheckCircle } from 'lucide-react';
-import { LessonCircleButtonProps } from '../types';
+import type { LessonCircleButtonProps } from '@types/index';
 
 const getStatusColor = (status: string) => {
   switch (status) {
