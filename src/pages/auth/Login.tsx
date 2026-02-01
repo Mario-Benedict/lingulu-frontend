@@ -1,6 +1,5 @@
-import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { useRef } from 'react';
+import { useState, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import userIcon from '@assets/auth/user-icon.svg'
 import lockIcon from '@assets/auth/lock-icon.svg'
 import googleIcon from '@assets/auth/google-icon.svg'
@@ -8,9 +7,10 @@ import mascotLogin from '@assets/auth/mascot-login.svg'
 import eyeIcon from '@assets/auth/eye-icon.png'
 import closedEyeIcon from '@assets/auth/closedeye-icon.png'
 
+
 // Gunakan path relatif agar selalu lewat proxy Vite
 
-export default function Login() {
+const Login: React.FC = () => {
   const navigate = useNavigate()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -206,3 +206,5 @@ const handleSubmit = async (e: React.FormEvent) => {
     </div>
   )
 }
+
+export default Login;

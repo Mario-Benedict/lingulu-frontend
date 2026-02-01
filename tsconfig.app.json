@@ -32,7 +32,8 @@
       "@config/*": ["./src/config/*"],
       "@api/*": ["./src/api/*"],
       "@hooks/*": ["./src/hooks/*"],
-      "@utils/*": ["./src/utils/*"],
+      "@types": ["./src/types/index.ts"],
+      "@types/*": ["./src/types/*"]
     }
   },
   "include": ["src"]

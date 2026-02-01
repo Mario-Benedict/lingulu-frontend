@@ -1,19 +1,10 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { Home, BookOpen, BotMessageSquare, User, ChartColumn, Mic, Volume2, Info } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
-import sidebarLogo from '@assets/dashboard/sidebar-logo.svg';
+import { useState, useRef, useEffect } from 'react';
+import { Mic, Volume2, Info } from 'lucide-react';
+import Sidebar from '@components/Sidebar';
 import Mascot from '@assets/dashboard/start-convo.svg';
+import type { Message } from '@types';
 
-interface Message {
-  id: string;
-  type: 'bot' | 'user';
-  text: string;
-  timestamp: Date;
-}
-
-export default function Aiconversation() {
-  const navigate = useNavigate();
-  const [activeMenu, setActiveMenu] = React.useState('conversation');
+const Aiconversation: React.FC = () => {
   const [messages, setMessages] = useState<Message[]>([
     {
       id: '1',
@@ -27,13 +18,6 @@ export default function Aiconversation() {
   const [isListening, setIsListening] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  const menuItems = [
-    { id: 'dashboard', label: 'Dashboard', icon: Home, path: '/dashboard' },
-    { id: 'lessons', label: 'Lessons', icon: BookOpen, path: '/lessons' },
-    { id: 'leaderboard', label: 'Leaderboard', icon: ChartColumn, path: '/leaderboard' },
-    { id: 'conversation', label: 'AI Conversation', icon: BotMessageSquare, path: '/conversation' },
-    { id: 'profile', label: 'Profile', icon: User, path: '/profile' },
-  ];
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -85,57 +69,29 @@ export default function Aiconversation() {
   };
 
   return (
-    <div className="flex h-screen bg-gray-100 w-screen">
-      {/* Sidebar */}
-      <div className="w-64 bg-white shadow-lg">
-        {/* Logo */}
-        <div className="py-2 border-b">
-          <img src={sidebarLogo} alt="Lingulu Logo" className="h-16 mx-auto" />
-        </div>
-
-        {/* Navigation Menu */}
-        <nav className="pt-6">
-          {menuItems.map((item) => {
-            const Icon = item.icon;
-            const isActive = activeMenu === item.id;
-            return (
-              <button
-                key={item.id}
-                onClick={() => {
-                  setActiveMenu(item.id);
-                  navigate(item.path);
-                }}
-                className={`w-full px-6 py-3 flex items-center gap-3 transition-colors ${
-                  isActive
-                    ? 'bg-orange-500 text-white border-r-4 border-orange-600'
-                    : 'text-gray-600 hover:bg-gray-50'
-                }`}
-              >
-                <Icon size={20} />
-                <span className="font-large font-rubik">{item.label}</span>
-              </button>
-            );
-          })}
-        </nav>
+    <div className="flex h-screen bg-lessongray-100 w-screen">
+      {/* Sidebar Global */}
+      <div className="hidden md:block">
+        <Sidebar activeMenu="conversation" />
       </div>
 
       {/* Main Content */}
       <div className="flex-1 flex flex-col min-w-0">
         {/* Header */}
-        <div className="bg-white shadow-sm sticky top-0 z-10 border-b-orange-500 border-b-2">
+        <div className="bg-white shadow-sm sticky top-0 z-10 border-b-primary border-b-2">
           <div className="flex justify-between items-center px-8 py-6">
             <div>
-              <h2 className="text-5xl font-bold text-orange-500 font-rubik">AI Conversation</h2>
-              <p className="text-gray-500 text-lg font-rubik">Practice speaking</p>
+              <h2 className="text-5xl font-bold text-primary font-rubik">AI Conversation</h2>
+              <p className="text-lessongray-500 text-lg font-rubik">Practice speaking</p>
             </div>
-            <button className="p-3 hover:bg-gray-100 rounded-full">
-              <Info size={32} className="text-orange-500" />
+            <button className="p-3 hover:bg-lessongray-100 rounded-full">
+              <Info size={32} className="text-primary" />
             </button>
           </div>
         </div>
 
         {/* Chat Area */}
-        <div className="flex-1 overflow-y-auto px-8 py-8 bg-gradient-to-b from-gray-50 to-white">
+        <div className="flex-1 overflow-y-auto px-8 py-8 bg-gradient-to-b from-lessongray-50 to-white">
           <div className="max-w-3xl mx-auto space-y-6 bg-white p-8 shadow-lg rounded-lg h-full">
             {messages.map((message, index) => (
               <div
@@ -158,8 +114,8 @@ export default function Aiconversation() {
                     <div
                       className={`px-6 py-4 rounded-3xl shadow-md hover:shadow-lg transition-all ${
                         message.type === 'bot'
-                          ? 'bg-white text-gray-800 border border-gray-200 rounded-bl-lg'
-                          : 'bg-gradient-to-r from-orange-400 to-orange-500 text-white rounded-br-lg'
+                          ? 'bg-white text-lessongray-800 border border-lessongray-200 rounded-bl-lg'
+                          : 'bg-gradient-to-r from-primary to-primary text-white rounded-br-lg'
                       }`}
                     >
                       <p className={`text-sm lg:text-base leading-relaxed ${
@@ -168,7 +124,7 @@ export default function Aiconversation() {
                         {message.text}
                       </p>
                     </div>
-                    <span className={`text-xs text-gray-400 px-2 ${
+                    <span className={`text-xs text-lessongray-400 px-2 ${
                       message.type === 'bot' ? 'text-left' : 'text-right'
                     }`}>
                       {message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
@@ -205,7 +161,7 @@ export default function Aiconversation() {
 
             {/* Divider */}
             <div className="flex items-center gap-4 mb-6">
-              <div className="flex-1 h-px bg-gray-300"></div>
+              <div className="flex-1 h-px bg-lessongray-300"></div>
             </div>
 
             {/* Tap to Speak Button */}
@@ -214,8 +170,8 @@ export default function Aiconversation() {
                 onClick={handleTapToSpeak}
                 className={`w-full py-4 rounded-full font-semibold font-poppins text-lg transition flex items-center justify-center gap-2 ${
                   isRecording
-                    ? 'bg-red-500 hover:bg-red-600 text-white'
-                    : 'bg-orange-500 hover:bg-orange-600 text-white'
+                    ? 'bg-record-red hover:bg-record-red-dark text-white'
+                    : 'bg-primary hover:bg-primary-dark text-white'
                 }`}
               >
                 <Mic size={24} />
@@ -225,7 +181,7 @@ export default function Aiconversation() {
               {/* Listen Again Button */}
               <button
                 onClick={handleListenAgain}
-                className="flex items-center gap-2 text-gray-600 hover:text-gray-800 transition font-poppins"
+                className="flex items-center gap-2 text-lessongray-600 hover:text-lessongray-800 transition font-poppins"
               >
                 <Volume2 size={18} />
                 Listen again
@@ -237,3 +193,5 @@ export default function Aiconversation() {
     </div>
   );
 }
+
+export default Aiconversation;
