@@ -6,6 +6,7 @@ import googleIcon from '@assets/auth/google-icon.svg'
 import mascotLogin from '@assets/auth/mascot-login.svg'
 import eyeIcon from '@assets/auth/eye-icon.png'
 import closedEyeIcon from '@assets/auth/closedeye-icon.png'
+import { useAuth } from '@/hooks/useAuth';
 
 
 // Gunakan path relatif agar selalu lewat proxy Vite
@@ -17,6 +18,8 @@ const Login: React.FC = () => {
   const [showPassword, setShowPassword] = useState(false)
   const [errors, setErrors] = useState<Record<string, string>>({})
   const passwordRef = useRef<HTMLInputElement>(null);
+
+  const { setIsAuthenticated } = useAuth();
 
   const validateEmail = (email: string): boolean => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
@@ -67,7 +70,8 @@ const handleSubmit = async (e: React.FormEvent) => {
       return;
     }
 
-    navigate("/dashboard");
+    setIsAuthenticated(true);
+    navigate("/dashboard", { replace: true });
 
   } catch (err) {
     console.error(err);
