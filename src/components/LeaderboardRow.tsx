@@ -1,3 +1,4 @@
+import React, { type FC } from 'react';
 
 interface LeaderboardRowProps {
   rank: number;

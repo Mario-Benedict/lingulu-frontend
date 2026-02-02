@@ -1,3 +1,4 @@
+import React, { type FC } from 'react';
 import { Lock, CheckCircle } from 'lucide-react';
 import type { LessonCircleButtonProps } from '@types/index';
 
