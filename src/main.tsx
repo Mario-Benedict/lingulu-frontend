@@ -29,13 +29,12 @@ const router = createBrowserRouter([
   { path: '/login', element: <Login /> },
   { path: '/register', element: <Register /> },
   { path: '/oauth2/success', element: <OAuthSuccess /> },
-  { path: '/otp-verify', element: <Otp /> },
-
   {
     element: (
       <ProtectedRoute />
     ),
     children: [
+      { path: '/otp-verify', element: <Otp /> },
       { path: '/dashboard', element: <Dashboard /> },
       { path: '/lessons', element: <Lessons /> },
       { path: '/lessons/map', element: <LearningMap /> },
