@@ -4,6 +4,7 @@ import { getAuthenticatedUser } from "@/api/services/user";
 
 type AuthContextType = {
   isAuthenticated: boolean;
+  setIsAuthenticated: (value: boolean) => void;
   loading: boolean;
   logout: () => void;
 };
@@ -24,7 +25,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         const response = await getAuthenticatedUser();
         setIsAuthenticated(response);
       } catch (e) {
-        console.log(e);
         setIsAuthenticated(false);
       } finally {
         setLoading(false);
@@ -43,7 +43,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   };
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, loading, logout }}>
+    <AuthContext.Provider value={{ isAuthenticated, setIsAuthenticated, loading, logout }}>
       {children}
     </AuthContext.Provider>
   );
