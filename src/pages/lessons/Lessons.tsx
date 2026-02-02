@@ -3,8 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import Beginner from '@assets/lessons/beginner.svg';
 import Intermediate from '@assets/lessons/intermediate.svg';
 import Advanced from '@assets/lessons/advance.svg';
-import Sidebar from '@components/Sidebar';
-import LessonLevelCard from '@components/LessonLevelCard';
+import Sidebar from '@components/common/Sidebar';
+import LessonLevelCard from '@components/lessons/LessonLevelCard';
 
 
 const Lessons: React.FC = () => {

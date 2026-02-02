@@ -2,9 +2,9 @@ import { useState } from 'react';
 import { ArrowLeft } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import learningMapBg from '@assets/lessons/learning-map.svg';
-import Sidebar from '@components/Sidebar';
-import LessonCircleButton from '@components/LessonCircleButton';
-import type { Lesson } from '@types';
+import Sidebar from '@components/common/Sidebar';
+import LessonCircleButton from '@components/lessons/LessonCircleButton';
+import type { Lesson } from '@/types';
 
 const LearningMap: React.FC = () => {
   const navigate = useNavigate();

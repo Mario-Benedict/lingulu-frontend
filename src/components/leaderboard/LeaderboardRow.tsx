@@ -29,7 +29,7 @@ const RankBadge: React.FC<{ rank: number }> = ({ rank }) => {
   );
 };
 
-const LeaderboardRow: React.FC<LeaderboardRowProps> = ({ rank, name, xp, avatarUrl, isCurrentUser, userId }) => {
+const LeaderboardRow: React.FC<LeaderboardRowProps> = ({ rank, name, xp, avatarUrl, isCurrentUser }) => {
   const innerGradient =
     rank === 1
       ? 'bg-[linear-gradient(90deg,#fee59c_0%,#e6ba1f_48%,#fff1c6_100%)] border-amber-400'

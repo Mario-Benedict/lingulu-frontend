@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { ArrowLeft, Mic } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import Sidebar from '@components/Sidebar';
+import Sidebar from '@components/common/Sidebar';
 
 const Exercise: React.FC = () => {
   const navigate = useNavigate();

@@ -1,9 +1,9 @@
-import Sidebar from '@components/Sidebar';
+import Sidebar from '@components/common/Sidebar';
 import { useEffect, useState } from 'react'
 import bannerBg from '@assets/leaderboard/banner-leaderboard.svg'
 import lbEmptyImg from '@assets/leaderboard/LB-empty.svg'
-import LeaderboardRow from '@components/LeaderboardRow';
-import type { LeaderboardEntry, LeaderboardApiUser } from '@types';
+import LeaderboardRow from '@components/leaderboard/LeaderboardRow';
+import type { LeaderboardEntry, LeaderboardApiUser } from '@/types';
 
 
 
