@@ -3,6 +3,7 @@ import { createRoot } from 'react-dom/client';
 import './index.css';
 import Login  from '@pages/auth/Login.tsx';
 import Register from '@pages/auth/Register.tsx';
+import Otp from '@pages/auth/Otp.tsx';
 import NotFoundPage from '@pages/NotFoundPage.tsx';
 import Dashboard from '@pages/dashboard/Dashboard.tsx';
 import Lessons from '@pages/lessons/Lessons.tsx';
@@ -28,13 +29,12 @@ const router = createBrowserRouter([
   { path: '/login', element: <Login /> },
   { path: '/register', element: <Register /> },
   { path: '/oauth2/success', element: <OAuthSuccess /> },
-  { path: '/profile', element: <Profile /> },
-
   {
     element: (
       <ProtectedRoute />
     ),
     children: [
+      { path: '/otp-verify', element: <Otp /> },
       { path: '/dashboard', element: <Dashboard /> },
       { path: '/lessons', element: <Lessons /> },
       { path: '/lessons/map', element: <LearningMap /> },
