@@ -1,6 +1,6 @@
 import { Flame, Trophy } from 'lucide-react';
 import startConvo from '@assets/dashboard/start-convo.svg';
-import Sidebar from '@components/Sidebar';
+import Sidebar from '@components/common/Sidebar';
 
 const Dashboard: React.FC = () => {
   return (

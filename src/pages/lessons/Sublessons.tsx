@@ -1,7 +1,7 @@
 import { createElement } from 'react';
 import { ArrowLeft, BookOpenText, NotebookPen } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import Sidebar from '@components/Sidebar';
+import Sidebar from '@components/common/Sidebar';
 
 const Sublessons: React.FC = () => {
   const navigate = useNavigate();

@@ -1,8 +1,8 @@
 import { useState, useRef, useEffect } from 'react';
 import { Mic, Volume2, Info } from 'lucide-react';
-import Sidebar from '@components/Sidebar';
+import Sidebar from '@components/common/Sidebar';
 import Mascot from '@assets/dashboard/start-convo.svg';
-import type { Message } from '@types';
+import type { Message } from '@/types';
 
 const Aiconversation: React.FC = () => {
   const [messages, setMessages] = useState<Message[]>([

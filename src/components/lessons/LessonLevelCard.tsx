@@ -1,5 +1,5 @@
 import { Lock } from 'lucide-react';
-import type { LessonLevelCardProps } from '@types/index';
+import type { LessonLevelCardProps } from '@/types';
 
 const LessonLevelCard: React.FC<LessonLevelCardProps> = ({
   title,
