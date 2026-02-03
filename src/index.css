@@ -33,6 +33,9 @@
   .auth-gradient {
     background: radial-gradient(circle at center, #f6f6f6 0%, #FF7000 70%, #FF7000 100%);
   }
+  .landing-gradient {
+    background: radial-gradient(circle at center, #4380a9 0%,  #04b7bd 70%,  #f6f6f6 100%);
+  }
 
   /* Auth Button - Reusable for Login/Register */
   .auth-button {

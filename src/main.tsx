@@ -1,6 +1,7 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import './index.css';
+import Landing from '@pages/landing/Landing.tsx';
 import Login  from '@pages/auth/Login.tsx';
 import Register from '@pages/auth/Register.tsx';
 import Otp from '@pages/auth/Otp.tsx';
@@ -18,14 +19,10 @@ import Profile from '@pages/profile/Profile.tsx';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { ProtectedRoute } from './routes/ProtectedRoutes';
 import { AuthProvider } from './contexts/AuthProvider';
-// export { default as ProfileCard } from './ProfileCard';
-// export { default as StatsCard } from './StatsCard';
-// export { default as AccountSettings } from './AccountSettings';
-// export { default as StatItem } from './StatItem';
 
 
 const router = createBrowserRouter([
-  { path: '/', element: <Login /> },
+  { path: '/', element: <Landing /> },
   { path: '/login', element: <Login /> },
   { path: '/register', element: <Register /> },
   { path: '/oauth2/success', element: <OAuthSuccess /> },
