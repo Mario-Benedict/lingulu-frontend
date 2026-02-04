@@ -34,7 +34,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSubmit, loading = false }) => {
     if (!password) {
       newErrors.password = 'Password tidak boleh kosong';
     } else if (password.length < 8) {
-      newErrors.password = 'Password minimal 6 karakter';
+      newErrors.password = 'Password minimal 8 karakter';
     }
 
     setErrors(newErrors);
@@ -87,21 +87,20 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSubmit, loading = false }) => {
           </label>
           <input
             id="email"
-            type="email"
+            // type="email"
             placeholder="Email"
             value={email}
             onChange={(e) => {
               setEmail(e.target.value);
               if (errors.email) clearError('email');
             }}
-            required
+            // required
             className="flex-1 border-none bg-transparent py-2.5 px-0 text-sm text-secondary outline-none placeholder:text-neutral disabled:bg-disabled disabled:cursor-not-allowed"
           />
         </div>
         {errors.email && <span className="block text-error text-[11px] mt-0.5 ml-1.5">{errors.email}</span>}
       </div>
 
-      {/* Password Input */}
       <div className="mb-3.5">
         <div className="relative flex items-center border-2 border-border rounded-lg bg-inputBg transition-all duration-500 w-full font-poppins focus-within:border-primary focus-within:bg-white">
           <label htmlFor="password" className="ml-3 mr-0 mb-0 cursor-pointer">
@@ -117,7 +116,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSubmit, loading = false }) => {
               setPassword(e.target.value);
               if (errors.password) clearError('password');
             }}
-            required
+            // required
             className="flex-1 border-none bg-transparent py-2.5 px-0 text-sm text-secondary outline-none placeholder:text-neutral disabled:bg-disabled disabled:cursor-not-allowed"
           />
           <button
