@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import mascotLogin from '@assets/auth/logo-vertical.svg';
-import ResetPasswordEmail from '@components/auth/ResetPasswordEmail';
-import ResetPasswordForm from '@components/auth/ResetPasswordForm';
+import ResetPasswordEmail from '@components/auth/resetpassword/ResetPasswordEmail';
+import ResetPasswordForm from '@components/auth/resetpassword/ResetPasswordForm';
 
 type ResetStep = 'email' | 'form';
 
@@ -111,7 +111,13 @@ const ResetPass: React.FC = () => {
         {step === 'email' ? (
           <ResetPasswordEmail onSubmit={handleEmailSubmit} loading={loading} />
         ) : (
-          <ResetPasswordForm email={email} onSubmit={handlePasswordSubmit} loading={loading} />
+          <ResetPasswordForm 
+            email={email} 
+            onSubmit={handlePasswordSubmit} 
+            onBack={() => setStep('email')}
+            showBackToLogin={true}
+            loading={loading} 
+          />
         )}
       </div>
     </div>

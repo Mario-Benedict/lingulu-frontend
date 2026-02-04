@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import mascotLogin from '@assets/auth/logo-vertical.svg';
-import OtpInput from '@components/auth/OtpInput';
+import OtpForm from '@components/auth/otp/OtpForm';
+import ResendOtpLink from '@components/auth/otp/ResendOtpLink';
 
 const OTP_LENGTH = 6;
 
@@ -135,36 +136,10 @@ const Otp: React.FC = () => {
         )}
 
         {/* OTP Input Form */}
-        <form onSubmit={handleVerify} className="flex flex-col items-center">
-          <OtpInput
-            length={OTP_LENGTH}
-            value={otp}
-            onChange={setOtp}
-            disabled={loading}
-          />
-
-          {/* Verify Button */}
-          <button
-            type="submit"
-            disabled={loading || otp.length !== OTP_LENGTH}
-            className="w-full mt-10 bg-primary hover:bg-primary/90 text-white font-semibold py-3 px-8 rounded-full transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed font-poppins"
-          >
-            {loading ? 'Verifying...' : 'Verify & Continue'}
-          </button>
-        </form>
+        <OtpForm otp={otp} onChange={setOtp} onSubmit={handleVerify} loading={loading} error={error} />
 
         {/* Resend Link */}
-        <p className="text-center text-gray-600 text-sm mt-6 font-poppins">
-          Didn't receive the code?{' '}
-          <button
-            type="button"
-            onClick={handleResend}
-            disabled={resendLoading}
-            className="text-primary font-semibold hover:underline disabled:opacity-50 disabled:cursor-not-allowed bg-transparent border-none cursor-pointer"
-          >
-            {resendLoading ? 'Sending...' : 'Resend'}
-          </button>
-        </p>
+        <ResendOtpLink onResend={handleResend} loading={resendLoading} success={resendSuccess} />
       </div>
     </div>
   );
