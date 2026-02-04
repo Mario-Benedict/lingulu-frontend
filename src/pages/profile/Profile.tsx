@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Sidebar from '@components/common/Sidebar';
 import ProfileCard from '@components/profile/ProfileCard';
 import StatsCard from '@components/profile/StatsCard';
@@ -22,6 +23,7 @@ interface UserStats {
 
 const Profile: React.FC = () => {
   const { logout } = useAuth();
+  const navigate = useNavigate();
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [stats, setStats] = useState<UserStats | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
@@ -95,8 +97,7 @@ const Profile: React.FC = () => {
   };
 
   const handleChangePasswordClick = () => {
-    // TODO: Navigate to change password page
-    console.log('Change password clicked');
+    navigate('/change-password');
   };
 
   const handleChangeAvatar = () => {
@@ -124,7 +125,7 @@ const Profile: React.FC = () => {
         {/* Header */}
         <div className="bg-white shadow-sm sticky top-0 z-10 border-b-primary border-b-2 pt-[2.5rem]">
           <div className="flex justify-between items-center px-8 py-4">
-            <h2 className="text-7xl font-bold text-primary font-rubik">Profil</h2>
+            <h2 className="text-7xl font-bold text-primary font-rubik">Profile</h2>
           </div>
         </div>
 
