@@ -5,6 +5,7 @@ import Landing from '@pages/landing/Landing.tsx';
 import Login  from '@pages/auth/Login.tsx';
 import Register from '@pages/auth/Register.tsx';
 import Otp from '@pages/auth/Otp.tsx';
+import ResetPass from '@pages/auth/ResetPass.tsx';
 import NotFoundPage from '@pages/NotFoundPage.tsx';
 import Dashboard from '@pages/dashboard/Dashboard.tsx';
 import Lessons from '@pages/lessons/Lessons.tsx';
@@ -26,6 +27,8 @@ const router = createBrowserRouter([
   { path: '/', element: <Landing /> },
   { path: '/login', element: <Login /> },
   { path: '/register', element: <Register /> },
+  { path: '/otp-verify', element: <Otp /> },
+  { path: '/reset-password', element: <ResetPass /> },
   { path: '/oauth2/success', element: <OAuthSuccess /> },
   { path: '/lessons', element: <Lessons /> },
   {
