@@ -10,7 +10,7 @@ export const setupInterceptors = () => {
     (error) => {
       // Jangan redirect ke login jika sudah di halaman login/register
       const currentPath = window.location.pathname;
-      const isAuthPage = currentPath.includes('/login') || currentPath.includes('/register') || currentPath.includes('/otp');
+      const isAuthPage = currentPath.startsWith('/login') || currentPath.startsWith('/register') || currentPath.startsWith('/otp');
       
       if (error.response?.status === 401 && !isAuthPage) {
         window.location.href = "/login";
