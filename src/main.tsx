@@ -16,7 +16,7 @@ import Materials from '@pages/lessons/Materials.tsx';
 import Exercises from '@pages/lessons/Exercises.tsx';
 import PronunciationExercise from '@pages/lessons/PronunciationExercise.tsx';
 import OAuthSuccess from './components/auth/OAuthSuccess';
-import Leaderboard from '@pages/dashboard/Leaderboard.tsx';
+import Leaderboard from '@/pages/leaderboard/Leaderboard';
 import Aiconversation from '@pages/aiconversation/Aiconversation.tsx';
 import Profile from '@pages/profile/Profile.tsx';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
@@ -31,7 +31,6 @@ const router = createBrowserRouter([
   { path: '/otp-verify', element: <Otp /> },
   { path: '/reset-password', element: <ResetPass /> },
   { path: '/oauth2/success', element: <OAuthSuccess /> },
-
   {
     element: (
       <ProtectedRoute />
