@@ -90,6 +90,18 @@ const Lessons: React.FC = () => {
       mascotImage: Advanced,
       progress: (progress.level1 >= 100 && progress.level2 >= 100) ? progress.level3 : undefined,
     },
+    {
+      id: 4,
+      title: 'Level 4: Expert',
+      description: 'Professional fluency. Business & academic topics.',
+      bgColor: 'bg-gradient-to-br from-gray-500 to-gray-700',
+      isLocked: true,
+      isComingSoon: true,
+      buttonText: 'Coming Soon',
+      buttonColor: 'bg-gray-300 text-gray-600',
+      lockMessage: 'Coming Soon',
+      mascotImage: '',
+    },
   ];
 
   return (
@@ -110,6 +122,7 @@ const Lessons: React.FC = () => {
                   description={level.description}
                   bgColor={level.bgColor}
                   isLocked={level.isLocked}
+                  isComingSoon={level.isComingSoon}
                   buttonText={level.buttonText}
                   buttonColor={level.buttonColor}
                   lockMessage={level.lockMessage}
