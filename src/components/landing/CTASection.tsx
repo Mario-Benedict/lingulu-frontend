@@ -8,7 +8,7 @@ const CTASection: React.FC = () => {
     <section className="landing-gradient py-16 px-6 text-center">
       <div className="max-w-3xl mx-auto">
         <h2 className="text-3xl lg:text-4xl font-bold text-white font-rubik mb-4">
-          Siap Memulai Perjalanan Bahasamu ?
+          Siap Memulai Perjalanan Bahasamu?
         </h2>
         <p className="text-white/90 mb-8 font-poppins">
           Bergabung bersama pengguna lain yang belajar dengan cara satu seru dan konsisten.
