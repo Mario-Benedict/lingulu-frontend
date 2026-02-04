@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import Sidebar from '@components/common/Sidebar';
 import ProfileCard from '@components/profile/ProfileCard';
 import StatsCard from '@components/profile/StatsCard';
-import AccountSettings from '@components/profile/AccountSettings';
+import BioCard from '@components/profile/BioCard';
 import { useAuth } from '@hooks/useAuth';
 
 // Types khusus untuk Profile page
@@ -10,6 +10,7 @@ interface UserProfile {
   username: string;
   email: string;
   avatarUrl: string;
+  bio: string;
 }
 
 interface UserStats {
@@ -42,6 +43,7 @@ const Profile: React.FC = () => {
               username: profileData.data.username ?? 'User',
               email: profileData.data.email ?? '',
               avatarUrl: profileData.data.profileUrl ?? '/avatars/tiger-1.svg',
+              bio: profileData.data.bio ?? 'No bio added yet',
             });
           }
         }
@@ -74,6 +76,7 @@ const Profile: React.FC = () => {
     username: 'Nicko',
     email: 'Nicko.richardo@gmail.com',
     avatarUrl: '/avatars/tiger-1.svg',
+    bio: 'Halo saya nicko bla blaaksaskdasdjaksdjaksdasjdkasdjsadjkasdjasdkasdjksa',
   };
 
   const defaultStats: UserStats = {
@@ -99,6 +102,11 @@ const Profile: React.FC = () => {
   const handleChangeAvatar = () => {
     // TODO: Open avatar picker modal
     console.log('Change avatar clicked');
+  };
+
+  const handleEditBio = () => {
+    // TODO: Open bio editor modal
+    console.log('Edit bio clicked');
   };
 
   const handleLogout = () => {
@@ -127,28 +135,28 @@ const Profile: React.FC = () => {
               <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
             </div>
           ) : (
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-              {/* Left Column - Profile & Stats */}
-              <div className="lg:col-span-2 flex flex-col gap-6">
-                {/* Profile Card */}
-                <ProfileCard
-                  avatarUrl={currentProfile.avatarUrl}
-                  username={currentProfile.username}
-                  email={currentProfile.email}
-                  onChangeAvatar={handleChangeAvatar}
-                />
+            <div className="space-y-6">
+              {/* Profile Card - Full Width */}
+              <ProfileCard
+                avatarUrl={currentProfile.avatarUrl}
+                username={currentProfile.username}
+                email={currentProfile.email}
+                onChangeAvatar={handleChangeAvatar}
+                onChangePasswordClick={handleChangePasswordClick}
+                onLogout={handleLogout}
+              />
 
+              {/* Stats & Bio Row */}
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 {/* Stats Card */}
-                <StatsCard stats={currentStats} />
-              </div>
+                <div className="lg:col-span-2">
+                  <StatsCard stats={currentStats} />
+                </div>
 
-              {/* Right Column - Account Settings */}
-              <div className="lg:col-span-1">
-                <AccountSettings
-                  onAccountClick={handleAccountClick}
-                  onChangePasswordClick={handleChangePasswordClick}
-                  onLogout={handleLogout}
-                />
+                {/* Bio Card */}
+                <div className="lg:col-span-1">
+                  <BioCard bio={currentProfile.bio} onEditBio={handleEditBio} />
+                </div>
               </div>
             </div>
           )}
