@@ -29,7 +29,7 @@ const router = createBrowserRouter([
   { path: '/otp', element: <Otp /> },
   { path: '/oauth2/success', element: <OAuthSuccess /> },
   { path: '/lessons', element: <Lessons /> },
-      
+
   {
     element: (
       <ProtectedRoute />
