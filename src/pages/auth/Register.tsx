@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import mascotRegister from '@assets/auth/mascot-register.svg';
 import RegisterForm from '@components/auth/register/RegisterForm';
 import GoogleSignUpButton from '@components/auth/register/GoogleSignUpButton';
 import LoginLink from '@components/auth/register/LoginLink';

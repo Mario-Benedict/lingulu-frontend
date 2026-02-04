@@ -23,8 +23,8 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     const checkAuth = async () => {
       try {
         const response = await getAuthenticatedUser();
-        setIsAuthenticated(response);
-      } catch (e) {
+        setIsAuthenticated(response.data?.authenticated || false);
+      } catch {
         setIsAuthenticated(false);
       } finally {
         setLoading(false);

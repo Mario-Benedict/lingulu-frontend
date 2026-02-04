@@ -1,6 +1,7 @@
+import type { AuthStatusResponse } from "@/types";
 import { api } from "@api/axios/index";
 
-export const getAuthenticatedUser = async (): Promise<boolean> => {
+export const getAuthenticatedUser = async (): Promise<AuthStatusResponse> => {
     return await api.get("/api/account/authenticated");
 }
 
@@ -9,7 +10,7 @@ export const loginUser = async (data: {
     email: string;
     password: string;
     isRememberMe: boolean;
-}): Promise<{ success: boolean; message: string; data?: { accessToken: string; userId: string } }> => {
+}): Promise<AuthStatusResponse> => {
     return await api.post("/api/account/login", data);
 }
 
@@ -28,6 +29,6 @@ export const registerUser = async (data: {
     email: string;
     password: string;
     confirmPassword: string;
-}): Promise<{ success: boolean; message: string; data?: { accessToken: string; userId: string } }> => {
+}): Promise<AuthStatusResponse> => {
     return await api.post("/api/account/register", data);
 }
