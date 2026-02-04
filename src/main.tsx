@@ -39,6 +39,7 @@ const router = createBrowserRouter([
     children: [
       { path: '/otp-verify', element: <Otp /> },
       { path: '/dashboard', element: <Dashboard /> },
+      { path: '/lessons', element: <Lessons /> },
       { path: '/lessons/map', element: <LearningMap /> },
       { path: '/lessons/:LevelId', element: <Section /> },
       { path: '/lessons/materials/:materialId', element: <Materials /> },
