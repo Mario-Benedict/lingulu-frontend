@@ -9,7 +9,7 @@ import NotFoundPage from '@pages/NotFoundPage.tsx';
 import Dashboard from '@pages/dashboard/Dashboard.tsx';
 import Lessons from '@pages/lessons/Lessons.tsx';
 import LearningMap from '@pages/lessons/LearningMap.tsx';
-import Sublessons from '@pages/lessons/Sublessons.tsx';
+import Section from '@pages/lessons/Section.tsx';
 import Materials from '@pages/lessons/Materials.tsx';
 import Exercises from '@pages/lessons/Exercises.tsx';
 import OAuthSuccess from './components/auth/OAuthSuccess';
@@ -35,7 +35,7 @@ const router = createBrowserRouter([
       { path: '/dashboard', element: <Dashboard /> },
       { path: '/lessons', element: <Lessons /> },
       { path: '/lessons/map', element: <LearningMap /> },
-      { path: '/lessons/:LevelId', element: <Sublessons /> },
+      { path: '/lessons/:LevelId', element: <Section /> },
       { path: '/lessons/materials/:materialId', element: <Materials /> },
       { path: '/lessons/exercises/:exerciseId', element: <Exercises /> },
       { path: '/leaderboard', element: <Leaderboard /> },
