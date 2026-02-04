@@ -219,6 +219,13 @@ const handleSubmit = async (e: React.FormEvent) => {
             <button type="submit" disabled={isLoading} className="auth-button mb-3 disabled:opacity-60 disabled:cursor-not-allowed">
               {isLoading ? 'LOGGING IN...' : 'LOGIN'}
             </button>
+            <button 
+                type="button"
+                onClick={() => navigate('/reset-password')}
+                className="text-primary text-sm font-semibold hover:underline bg-transparent border-none cursor-pointer"
+              >
+                Forgot Password?
+              </button>
           </form>
 
           <div className="text-center text-neutral text-xs my-3 relative before:content-[''] before:absolute before:top-1/2 before:left-0 before:w-[35%] before:h-px before:bg-border after:content-[''] after:absolute after:top-1/2 after:right-0 after:w-[35%] after:h-px after:bg-border">Or Login with</div>
