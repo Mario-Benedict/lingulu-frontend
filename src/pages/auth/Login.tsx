@@ -186,14 +186,23 @@ const handleSubmit = async (e: React.FormEvent) => {
               {errors.password && <span className="block text-error text-[11px] mt-0.5 ml-1.5">{errors.password}</span>}
             </div>
 
-            <div className="flex items-center mb-3 mt-2 gap-2">
-              <input type="checkbox" id="remember" className="auth-checkbox" />
-              <label htmlFor="remember" className="text-neutral text-sm cursor-pointer">Remember me</label>
+            <div className="flex items-center justify-between mb-3 mt-2 gap-2">
+              <div className="flex items-center gap-2">
+                <input type="checkbox" id="remember" className="auth-checkbox" />
+                <label htmlFor="remember" className="text-neutral text-sm cursor-pointer">Remember me</label>
+              </div>
             </div>
 
             <button type="submit" className="auth-button mb-3">
               LOGIN
             </button>
+            <button 
+                type="button"
+                onClick={() => navigate('/reset-password')}
+                className="text-primary text-sm font-semibold hover:underline bg-transparent border-none cursor-pointer"
+              >
+                Forgot Password?
+              </button>
           </form>
 
           <div className="text-center text-neutral text-xs my-3 relative before:content-[''] before:absolute before:top-1/2 before:left-0 before:w-[35%] before:h-px before:bg-border after:content-[''] after:absolute after:top-1/2 after:right-0 after:w-[35%] after:h-px after:bg-border">Or Login with</div>
