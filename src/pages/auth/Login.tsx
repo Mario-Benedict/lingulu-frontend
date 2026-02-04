@@ -7,6 +7,7 @@ import mascotLogin from '@assets/auth/mascot-login.svg'
 import eyeIcon from '@assets/auth/eye-icon.png'
 import closedEyeIcon from '@assets/auth/closedeye-icon.png'
 import { useAuth } from '@/hooks/useAuth';
+import { loginUser } from '@api/services/user';
 
 
 // Gunakan path relatif agar selalu lewat proxy Vite
@@ -16,7 +17,9 @@ const Login: React.FC = () => {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
+  const [rememberMe, setRememberMe] = useState(false)
   const [errors, setErrors] = useState<Record<string, string>>({})
+  const [isLoading, setIsLoading] = useState(false)
   const passwordRef = useRef<HTMLInputElement>(null);
 
   const { setIsAuthenticated } = useAuth();
@@ -50,22 +53,20 @@ const handleSubmit = async (e: React.FormEvent) => {
 
   if (!validateForm()) return;
 
+  setIsLoading(true);
+  setErrors({});
+
   try {
-    const response = await fetch(`/api/account/login`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        username: email,
-        email: email,
-        password: password
-      }),
+    const result = await loginUser({
+      email: email,
+      password: password,
+      isRememberMe: rememberMe
     });
 
-    const result = await response.json();
+    console.log("Login API Response:", result);
 
     if (!result.success) {
+      setIsLoading(false);
       setErrors({ submit: result.message || "Login gagal" });
       return;
     }
@@ -73,9 +74,27 @@ const handleSubmit = async (e: React.FormEvent) => {
     setIsAuthenticated(true);
     navigate("/dashboard", { replace: true });
 
-  } catch (err) {
-    console.error(err);
-    setErrors({ submit: "Tidak dapat menghubungi server" });
+  } catch (err: any) {
+    console.error("Login error:", err);
+    console.error("Error response:", err?.response?.data);
+    
+    const errorData = err?.response?.data;
+    
+    if (errorData?.data && typeof errorData.data === 'object') {
+      const backendErrors: Record<string, string> = {};
+      Object.keys(errorData.data).forEach(key => {
+        backendErrors[key] = Array.isArray(errorData.data[key]) 
+          ? errorData.data[key][0] 
+          : errorData.data[key];
+      });
+      setErrors(backendErrors);
+    } else if (errorData?.message) {
+      setErrors({ submit: errorData.message });
+    } else {
+      setErrors({ submit: "Tidak dapat menghubungi server" });
+    }
+  } finally {
+    setIsLoading(false);
   }
 };
 
@@ -186,15 +205,19 @@ const handleSubmit = async (e: React.FormEvent) => {
               {errors.password && <span className="block text-error text-[11px] mt-0.5 ml-1.5">{errors.password}</span>}
             </div>
 
-            <div className="flex items-center justify-between mb-3 mt-2 gap-2">
-              <div className="flex items-center gap-2">
-                <input type="checkbox" id="remember" className="auth-checkbox" />
-                <label htmlFor="remember" className="text-neutral text-sm cursor-pointer">Remember me</label>
-              </div>
+            <div className="flex items-center mb-3 mt-2 gap-2">
+              <input 
+                type="checkbox" 
+                id="remember" 
+                checked={rememberMe}
+                onChange={(e) => setRememberMe(e.target.checked)}
+                className="auth-checkbox" 
+              />
+              <label htmlFor="remember" className="text-neutral text-sm cursor-pointer">Remember me</label>
             </div>
 
-            <button type="submit" className="auth-button mb-3">
-              LOGIN
+            <button type="submit" disabled={isLoading} className="auth-button mb-3 disabled:opacity-60 disabled:cursor-not-allowed">
+              {isLoading ? 'LOGGING IN...' : 'LOGIN'}
             </button>
             <button 
                 type="button"
