@@ -5,14 +5,15 @@ import eyeIcon from '@assets/auth/eye-icon.png';
 import closedEyeIcon from '@assets/auth/closedeye-icon.png';
 
 interface LoginFormProps {
-  onSubmit: (email: string, password: string) => Promise<void>;
+  onSubmit: (email: string, password: string, isRememberMe: boolean) => Promise<void>;
   loading?: boolean;
 }
 
 const LoginForm: React.FC<LoginFormProps> = ({ onSubmit, loading = false }) => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [showPassword, setShowPassword] = useState(false);
+  const [email, setEmail] = useState<string>('');
+  const [password, setPassword] = useState<string>('');
+  const [showPassword, setShowPassword] = useState<boolean>(false);
+  const [isRememberMe, setIsRememberMe] = useState<boolean>(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const passwordRef = useRef<HTMLInputElement>(null);
 
@@ -32,7 +33,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSubmit, loading = false }) => {
 
     if (!password) {
       newErrors.password = 'Password tidak boleh kosong';
-    } else if (password.length < 6) {
+    } else if (password.length < 8) {
       newErrors.password = 'Password minimal 6 karakter';
     }
 
@@ -46,9 +47,9 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSubmit, loading = false }) => {
     if (!validateForm()) return;
 
     try {
-      await onSubmit(email, password);
-    } catch (err) {
-      setErrors({ submit: err instanceof Error ? err.message : 'Login gagal' });
+      await onSubmit(email, password, isRememberMe);
+    } catch {
+      setErrors({ submit: 'Login gagal' });
     }
   };
 
@@ -79,7 +80,6 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSubmit, loading = false }) => {
         </div>
       )}
 
-      {/* Email Input */}
       <div className="mb-3.5">
         <div className="relative flex items-center border-2 border-border rounded-lg bg-inputBg transition-all duration-500 w-full font-poppins focus-within:border-primary focus-within:bg-white">
           <label htmlFor="email" className="ml-3 mr-0 mb-0 cursor-pointer">
@@ -131,15 +131,19 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSubmit, loading = false }) => {
         {errors.password && <span className="block text-error text-[11px] mt-0.5 ml-1.5">{errors.password}</span>}
       </div>
 
-      {/* Remember Me */}
       <div className="flex items-center mb-3 mt-2 gap-2">
-        <input type="checkbox" id="remember" className="auth-checkbox" />
+        <input
+          type="checkbox"
+          id="remember"
+          className="auth-checkbox"
+          checked={isRememberMe}
+          onChange={(e) => setIsRememberMe(e.target.checked)}
+        />
         <label htmlFor="remember" className="text-neutral text-sm cursor-pointer">
           Remember me
         </label>
       </div>
 
-      {/* Submit Button */}
       <button type="submit" disabled={loading} className="auth-button mb-3">
         {loading ? 'LOGGING IN...' : 'LOGIN'}
       </button>

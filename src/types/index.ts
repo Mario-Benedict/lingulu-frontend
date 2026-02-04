@@ -1,4 +1,12 @@
 // API response type for leaderboard
+export interface ApiResponse<T> {
+  success: boolean,
+  message: string,
+  data?: T
+}
+
+export type AuthStatusResponse = ApiResponse<{ authenticated: boolean }>;
+
 export interface LeaderboardApiUser {
   user?: {
     username?: string;
