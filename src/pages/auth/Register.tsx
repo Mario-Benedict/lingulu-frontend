@@ -8,6 +8,7 @@ import emailIcon from '@assets/auth/email-icon.png'
 import confirmIcon from '@assets/auth/confirm-icon.png'
 import eyeIcon from '@assets/auth/eye-icon.png'
 import closedEyeIcon from '@assets/auth/closedeye-icon.png'
+import { registerUser, requestOtp } from '@api/services/user';
 
 // Gunakan path relatif agar selalu lewat proxy Vite
 
@@ -21,6 +22,7 @@ const Register: React.FC = () => {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
   const [agreeToTerms, setAgreeToTerms] = useState(false)
   const [errors, setErrors] = useState<Record<string, string>>({})
+  const [isLoading, setIsLoading] = useState(false)
   const passwordRef = useRef<HTMLInputElement>(null);
   const confirmPasswordRef = useRef<HTMLInputElement>(null);
 
@@ -83,37 +85,61 @@ const handleSubmit = async (e: React.FormEvent) => {
   // Validasi form kamu sendiri
   if (!validateForm()) return;
 
+  setIsLoading(true);
+  setErrors({});
+
   try {
-    const response = await fetch(`/api/account/register`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        username: username,
-        email: email,
-        password: password,
-        confirmPassword: confirmPassword
-      }),
+    // Step 1: Register user
+    const result = await registerUser({
+      username,
+      email,
+      password,
+      confirmPassword
     });
 
-    const result = await response.json();
     console.log("Register API Response:", result);
 
     if (!result.success) {
-      // BE kamu mengirim error lewat "message"
+      setIsLoading(false);
       setErrors({ submit: result.message || "Registrasi gagal" });
       return;
     }
-    
-    localStorage.setItem("token", result.data.accessToken);
-    localStorage.setItem("userId", result.data.userId);
-    // Berhasil daftar → arahkan user ke login
-    navigate("/dashboard");
 
-  } catch (err) {
-    console.error(err);
-    setErrors({ submit: "Tidak dapat menghubungi server" });
+    // Step 2: Request OTP untuk verifikasi email
+    try {
+      await requestOtp(email);
+    } catch (otpErr) {
+      console.error("Failed to send OTP:", otpErr);
+      // Tetap lanjut ke OTP page, user bisa resend
+    }
+
+    // Step 3: Redirect ke OTP page dengan email
+    navigate("/otp", { state: { email } });
+
+  } catch (err: any) {
+    console.error("Register error:", err);
+    console.error("Error response:", err?.response?.data);
+    
+    // Extract error message from backend response
+    const errorData = err?.response?.data;
+    
+    // Backend returns: { success: false, message: "...", data: { field: ["error"] } }
+    if (errorData?.data && typeof errorData.data === 'object') {
+      // Handle validation errors (email/username already in use)
+      const backendErrors: Record<string, string> = {};
+      Object.keys(errorData.data).forEach(key => {
+        backendErrors[key] = Array.isArray(errorData.data[key]) 
+          ? errorData.data[key][0] 
+          : errorData.data[key];
+      });
+      setErrors(backendErrors);
+    } else if (errorData?.message) {
+      setErrors({ submit: errorData.message });
+    } else {
+      setErrors({ submit: "Tidak dapat menghubungi server" });
+    }
+  } finally {
+    setIsLoading(false);
   }
 };
 
@@ -284,8 +310,8 @@ const handleSubmit = async (e: React.FormEvent) => {
             </div>
             {errors.terms && <span className="block text-error text-[11px] mt-0.5 ml-1.5">{errors.terms}</span>}
 
-            <button type="submit" className="auth-button mb-3 mt-4">
-              SIGN UP
+            <button type="submit" disabled={isLoading} className="auth-button mb-3 mt-4 disabled:opacity-60 disabled:cursor-not-allowed">
+              {isLoading ? 'SIGNING UP...' : 'SIGN UP'}
             </button>
           </form>
 

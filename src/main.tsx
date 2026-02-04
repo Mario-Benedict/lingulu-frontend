@@ -28,13 +28,13 @@ const router = createBrowserRouter([
   { path: '/', element: <Login /> },
   { path: '/login', element: <Login /> },
   { path: '/register', element: <Register /> },
+  { path: '/otp', element: <Otp /> },
   { path: '/oauth2/success', element: <OAuthSuccess /> },
   {
     element: (
       <ProtectedRoute />
     ),
     children: [
-      { path: '/otp-verify', element: <Otp /> },
       { path: '/dashboard', element: <Dashboard /> },
       { path: '/lessons', element: <Lessons /> },
       { path: '/lessons/map', element: <LearningMap /> },

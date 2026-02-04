@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import mascotLogin from '@assets/auth/logo-vertical.svg';
 import OtpInput from '@components/auth/OtpInput';
+import { verifyOtp, requestOtp } from '@api/services/user';
 
 const OTP_LENGTH = 6;
 
@@ -29,32 +30,16 @@ const Otp: React.FC = () => {
     setError(null);
 
     try {
-      const response = await fetch('/api/account/verify-otp', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          email,
-          otp,
-        }),
-      });
+      await verifyOtp(email, otp);
 
-      const result = await response.json();
-
-      if (!result.success) {
-        setError(result.message || 'Verification failed');
-        return;
-      }
-
-      // Navigate to login or dashboard on success
+      // Navigate to login on success
       navigate('/login', { 
         state: { message: 'Account verified successfully! Please login.' } 
       });
 
-    } catch (err) {
+    } catch (err: any) {
       console.error(err);
-      setError('Unable to connect to server');
+      setError(err?.response?.data?.message || err?.message || 'Verification failed');
     } finally {
       setLoading(false);
     }
@@ -66,20 +51,7 @@ const Otp: React.FC = () => {
     setError(null);
 
     try {
-      const response = await fetch('/api/account/resend-otp', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email }),
-      });
-
-      const result = await response.json();
-
-      if (!result.success) {
-        setError(result.message || 'Failed to resend code');
-        return;
-      }
+      await requestOtp(email);
 
       setResendSuccess(true);
       setOtp(''); // Clear current OTP
@@ -87,9 +59,9 @@ const Otp: React.FC = () => {
       // Clear success message after 3 seconds
       setTimeout(() => setResendSuccess(false), 3000);
 
-    } catch (err) {
+    } catch (err: any) {
       console.error(err);
-      setError('Unable to connect to server');
+      setError(err?.response?.data?.message || err?.message || 'Failed to resend code');
     } finally {
       setResendLoading(false);
     }

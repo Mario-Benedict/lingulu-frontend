@@ -10,9 +10,9 @@ const OAuthSuccess: React.FC = () => {
     const fetchUserData = async () => {
       try {
         const response = await fetch(
-          "http://localhost:8080/api/account/oauth2/data",
+          "http://localhost:8080/api/account/profile",
           {
-            method: "GET",
+            method: "POST",
             credentials: "include", // Kirim cookie bersama permintaan
           }
         );
@@ -22,10 +22,11 @@ const OAuthSuccess: React.FC = () => {
           console.log("✅ User data received:", result);
 
           // Save to localStorage/state
-            localStorage.setItem("token", result.data.accessToken);
-            localStorage.setItem("userId", result.data.userId);
+          if (result.data) {
+            localStorage.setItem("username", result.data.username);
+          }
           // Redirect to dashboard
-            navigate("/dashboard");
+          navigate("/dashboard");
         } else {
           console.error("Failed to get user data");
           navigate("/login?error=oauth_failed");
@@ -36,7 +37,7 @@ const OAuthSuccess: React.FC = () => {
       }
     };
 
-    // 🎯 INI DIEKSEKUSI OTOMATIS ketika component mount
+    // INI DIEKSEKUSI OTOMATIS ketika component mount
     fetchUserData();
   }, [navigate]); // Empty dependency = run once on mount
 
