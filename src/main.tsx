@@ -12,6 +12,7 @@ import LearningMap from '@pages/lessons/LearningMap.tsx';
 import Section from '@pages/lessons/Section.tsx';
 import Materials from '@pages/lessons/Materials.tsx';
 import Exercises from '@pages/lessons/Exercises.tsx';
+import PronunciationExercise from '@pages/lessons/PronunciationExercise.tsx';
 import OAuthSuccess from './components/auth/OAuthSuccess';
 import Leaderboard from '@pages/dashboard/Leaderboard.tsx';
 import Aiconversation from '@pages/aiconversation/Aiconversation.tsx';
@@ -26,6 +27,8 @@ const router = createBrowserRouter([
   { path: '/login', element: <Login /> },
   { path: '/register', element: <Register /> },
   { path: '/oauth2/success', element: <OAuthSuccess /> },
+  { path: '/lessons', element: <Lessons /> },
+      
   {
     element: (
       <ProtectedRoute />
@@ -33,11 +36,11 @@ const router = createBrowserRouter([
     children: [
       { path: '/otp-verify', element: <Otp /> },
       { path: '/dashboard', element: <Dashboard /> },
-      { path: '/lessons', element: <Lessons /> },
       { path: '/lessons/map', element: <LearningMap /> },
       { path: '/lessons/:LevelId', element: <Section /> },
       { path: '/lessons/materials/:materialId', element: <Materials /> },
       { path: '/lessons/exercises/:exerciseId', element: <Exercises /> },
+      { path: '/lessons/pronunciation/:exerciseId', element: <PronunciationExercise /> },
       { path: '/leaderboard', element: <Leaderboard /> },
       { path: '/conversation', element: <Aiconversation /> },
       { path: '/profile', element: <Profile /> },

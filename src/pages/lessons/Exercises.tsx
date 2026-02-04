@@ -2,13 +2,12 @@ import { useState } from 'react';
 import Sidebar from '@components/common/Sidebar';
 import ExerciseHeader from '@components/lessons/exercises/ExerciseHeader';
 import ProgressBar from '@components/lessons/exercises/ProgressBar';
-import QuestionCard from '@components/lessons/exercises/QuestionCard';
-import MicrophoneButton from '@components/lessons/exercises/MicrophoneButton';
+import MultipleChoiceQuestion from '@components/lessons/exercises/MultipleChoiceQuestion';
 import NavigationButtons from '@components/lessons/exercises/NavigationButtons';
 
 const Exercise: React.FC = () => {
   const [currentQuestion, setCurrentQuestion] = useState(1);
-  const [isListening, setIsListening] = useState(false);
+  const [selectedAnswers, setSelectedAnswers] = useState<Record<number, string>>({});
   const totalQuestions = 10;
   const progressPercentage = (currentQuestion / totalQuestions) * 100;
 
@@ -16,17 +15,35 @@ const Exercise: React.FC = () => {
     {
       id: 1,
       question: 'what does "Good morning" mean in indonesian?',
-      type: 'voice',
+      type: 'multiple-choice',
+      options: [
+        { id: 'a', text: 'Selamat pagi', isCorrect: true },
+        { id: 'b', text: 'Selamat malam', isCorrect: false },
+        { id: 'c', text: 'Selamat siang', isCorrect: false },
+        { id: 'd', text: 'Selamat sore', isCorrect: false },
+      ],
     },
     {
       id: 2,
       question: 'How do you say "Thank you" in Indonesian?',
-      type: 'voice',
+      type: 'multiple-choice',
+      options: [
+        { id: 'a', text: 'Terima kasih', isCorrect: true },
+        { id: 'b', text: 'Sama-sama', isCorrect: false },
+        { id: 'c', text: 'Permisi', isCorrect: false },
+        { id: 'd', text: 'Maaf', isCorrect: false },
+      ],
     },
     {
       id: 3,
       question: 'Translate "How are you?" to Indonesian',
-      type: 'voice',
+      type: 'multiple-choice',
+      options: [
+        { id: 'a', text: 'Apa kabar?', isCorrect: true },
+        { id: 'b', text: 'Siapa nama kamu?', isCorrect: false },
+        { id: 'c', text: 'Di mana kamu tinggal?', isCorrect: false },
+        { id: 'd', text: 'Berapa umur kamu?', isCorrect: false },
+      ],
     },
   ];
 
@@ -44,9 +61,11 @@ const Exercise: React.FC = () => {
     }
   };
 
-  const handleMicrophoneClick = () => {
-    setIsListening(!isListening);
-    console.log('Microphone clicked');
+  const handleSelectOption = (optionId: string) => {
+    setSelectedAnswers((prev) => ({
+      ...prev,
+      [currentQuestion]: optionId,
+    }));
   };
 
   return (
@@ -63,14 +82,15 @@ const Exercise: React.FC = () => {
           <div className="p-8">
             <div className="bg-white rounded-lg shadow-md p-8">
               <ProgressBar progress={progressPercentage} className="mb-8" />
-              <QuestionCard
-                questionNumber={currentQuestion}
-                questionText={currentQuestionData?.question || ''}
-              />
-              <MicrophoneButton
-                isListening={isListening}
-                onClick={handleMicrophoneClick}
-              />
+              {currentQuestionData && (
+                <MultipleChoiceQuestion
+                  questionNumber={currentQuestion}
+                  questionText={currentQuestionData.question}
+                  options={currentQuestionData.options}
+                  selectedOptionId={selectedAnswers[currentQuestion] || null}
+                  onSelectOption={handleSelectOption}
+                />
+              )}
               <NavigationButtons
                 currentQuestion={currentQuestion}
                 totalQuestions={totalQuestions}

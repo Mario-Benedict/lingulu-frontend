@@ -1,4 +1,4 @@
-import { BookOpenText, NotebookPen } from 'lucide-react';
+import { BookOpenText, FileText, ClipboardList, Mic } from 'lucide-react';
 import Sidebar from '@components/common/Sidebar';
 import SectionHeader from '@components/lessons/section/SectionHeader';
 import SectionCard from '@components/lessons/section/SectionCard';
@@ -7,19 +7,36 @@ const Section: React.FC = () => {
   const sections: Array<{
     id: number;
     title: string;
+    description?: string;
     icon: typeof BookOpenText;
-    type: 'material' | 'exercise';
+    type: 'material' | 'exercise' | 'pronunciation';
   }> = [
     {
       id: 1,
       title: 'Judul materi',
+      description: 'Pelajari materi dasar untuk memahami konsep utama',
       icon: BookOpenText,
       type: 'material',
     },
     {
       id: 2,
-      title: 'Judul Soal',
-      icon: NotebookPen,
+      title: 'Materi Tambahan',
+      description: 'Materi pelengkap untuk memperdalam pemahaman',
+      icon: FileText,
+      type: 'material',
+    },
+    {
+      id: 3,
+      title: 'Latihan Pronunciation',
+      description: 'Latihan berbicara dengan rekaman suara',
+      icon: Mic,
+      type: 'pronunciation',
+    },
+    {
+      id: 4,
+      title: 'Latihan Pilihan Ganda',
+      description: 'Uji pemahaman dengan soal pilihan ganda',
+      icon: ClipboardList,
       type: 'exercise',
     },
   ];
@@ -37,6 +54,7 @@ const Section: React.FC = () => {
                   key={section.id}
                   id={section.id}
                   title={section.title}
+                  description={section.description}
                   icon={section.icon}
                   type={section.type}
                 />

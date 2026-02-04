@@ -11,7 +11,7 @@ const LessonsList: React.FC<LessonsListProps> = ({ lessons }) => {
 
   return (
     <div className="relative w-full h-full flex items-center justify-center font-poppins">
-      <div className="flex flex-col gap-[5.5rem] items-end pl-10 pt-2">
+      <div className="flex flex-col gap-[5.5rem] items-end pl-10">
         {lessons.map((lesson) => (
           <div key={lesson.id} className="flex flex-col items-end">
             <LessonCircleButton

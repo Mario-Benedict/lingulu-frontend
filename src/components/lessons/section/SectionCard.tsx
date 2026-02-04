@@ -5,11 +5,12 @@ import type { LucideIcon } from 'lucide-react';
 interface SectionCardProps {
   id: number;
   title: string;
+  description?: string;
   icon: LucideIcon;
-  type: 'material' | 'exercise';
+  type: 'material' | 'exercise' | 'pronunciation';
 }
 
-const SectionCard: React.FC<SectionCardProps> = ({ id, title, icon, type }) => {
+const SectionCard: React.FC<SectionCardProps> = ({ id, title, description, icon, type }) => {
   const navigate = useNavigate();
 
   const handleStart = () => {
@@ -17,6 +18,8 @@ const SectionCard: React.FC<SectionCardProps> = ({ id, title, icon, type }) => {
       navigate(`/lessons/materials/${id}`);
     } else if (type === 'exercise') {
       navigate(`/lessons/exercises/${id}`);
+    } else if (type === 'pronunciation') {
+      navigate(`/lessons/pronunciation/${id}`);
     }
   };
 
@@ -31,6 +34,9 @@ const SectionCard: React.FC<SectionCardProps> = ({ id, title, icon, type }) => {
         </div>
         <div>
           <h3 className="text-2xl font-semibold text-lessongray-800">{title}</h3>
+          {description && (
+            <p className="text-sm text-lessongray-500 mt-1">{description}</p>
+          )}
         </div>
       </div>
       <button
