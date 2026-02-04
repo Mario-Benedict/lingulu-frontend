@@ -31,6 +31,7 @@ export interface LessonLevelCardProps {
   description: string;
   bgColor: string;
   isLocked: boolean;
+  isComingSoon?: boolean;
   buttonText: string;
   buttonColor: string;
   lockMessage?: string;

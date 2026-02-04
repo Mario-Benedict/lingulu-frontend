@@ -26,6 +26,11 @@ const router = createBrowserRouter([
   { path: '/login', element: <Login /> },
   { path: '/register', element: <Register /> },
   { path: '/oauth2/success', element: <OAuthSuccess /> },
+  { path: '/lessons', element: <Lessons /> },
+      { path: '/lessons/map', element: <LearningMap /> },
+      { path: '/lessons/:LevelId', element: <Section /> },
+      { path: '/lessons/materials/:materialId', element: <Materials /> },
+      { path: '/lessons/exercises/:exerciseId', element: <Exercises /> },
   {
     element: (
       <ProtectedRoute />
