@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import mascotLogin from '@assets/auth/mascot-login.svg';
 import LoginForm from '@components/auth/login/LoginForm';
 import ForgotPasswordLink from '@components/auth/login/ForgotPasswordLink';
@@ -10,22 +10,47 @@ import { loginUser } from '@api/services/user';
 
 const Login: React.FC = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const { setIsAuthenticated } = useAuth();
-  const [loading, setLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [oauthError, setOauthError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (location.state?.error) {
+      setOauthError(location.state.error);
+    }
+  }, [location.state]);
 
   const handleLoginSubmit = async (email: string, password: string, isRememberMe: boolean) => {
-    setLoading(true);
+    setIsLoading(true);
     try {
       const response = await loginUser({ email, password, isRememberMe });
 
       if (!response.success) {
-        throw new Error('Login gagal');
+        throw new Error(response.message || 'Login gagal');
       }
 
       setIsAuthenticated(true);
       navigate('/dashboard', { replace: true });
+    } catch (error: any) {
+      // Backend return validation errors di data field
+      let errorMessage = error.response?.data?.message || error.message || 'Login gagal';
+      
+      // Jika ada validation errors di data field, extract first error
+      if (error.response?.data?.data && typeof error.response.data.data === 'object') {
+        const errors = error.response.data.data;
+        // Ambil error pertama yang ada
+        for (const [field, messages] of Object.entries(errors)) {
+          if (Array.isArray(messages) && messages.length > 0) {
+            errorMessage = messages[0] as string;
+            break;
+          }
+        }
+      }
+      
+      throw new Error(errorMessage);
     } finally {
-      setLoading(false);
+      setIsLoading(false);
     }
   };
 
@@ -45,7 +70,13 @@ const Login: React.FC = () => {
         <div className="bg-background w-full max-w-[420px] px-10 py-7 flex flex-col justify-start my-auto max-md:px-6">
           <h1 className="text-center text-primary text-title font-bold font-rubik m-0 mb-5">WELCOME BACK</h1>
 
-          <LoginForm onSubmit={handleLoginSubmit} loading={loading} />
+          {oauthError && (
+            <div className="bg-red-50 text-red-600 px-3 py-2 rounded-md mb-4 border-l-4 border-red-500 text-xs">
+              {oauthError}
+            </div>
+          )}
+
+          <LoginForm onSubmit={handleLoginSubmit} loading={isLoading} />
           
           <div className="text-center mb-3">
             <ForgotPasswordLink />
