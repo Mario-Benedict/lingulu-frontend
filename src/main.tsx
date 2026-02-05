@@ -28,7 +28,7 @@ const router = createBrowserRouter([
   { path: '/', element: <Landing /> },
   { path: '/login', element: <Login /> },
   { path: '/register', element: <Register /> },
-  { path: '/otp-verify', element: <Otp /> },
+  { path: '/otp', element: <Otp /> },
   { path: '/reset-password', element: <ResetPass /> },
   { path: '/oauth2/success', element: <OAuthSuccess /> },
   {

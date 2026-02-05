@@ -8,7 +8,6 @@ export const setupInterceptors = () => {
   api.interceptors.response.use(
     (response) => response.data,
     (error) => {
-      // Jangan redirect ke login jika sudah di halaman login/register
       const currentPath = window.location.pathname;
       const isAuthPage = currentPath.startsWith('/login') || currentPath.startsWith('/register') || currentPath.startsWith('/otp');
       

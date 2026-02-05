@@ -55,10 +55,8 @@ const Login: React.FC = () => {
             Or Login with
           </div>
 
-          {/* Google Login Button */}
           <GoogleLoginButton onClick={handleGoogleLogin} />
 
-          {/* Sign Up Link */}
           <SignUpLink />
         </div>
       </div>

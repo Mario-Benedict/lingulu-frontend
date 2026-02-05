@@ -28,18 +28,18 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onSubmit, loading = false }
     return emailRegex.test(email);
   };
 
-  const validatePassword = (pwd: string): { valid: boolean; message?: string } => {
+  const validatePassword = (pwd: string, type: string): { valid: boolean; message?: string } => {
     if (pwd.length < 8) {
-      return { valid: false, message: 'Password minimal 8 karakter' };
+      return { valid: false, message: `${type} minimal 8 karakter` };
     }
     if (!/[A-Z]/.test(pwd)) {
-      return { valid: false, message: 'Password harus mengandung huruf besar' };
+      return { valid: false, message: `${type} harus mengandung huruf besar` };
     }
     if (!/[a-z]/.test(pwd)) {
-      return { valid: false, message: 'Password harus mengandung huruf kecil' };
+      return { valid: false, message: `${type} harus mengandung huruf kecil` };
     }
     if (!/[0-9]/.test(pwd)) {
-      return { valid: false, message: 'Password harus mengandung angka' };
+      return { valid: false, message: `${type} harus mengandung angka` };
     }
     return { valid: true };
   };
@@ -59,9 +59,14 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onSubmit, loading = false }
       newErrors.email = 'Format email tidak valid';
     }
 
-    const passwordValidation = validatePassword(password);
+    const passwordValidation = validatePassword(password, "Password");
     if (!passwordValidation.valid) {
       newErrors.password = passwordValidation.message || 'Password tidak valid';
+    }
+
+    const confirmPasswordValidation = validatePassword(confirmPassword, "Confirm Password");
+    if (!confirmPasswordValidation.valid) {
+      newErrors.confirmPassword = confirmPasswordValidation.message || 'Confirm Password tidak valid';
     }
 
     if (password !== confirmPassword) {
@@ -83,8 +88,8 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onSubmit, loading = false }
 
     try {
       await onSubmit(username, email, password, confirmPassword);
-    } catch (err) {
-      setErrors({ submit: err instanceof Error ? err.message : 'Registrasi gagal' });
+    } catch {
+      setErrors({ submit: 'Registrasi gagal' });
     }
   };
 
@@ -140,7 +145,6 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onSubmit, loading = false }
               setUsername(e.target.value);
               if (errors.username) clearError('username');
             }}
-            required
             className="flex-1 border-none bg-transparent py-2.5 px-0 text-sm text-secondary outline-none placeholder:text-neutral disabled:bg-disabled disabled:cursor-not-allowed"
           />
         </div>
@@ -154,14 +158,12 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onSubmit, loading = false }
           </label>
           <input
             id="email"
-            type="email"
             placeholder="Email"
             value={email}
             onChange={(e) => {
               setEmail(e.target.value);
               if (errors.email) clearError('email');
             }}
-            required
             className="flex-1 border-none bg-transparent py-2.5 px-0 text-sm text-secondary outline-none placeholder:text-neutral disabled:bg-disabled disabled:cursor-not-allowed"
           />
         </div>
@@ -183,7 +185,6 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onSubmit, loading = false }
               setPassword(e.target.value);
               if (errors.password) clearError('password');
             }}
-            required
             className="flex-1 border-none bg-transparent py-2.5 px-0 text-sm text-secondary outline-none placeholder:text-neutral disabled:bg-disabled disabled:cursor-not-allowed"
           />
           <button
@@ -212,7 +213,6 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onSubmit, loading = false }
               setConfirmPassword(e.target.value);
               if (errors.confirmPassword) clearError('confirmPassword');
             }}
-            required
             className="flex-1 border-none bg-transparent py-2.5 px-0 text-sm text-secondary outline-none placeholder:text-neutral disabled:bg-disabled disabled:cursor-not-allowed"
           />
           <button
