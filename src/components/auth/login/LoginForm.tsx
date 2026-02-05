@@ -48,8 +48,12 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSubmit, loading = false }) => {
 
     try {
       await onSubmit(email, password, isRememberMe);
-    } catch {
-      setErrors({ submit: 'Login gagal' });
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        setErrors({ submit: error.message });
+      } else {
+        setErrors({ submit: 'Login gagal' });
+      }
     }
   };
 

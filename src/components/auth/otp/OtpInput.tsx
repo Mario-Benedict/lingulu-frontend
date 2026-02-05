@@ -42,7 +42,9 @@ const OtpInput: React.FC<OtpInputProps> = ({
 
     // Move to next input if digit was entered
     if (digit && index < length - 1) {
-      inputRefs.current[index + 1]?.focus();
+      setTimeout(() => {
+        inputRefs.current[index + 1]?.focus();
+      }, 0);
     }
   };
 
@@ -93,7 +95,11 @@ const OtpInput: React.FC<OtpInputProps> = ({
       {Array.from({ length }, (_, index) => (
         <input
           key={index}
-          ref={(el) => { inputRefs.current[index] = el; }}
+          ref={(el) => {
+            if (el && inputRefs.current) {
+              inputRefs.current[index] = el;
+            }
+          }}
           type="text"
           inputMode="numeric"
           maxLength={1}

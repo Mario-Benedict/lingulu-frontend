@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import mascotLogin from '@assets/auth/logo-vertical.svg';
 import OtpForm from '@components/auth/otp/OtpForm';
@@ -11,14 +11,42 @@ const OTP_LENGTH = 6;
 const Otp: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const otpRequestedRef = useRef(false); // Track if OTP was already requested
   const [otp, setOtp] = useState('');
-  const [loading, setLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [resendLoading, setResendLoading] = useState(false);
+  const [isResending, setIsResending] = useState(false);
   const [resendSuccess, setResendSuccess] = useState(false);
 
   // Get email from navigation state (passed from register page)
   const email = location.state?.email || '';
+
+  // Auto-request OTP saat page mount (only once)
+  useEffect(() => {
+    if (!email) {
+      // Jika tidak ada email, redirect ke register
+      navigate('/register', { replace: true });
+      return;
+    }
+
+    // Only request OTP once per component mount
+    if (otpRequestedRef.current) {
+      return;
+    }
+
+    otpRequestedRef.current = true;
+
+    const autoRequestOtp = async () => {
+      try {
+        await requestOtp(email);
+        console.log('✅ OTP requested for:', email);
+      } catch (err: any) {
+        console.error('Failed to request OTP:', err);
+        setError(err?.response?.data?.message || err?.message || 'Failed to send OTP');
+      }
+    };
+    autoRequestOtp();
+  }, [email, navigate]);
 
   const handleVerify = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -28,7 +56,7 @@ const Otp: React.FC = () => {
       return;
     }
 
-    setLoading(true);
+    setIsLoading(true);
     setError(null);
 
     try {
@@ -43,12 +71,12 @@ const Otp: React.FC = () => {
       console.error(err);
       setError(err?.response?.data?.message || err?.message || 'Verification failed');
     } finally {
-      setLoading(false);
+      setIsLoading(false);
     }
   };
 
   const handleResend = async () => {
-    setResendLoading(true);
+    setIsResending(true);
     setResendSuccess(false);
     setError(null);
 
@@ -65,7 +93,7 @@ const Otp: React.FC = () => {
       console.error(err);
       setError(err?.response?.data?.message || err?.message || 'Failed to resend code');
     } finally {
-      setResendLoading(false);
+      setIsResending(false);
     }
   };
 
@@ -89,30 +117,14 @@ const Otp: React.FC = () => {
         
         {/* Subtitle */}
         <p className="text-center text-gray-600 text-sm mb-8 font-poppins">
-          Verify Your Account  We've sent a 4-digit code to your email
+          We've sent a 6-digit code to your email
         </p>
 
-        {/* Error Message */}
-        {error && (
-          <div className="bg-red-50 text-red-600 px-4 py-3 rounded-lg mb-6 border-l-4 border-red-500 text-sm flex items-center gap-2">
-            <span>⚠️</span>
-            {error}
-          </div>
-        )}
-
-        {/* Success Message */}
-        {resendSuccess && (
-          <div className="bg-green-50 text-green-600 px-4 py-3 rounded-lg mb-6 border-l-4 border-green-500 text-sm flex items-center gap-2">
-            <span>✓</span>
-            Code resent successfully!
-          </div>
-        )}
-
         {/* OTP Input Form */}
-        <OtpForm otp={otp} onChange={setOtp} onSubmit={handleVerify} loading={loading} error={error} />
+        <OtpForm otp={otp} onChange={setOtp} onSubmit={handleVerify} loading={isLoading} error={error} />
 
         {/* Resend Link */}
-        <ResendOtpLink onResend={handleResend} loading={resendLoading} success={resendSuccess} />
+        <ResendOtpLink onResend={handleResend} loading={isResending} success={resendSuccess} />
       </div>
     </div>
   );
