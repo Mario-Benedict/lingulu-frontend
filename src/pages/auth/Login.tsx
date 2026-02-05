@@ -27,28 +27,11 @@ const Login: React.FC = () => {
       const response = await loginUser({ email, password, isRememberMe });
 
       if (!response.success) {
-        throw new Error(response.message || 'Login gagal');
+        throw new Error('Login gagal');
       }
 
       setIsAuthenticated(true);
       navigate('/dashboard', { replace: true });
-    } catch (error: any) {
-      // Backend return validation errors di data field
-      let errorMessage = error.response?.data?.message || error.message || 'Login gagal';
-      
-      // Jika ada validation errors di data field, extract first error
-      if (error.response?.data?.data && typeof error.response.data.data === 'object') {
-        const errors = error.response.data.data;
-        // Ambil error pertama yang ada
-        for (const [field, messages] of Object.entries(errors)) {
-          if (Array.isArray(messages) && messages.length > 0) {
-            errorMessage = messages[0] as string;
-            break;
-          }
-        }
-      }
-      
-      throw new Error(errorMessage);
     } finally {
       setIsLoading(false);
     }

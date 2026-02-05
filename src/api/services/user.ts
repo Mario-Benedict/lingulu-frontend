@@ -5,7 +5,6 @@ export const getAuthenticatedUser = async (): Promise<AuthStatusResponse> => {
     return await api.get("/api/account/authenticated");
 }
 
-// Login Service
 export const loginUser = async (data: {
     email: string;
     password: string;
@@ -14,7 +13,6 @@ export const loginUser = async (data: {
     return await api.post("/api/account/login", data);
 }
 
-// OTP Services
 export const requestOtp = async (email: string): Promise<{ success: boolean; message: string }> => {
     return await api.post("/api/otp/request", { email });
 }
@@ -26,7 +24,6 @@ export const verifyOtp = async (email: string, otp: string): Promise<{ success: 
     });
 }
 
-// Register Service
 export const registerUser = async (data: {
     username: string;
     email: string;

@@ -3,7 +3,6 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import mascotLogin from '@assets/auth/logo-vertical.svg';
 import OtpForm from '@components/auth/otp/OtpForm';
 import ResendOtpLink from '@components/auth/otp/ResendOtpLink';
-import OtpInput from '@components/auth/OtpInput';
 import { verifyOtp, requestOtp } from '@api/services/user';
 
 const OTP_LENGTH = 6;
@@ -11,25 +10,21 @@ const OTP_LENGTH = 6;
 const Otp: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const otpRequestedRef = useRef(false); // Track if OTP was already requested
+  const otpRequestedRef = useRef(false);
   const [otp, setOtp] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isResending, setIsResending] = useState(false);
   const [resendSuccess, setResendSuccess] = useState(false);
 
-  // Get email from navigation state (passed from register page)
   const email = location.state?.email || '';
 
-  // Auto-request OTP saat page mount (only once)
   useEffect(() => {
     if (!email) {
-      // Jika tidak ada email, redirect ke register
       navigate('/register', { replace: true });
       return;
     }
 
-    // Only request OTP once per component mount
     if (otpRequestedRef.current) {
       return;
     }
@@ -40,11 +35,11 @@ const Otp: React.FC = () => {
       try {
         await requestOtp(email);
         console.log('✅ OTP requested for:', email);
-      } catch (err: any) {
-        console.error('Failed to request OTP:', err);
-        setError(err?.response?.data?.message || err?.message || 'Failed to send OTP');
+      } catch {
+        setError('Failed to send OTP');
       }
     };
+
     autoRequestOtp();
   }, [email, navigate]);
 
@@ -62,14 +57,12 @@ const Otp: React.FC = () => {
     try {
       await verifyOtp(email, otp);
 
-      // Navigate to login on success
       navigate('/login', { 
         state: { message: 'Account verified successfully! Please login.' } 
       });
 
-    } catch (err: any) {
-      console.error(err);
-      setError(err?.response?.data?.message || err?.message || 'Verification failed');
+    } catch {
+      setError('Verification failed');
     } finally {
       setIsLoading(false);
     }
@@ -84,14 +77,12 @@ const Otp: React.FC = () => {
       await requestOtp(email);
 
       setResendSuccess(true);
-      setOtp(''); // Clear current OTP
+      setOtp('');
       
-      // Clear success message after 3 seconds
       setTimeout(() => setResendSuccess(false), 3000);
 
-    } catch (err: any) {
-      console.error(err);
-      setError(err?.response?.data?.message || err?.message || 'Failed to resend code');
+    } catch {
+      setError('Failed to resend code');
     } finally {
       setIsResending(false);
     }

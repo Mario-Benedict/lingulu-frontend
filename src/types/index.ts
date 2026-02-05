@@ -1,4 +1,3 @@
-// API response type for leaderboard
 export interface ApiResponse<T> {
   success: boolean,
   message: string,
