@@ -7,9 +7,10 @@ import closedEyeIcon from '@assets/auth/closedeye-icon.png';
 interface LoginFormProps {
   onSubmit: (email: string, password: string, isRememberMe: boolean) => Promise<void>;
   loading?: boolean;
+  hasGlobalError?: boolean;
 }
 
-const LoginForm: React.FC<LoginFormProps> = ({ onSubmit, loading = false }) => {
+const LoginForm: React.FC<LoginFormProps> = ({ onSubmit, loading = false, hasGlobalError = false }) => {
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [showPassword, setShowPassword] = useState<boolean>(false);
@@ -49,11 +50,24 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSubmit, loading = false }) => {
     try {
       await onSubmit(email, password, isRememberMe);
     } catch (error: unknown) {
-      if (error instanceof Error) {
-        setErrors({ submit: error.message });
-      } else {
-        setErrors({ submit: 'Login gagal' });
+      // Jangan tampilkan error form jika sudah ada error global di parent
+      if (hasGlobalError) {
+        return;
       }
+      
+      let errorMessage = 'Login failed';
+      
+      // Handle axios error response
+      if (error && typeof error === 'object' && 'response' in error) {
+        const axiosError = error as { response?: { data?: { message?: string } } };
+        if (axiosError.response?.data?.message) {
+          errorMessage = axiosError.response.data.message;
+        }
+      } else if (error instanceof Error) {
+        errorMessage = error.message;
+      }
+      
+      setErrors({ submit: errorMessage });
     }
   };
 
