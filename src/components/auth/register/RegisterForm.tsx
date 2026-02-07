@@ -30,16 +30,16 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onSubmit, loading = false }
 
   const validatePassword = (pwd: string, type: string): { valid: boolean; message?: string } => {
     if (pwd.length < 8) {
-      return { valid: false, message: `${type} minimal 8 karakter` };
+      return { valid: false, message: `${type} must be at least 8 characters` };
     }
     if (!/[A-Z]/.test(pwd)) {
-      return { valid: false, message: `${type} harus mengandung huruf besar` };
+      return { valid: false, message: `${type} must contain an uppercase letter` };
     }
     if (!/[a-z]/.test(pwd)) {
-      return { valid: false, message: `${type} harus mengandung huruf kecil` };
+      return { valid: false, message: `${type} must contain a lowercase letter` };
     }
     if (!/[0-9]/.test(pwd)) {
-      return { valid: false, message: `${type} harus mengandung angka` };
+      return { valid: false, message: `${type} must contain a number` };
     }
     return { valid: true };
   };
@@ -48,33 +48,33 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onSubmit, loading = false }
     const newErrors: Record<string, string> = {};
 
     if (!username.trim()) {
-      newErrors.username = 'Username tidak boleh kosong';
+      newErrors.username = 'Username is required';
     } else if (username.length < 3) {
-      newErrors.username = 'Username minimal 3 karakter';
+      newErrors.username = 'Username must be at least 3 characters';
     }
 
     if (!email.trim()) {
-      newErrors.email = 'Email tidak boleh kosong';
+      newErrors.email = 'Email is required';
     } else if (!validateEmail(email)) {
-      newErrors.email = 'Format email tidak valid';
+      newErrors.email = 'Invalid email format';
     }
 
     const passwordValidation = validatePassword(password, "Password");
     if (!passwordValidation.valid) {
-      newErrors.password = passwordValidation.message || 'Password tidak valid';
+      newErrors.password = passwordValidation.message || 'Invalid password';
     }
 
     const confirmPasswordValidation = validatePassword(confirmPassword, "Confirm Password");
     if (!confirmPasswordValidation.valid) {
-      newErrors.confirmPassword = confirmPasswordValidation.message || 'Confirm Password tidak valid';
+      newErrors.confirmPassword = confirmPasswordValidation.message || 'Invalid confirm password';
     }
 
     if (password !== confirmPassword) {
-      newErrors.confirmPassword = 'Password tidak cocok';
+      newErrors.confirmPassword = 'Passwords do not match';
     }
 
     if (!agreeToTerms) {
-      newErrors.terms = 'Anda harus setuju dengan terms & privacy';
+      newErrors.terms = 'You must agree to the terms & privacy';
     }
 
     setErrors(newErrors);
@@ -88,8 +88,36 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onSubmit, loading = false }
 
     try {
       await onSubmit(username, email, password, confirmPassword);
-    } catch {
-      setErrors({ submit: 'Registrasi gagal' });
+    } catch (error: unknown) {
+      let errorMessage = 'Registration failed';
+      let newErrors: Record<string, string> = {};
+      
+      if (error && typeof error === 'object' && 'response' in error) {
+        const axiosError = error as { response?: { data?: { message?: string; data?: Record<string, string[]> } } };
+        
+        // Handle field-level errors from backend
+        if (axiosError.response?.data?.data) {
+          const backendErrors = axiosError.response.data.data;
+          Object.keys(backendErrors).forEach(field => {
+            const messages = backendErrors[field];
+            if (Array.isArray(messages) && messages.length > 0) {
+              newErrors[field] = messages[0];
+            }
+          });
+        }
+        
+        // If no field errors, show general message
+        if (Object.keys(newErrors).length === 0) {
+          errorMessage = axiosError.response?.data?.message || 'Registration failed';
+          newErrors.submit = errorMessage;
+        }
+      } else if (error instanceof Error) {
+        newErrors.submit = error.message;
+      } else {
+        newErrors.submit = 'Registration failed';
+      }
+      
+      setErrors(newErrors);
     }
   };
 

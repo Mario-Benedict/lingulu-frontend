@@ -17,7 +17,7 @@ const Register: React.FC = () => {
       const response = await registerUser({ username, email, password, confirmPassword });
 
       if (!response.success) {
-        throw new Error('Registrasi gagal');
+        throw new Error('Registration failed');
       }
 
       navigate('/otp-verify', { state: { email } });
