@@ -8,6 +8,7 @@ import LessonLevelCard from '@/components/lessons/lessons/LessonLevelCard';
 import LessonsHeader from '@components/lessons/lessons/LessonsHeader';
 import LoadingOverlay from '@components/lessons/lessons/LoadingOverlay';
 import ErrorOverlay from '@components/lessons/lessons/ErrorOverlay';
+import { api } from '@api/axios/instance';
 
 const Lessons: React.FC = () => {
   const navigate = useNavigate();
@@ -16,43 +17,37 @@ const Lessons: React.FC = () => {
     level2: 0,
     level3: 0,
   });
-  // const [loading, setLoading] = useState<boolean>(true);
-  // const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
 
-  // useEffect(() => {
-  //   const fetchProgress = async () => {
-  //     setLoading(true);
-  //     setError(null);
-  //     try {
-  //       const API_BASE = import.meta.env.VITE_API_URL ?? 'http://localhost:8080';
-  //       const token = localStorage.getItem('token');
-  //       const headers: Record<string, string> = token ? { 'Authorization': `Bearer ${token}` } : {};
-  //       const res = await fetch(`${API_BASE}/api/learning/complete`, { headers });
-  //       const payload = await res.json();
-  //       if (!payload?.success) {
-  //         throw new Error(payload?.message ?? 'Failed to fetch progress');
-  //       }
-  //       const data = payload.data;
-  //       const courseIds = Object.keys(data ?? {});
-  //       let level1 = 0, level2 = 0, level3 = 0;
-  //       if (courseIds.length > 0) {
-  //         level1 = data[courseIds[0]]?.progressPercentage ?? 0;
-  //         level2 = data[courseIds[1]]?.progressPercentage ?? 0;
-  //         level3 = data[courseIds[2]]?.progressPercentage ?? 0;
-  //       }
-  //       setProgress({ level1, level2, level3 });
-  //     } catch (err) {
-  //       if (err instanceof Error) {
-  //         setError(err.message);
-  //       } else {
-  //         setError('Gagal fetch progress');
-  //       }
-  //     } finally {
-  //       setLoading(false);
-  //     }
-  //   };
-  //   fetchProgress();
-  // }, []);
+  useEffect(() => {
+    const fetchProgress = async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        const res = await api.get('/learning/progress/courses');
+        console.log('Progress response:', res.data);
+        const data = res.data ?? [];
+        let level1 = 0, level2 = 0, level3 = 0;
+        if (data.length > 0) {
+          level1 = data[0]?.progressPercentage ?? 0;
+          level2 = data[1]?.progressPercentage ?? 0;
+          level3 = data[2]?.progressPercentage ?? 0;
+        }
+        setProgress({ level1, level2, level3 });
+      } catch (err) {
+        console.error('Fetch progress error:', err);
+        if (err instanceof Error) {
+          setError(err.message);
+        } else {
+          setError('Gagal fetch progress');
+        }
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchProgress();
+  }, []);
 
   const levels = [
     {
@@ -106,8 +101,8 @@ const Lessons: React.FC = () => {
 
   return (
     <div className="flex h-screen bg-gray-100 w-screen">
-      {/* {loading && <LoadingOverlay message="Loading progress..." />}
-      {error && <ErrorOverlay message={error} />} */}
+      {loading && <LoadingOverlay message="Loading progress..." />}
+      {error && <ErrorOverlay message={error} />}
       <Sidebar activeMenu="lessons" />
       <div className="flex-1 flex flex-col min-w-0">
         <LessonsHeader title="Start Your Journey" />
