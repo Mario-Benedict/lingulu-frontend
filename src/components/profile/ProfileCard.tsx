@@ -1,5 +1,5 @@
-import React from 'react';
-import { PencilIcon, Camera, KeyRound } from 'lucide-react';
+import React, { useState } from 'react';
+import { Camera, KeyRound } from 'lucide-react';
 import ProfileAvatar from './ProfileAvatar';
 
 interface ProfileCardProps {
@@ -19,17 +19,84 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
   onChangePasswordClick,
   onLogout,
 }) => {
+  const [imageLoading, setImageLoading] = useState(true);
+  const [imageError, setImageError] = useState<string | null>(null);
+  const loadTimeoutRef = React.useRef<NodeJS.Timeout>();
+
+  React.useEffect(() => {
+    console.log('📸 ProfileCard mounted with avatarUrl:', avatarUrl);
+    
+    // 3 second timeout untuk CloudFront
+    loadTimeoutRef.current = setTimeout(() => {
+      if (imageLoading) {
+        console.error('⏱️ Avatar timeout after 3s - CloudFront unreachable');
+        console.error('URL:', avatarUrl);
+        setImageError('Timeout');
+        setImageLoading(false);
+      }
+    }, 3000);
+
+    return () => {
+      if (loadTimeoutRef.current) clearTimeout(loadTimeoutRef.current);
+    };
+  }, [avatarUrl, imageLoading]);
+
+  const handleImageError = (error: React.SyntheticEvent<HTMLImageElement, Event>) => {
+    const img = error.target as HTMLImageElement;
+    console.error('❌ Avatar image failed to load');
+    console.error('URL:', avatarUrl);
+    console.error('Error event:', error.type);
+    
+    if (loadTimeoutRef.current) clearTimeout(loadTimeoutRef.current);
+    setImageError('Failed');
+    setImageLoading(false);
+  };
+
+  const handleImageLoad = () => {
+    console.log('✅ Avatar loaded successfully from:', avatarUrl);
+    if (loadTimeoutRef.current) clearTimeout(loadTimeoutRef.current);
+    setImageLoading(false);
+    setImageError(null);
+  };
+
+  // Generate initials dari username
+  const getInitials = (name: string): string => {
+    return name
+      .split(' ')
+      .map(part => part[0])
+      .join('')
+      .toUpperCase()
+      .slice(0, 2);
+  };
+
   return (
     <div className="bg-white rounded-xl shadow-md p-8">
       <div className="flex items-start justify-between gap-8">
         {/* Left Side - Avatar and Profile Info */}
         <div className="flex items-center gap-6">
           <div className="relative flex-shrink-0">
-            <img
-              src={avatarUrl}
-              alt={username}
-              className="w-24 h-24 rounded-full border-4 border-primary"
-            />
+            {imageError ? (
+              <div className="w-24 h-24 rounded-full border-4 border-primary bg-gradient-to-br from-primary to-primary/70 flex items-center justify-center">
+                <span className="text-white font-bold text-2xl font-rubik">
+                  {getInitials(username)}
+                </span>
+              </div>
+            ) : imageLoading ? (
+              <div className="w-24 h-24 rounded-full border-4 border-primary bg-lessongray-100 flex items-center justify-center">
+                <div className="text-center">
+                  <div className="animate-spin inline-block w-6 h-6 border-2 border-primary border-t-transparent rounded-full"></div>
+                </div>
+              </div>
+            ) : (
+              <img
+                src={avatarUrl}
+                alt={username}
+                className="w-24 h-24 rounded-full border-4 border-primary object-cover"
+                onError={handleImageError}
+                onLoad={handleImageLoad}
+                referrerPolicy="no-referrer"
+              />
+            )}
             {onChangeAvatar && (
               <button
                 onClick={onChangeAvatar}
@@ -40,15 +107,14 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
             )}
           </div>
           <div className="flex flex-col">
-            <div className="flex items-center gap-2">
-              <h2 className="text-4xl font-bold text-lessongray-800 font-rubik">{username}</h2>
-              {onChangeAvatar && (
-                <button onClick={onChangeAvatar} className="w-10 h-10 flex items-center justify-center bg-primary rounded-full text-lessongray-100 hover:bg-primary/70 transition">
-                  <PencilIcon size={24} />
-                </button>
-              )}
-            </div>
+            <h2 className="text-4xl font-bold text-lessongray-800 font-rubik">{username}</h2>
             <p className="text-lessongray-600 text-lg font-poppins mt-2">{email}</p>
+            {imageError && (
+              <div className="mt-2">
+                <p className="text-sm text-lessongray-600">Avatar: {imageError}</p>
+                <p className="text-xs text-lessongray-500">Showing initials</p>
+              </div>
+            )}
           </div>
         </div>
 
