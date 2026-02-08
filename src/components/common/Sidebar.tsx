@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import sidebarLogo from '@assets/dashboard/sidebar-logo.svg';
 import { Home, BookOpen, ChartColumn, BotMessageSquare, User } from 'lucide-react';
 
@@ -10,14 +11,15 @@ interface SidebarProps {
 }
 
 const menuItems = [
-  { id: 'dashboard', label: 'Dashboard', icon: Home, to: '/dashboard' },
-  { id: 'lessons', label: 'Lessons', icon: BookOpen, to: '/lessons' },
-  { id: 'leaderboard', label: 'Leaderboard', icon: ChartColumn, to: '/leaderboard' },
-  { id: 'conversation', label: 'AI Conversation', icon: BotMessageSquare, to: '/conversation' },
-  { id: 'profile', label: 'Profile', icon: User, to: '/profile' },
+  { id: 'dashboard', labelKey: 'sidebar.dashboard', icon: Home, to: '/dashboard' },
+  { id: 'lessons', labelKey: 'sidebar.lessons', icon: BookOpen, to: '/lessons' },
+  { id: 'leaderboard', labelKey: 'sidebar.leaderboard', icon: ChartColumn, to: '/leaderboard' },
+  { id: 'conversation', labelKey: 'sidebar.conversation', icon: BotMessageSquare, to: '/conversation' },
+  { id: 'profile', labelKey: 'sidebar.profile', icon: User, to: '/profile' },
 ] as const;
 
 const Sidebar: React.FC<SidebarProps> = ({ activeMenu: initialActiveMenu = '', onClose, className }) => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [activeMenu, setActiveMenu] = useState<string>(initialActiveMenu);
 
@@ -31,9 +33,8 @@ const Sidebar: React.FC<SidebarProps> = ({ activeMenu: initialActiveMenu = '', o
             const Icon = item.icon;
             const isActive = activeMenu === item.id;
             return (
-              <div className="w-full">
+              <div className="w-full" key={item.id}>
                 <button
-                  key={item.id}
                   onClick={() => {
                     setActiveMenu(item.id);
                     navigate(item.to);
@@ -46,7 +47,7 @@ const Sidebar: React.FC<SidebarProps> = ({ activeMenu: initialActiveMenu = '', o
                   }`}
                 >
                   <Icon size={20} />
-                  <span className="font-large font-rubik">{item.label}</span>
+                  <span className="font-large font-rubik">{t(item.labelKey)}</span>
                 </button>
               </div>
             );

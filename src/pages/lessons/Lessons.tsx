@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import Beginner from '@assets/lessons/beginner.svg';
 import Intermediate from '@assets/lessons/intermediate.svg';
 import Advanced from '@assets/lessons/advance.svg';
@@ -11,6 +12,7 @@ import ErrorOverlay from '@components/lessons/lessons/ErrorOverlay';
 import { api } from '@api/axios/instance';
 
 const Lessons: React.FC = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [progress, setProgress] = useState<{ level1: number; level2: number; level3: number }>({
     level1: 0,
@@ -105,7 +107,7 @@ const Lessons: React.FC = () => {
       {error && <ErrorOverlay message={error} />}
       <Sidebar activeMenu="lessons" />
       <div className="flex-1 flex flex-col min-w-0">
-        <LessonsHeader title="Start Your Journey" />
+        <LessonsHeader title={t('lessons.title')} />
         <div className="flex-1 overflow-y-auto">
           <div className="p-8">
             <div className="flex flex-col gap-6 mx-auto">

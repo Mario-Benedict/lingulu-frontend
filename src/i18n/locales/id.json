@@ -1,0 +1,113 @@
+{
+  "common": {
+    "loading": "Memuat...",
+    "error": "Kesalahan",
+    "save": "Simpan",
+    "cancel": "Batal",
+    "edit": "Ubah",
+    "delete": "Hapus",
+    "confirm": "Konfirmasi",
+    "back": "Kembali",
+    "next": "Selanjutnya",
+    "submit": "Kirim",
+    "refresh": "Refresh",
+    "noData": "Tidak ada data",
+    "complete": "Selesai"
+  },
+  "sidebar": {
+    "dashboard": "Dasbor",
+    "lessons": "Pelajaran",
+    "leaderboard": "Papan Peringkat",
+    "conversation": "Percakapan AI",
+    "profile": "Profil"
+  },
+  "dashboard": {
+    "welcomeBack": "SELAMAT DATANG, {{username}}!",
+    "continueJourney": "Lanjutkan Perjalananmu!",
+    "currentLevel": "Level Saat Ini",
+    "streak": "Streak",
+    "xp": "XP",
+    "rank": "Peringkat",
+    "globalRank": "Peringkat Global",
+    "progress": "Progres Belajar",
+    "startConversation": "Mulai Percakapan",
+    "continueLearning": "Lanjutkan",
+    "beginner": "Pemula",
+    "intermediate": "Menengah",
+    "advanced": "Lanjutan",
+    "daysStreak": "{{count}} hari beruntun",
+    "practiceWithAI": "Berlatih dengan AI",
+    "practiceDescription": "Siap berlatih? Ayo berbicara!"
+  },
+  "profile": {
+    "title": "Profil",
+    "yourStats": "Statistikmu",
+    "yourBio": "Bio Kamu",
+    "streak": "Streak",
+    "xp": "XP",
+    "rank": "Peringkat",
+    "completedLessons": "Pelajaran Selesai",
+    "changeAvatar": "Ubah Avatar",
+    "changePassword": "Ubah Kata Sandi",
+    "logout": "Keluar",
+    "noBio": "Belum ada bio",
+    "language": "Bahasa",
+    "languageSettings": "Pengaturan Bahasa"
+  },
+  "lessons": {
+    "title": "Mulai Perjalananmu",
+    "levels": "Level",
+    "beginner": "Pemula",
+    "intermediate": "Menengah",
+    "advanced": "Lanjutan",
+    "startLesson": "Mulai Pelajaran",
+    "continue": "Lanjutkan",
+    "completed": "Selesai",
+    "locked": "Terkunci",
+    "materials": "Materi",
+    "exercises": "Latihan",
+    "learningMap": "Peta Belajar",
+    "sections": "Bagian"
+  },
+  "leaderboard": {
+    "title": "Papan Peringkat",
+    "rank": "Peringkat",
+    "name": "Nama",
+    "points": "Poin",
+    "yourPosition": "Berdasarkan XP dari pelajaran yang diselesaikan",
+    "noData": "Belum ada data papan peringkat",
+    "completeToJoin": "Selesaikan pelajaran untuk masuk papan peringkat!"
+  },
+  "conversation": {
+    "title": "Percakapan AI",
+    "startNew": "Mulai Percakapan Baru",
+    "typeMessage": "Latihan berbicara",
+    "send": "Kirim"
+  },
+  "auth": {
+    "login": "Masuk",
+    "register": "Daftar",
+    "logout": "Keluar",
+    "email": "Email",
+    "password": "Kata Sandi",
+    "confirmPassword": "Konfirmasi Kata Sandi",
+    "forgotPassword": "Lupa Kata Sandi?",
+    "resetPassword": "Reset Kata Sandi",
+    "changePassword": "Ubah Kata Sandi",
+    "dontHaveAccount": "Belum punya akun?",
+    "alreadyHaveAccount": "Sudah punya akun?",
+    "signUp": "Daftar",
+    "signIn": "Masuk",
+    "orContinueWith": "Atau lanjutkan dengan",
+    "google": "Google"
+  },
+  "landing": {
+    "heroTitle": "Belajar Bahasa dengan AI",
+    "heroSubtitle": "Kuasai bahasa baru melalui pelajaran interaktif dan percakapan berbasis AI",
+    "getStarted": "Mulai Sekarang",
+    "features": "Fitur",
+    "aiTutor": "Tutor AI",
+    "challenges": "Tantangan",
+    "levels": "Level"
+  }
+}

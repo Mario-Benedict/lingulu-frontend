@@ -1,5 +1,6 @@
 import React, { type FC, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { Flame, Trophy } from 'lucide-react';
 import startConvo from '@assets/dashboard/start-convo.svg';
 import Sidebar from '@components/common/Sidebar';
@@ -14,6 +15,7 @@ interface DashboardData {
 }
 
 const Dashboard: FC = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [data, setData] = useState<DashboardData>({
     username: localStorage.getItem('username') || 'User',
@@ -139,7 +141,7 @@ const Dashboard: FC = () => {
         {/* Header mirip Lessons */}
         <div className="bg-white shadow-sm sticky top-0 z-10 border-b-primary border-b-2 pt-[2.5rem]">
           <div className="flex justify-between items-center px-8 py-4">
-            <h2 className="text-7xl font-bold text-primary font-rubik">WELCOME BACK, {data.username}!</h2>
+            <h2 className="text-7xl font-bold text-primary font-rubik">{t('dashboard.welcomeBack', { username: data.username })}</h2>
           </div>
         </div>
         {/* Main Content Area */}
@@ -150,8 +152,8 @@ const Dashboard: FC = () => {
               {/* Learning Progress Card - Dynamic color based on level */}
               <div className={`${getLevelStyle(data.currentLevel)} rounded-lg p-6 text-white shadow-lg flex flex-col justify-between`}>
                 <div>
-                  <div className="text-3xl font-semibold opacity-90 mb-2 font-rubik">Learning Progress</div>
-                  <h3 className="text-6xl font-bold mb-4 font-poppins">Level {data.currentLevel === 'Beginner' ? 1 : data.currentLevel === 'Intermediate' ? 2 : 3}: {data.currentLevel}</h3>
+                  <div className="text-3xl font-semibold opacity-90 mb-2 font-rubik">{t('dashboard.progress')}</div>
+                  <h3 className="text-6xl font-bold mb-4 font-poppins">Level {data.currentLevel === 'Beginner' ? 1 : data.currentLevel === 'Intermediate' ? 2 : 3}: {t(`dashboard.${data.currentLevel.toLowerCase()}`)}</h3>
                   <div className="w-full bg-white bg-opacity-30 rounded-full h-2">
                     <div 
                       className="h-full bg-white rounded-full transition-all duration-300" 
@@ -163,7 +165,7 @@ const Dashboard: FC = () => {
                 <button 
                   onClick={handleContinueLearning}
                   className="bg-white text-primary px-6 py-2 rounded-full font-semibold hover:bg-gray-100 transition self-end mt-6 font-rubik">
-                  Continue
+                  {t('dashboard.continueLearning')}
                 </button>
               </div>
 
@@ -173,14 +175,14 @@ const Dashboard: FC = () => {
                 <div className="flex-1 bg-dashboard-streak rounded-lg p-8 text-white shadow-lg aspect-square flex flex-col items-center justify-center gap-4 w-full max-h-[34vh]">
                   <Flame size={48}></Flame>
                   <div className="text-6xl font-bold font-rubik">{data.streak}</div>
-                  <span className="text-xl font-poppins">Burning Streak</span>
+                  <span className="text-xl font-poppins">{t('dashboard.streak')}</span>
                 </div>
 
                 {/* Card 2 - Global Ranking */}
                 <div className="flex-1 bg-dashboard-gold rounded-lg p-8 text-white shadow-lg aspect-square flex flex-col items-center justify-center gap-4 max-h-[34vh] w-full">
                   <Trophy size={48}></Trophy>
                   <div className="text-6xl font-bold font-rubik">{data.globalRank === 0 ? '-' : data.globalRank}</div>
-                  <span className="text-xl font-poppins">Global Rank</span>
+                  <span className="text-xl font-poppins">{t('dashboard.globalRank')}</span>
                 </div>
               </div>
             </div>
@@ -192,12 +194,12 @@ const Dashboard: FC = () => {
                 <div className="w-48 h-48 bg-gray-100 rounded-full mx-auto mb-4 flex items-center justify-center mt-4">
                   <img src={startConvo} alt="" className='w-full h-full object-cover rounded-full'/>
                 </div>
-                <div className="text-2xl font-semibold text-gray-700 bg-gray-300 p-4 mt-4 rounded-lg">Ready to practice? <br /> Let's talk!</div>
+                <div className="text-2xl font-semibold text-gray-700 bg-gray-300 p-4 mt-4 rounded-lg">{t('dashboard.practiceDescription')}</div>
                 <button 
                   onClick={handleStartConversation}
                   className="w-full bg-primary hover:bg-primary/90 text-white font-semibold py-3 rounded-lg transition mt-auto shadow-lg"
                 >
-                  Start Conversation
+                  {t('dashboard.startConversation')}
                 </button>
               </div>
             </div>

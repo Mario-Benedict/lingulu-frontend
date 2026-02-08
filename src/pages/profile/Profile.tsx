@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import Sidebar from '@components/common/Sidebar';
 import ProfileCard from '@components/profile/ProfileCard';
 import StatsCard from '@components/profile/StatsCard';
 import BioCard from '@components/profile/BioCard';
+import LanguageSwitcher from '@components/common/LanguageSwitcher';
 import { useAuth } from '@hooks/useAuth';
 
 // Types khusus untuk Profile page
@@ -22,6 +24,7 @@ interface UserStats {
 }
 
 const Profile: React.FC = () => {
+  const { t } = useTranslation();
   const { logout } = useAuth();
   const navigate = useNavigate();
   const [profile, setProfile] = useState<UserProfile | null>(null);
@@ -125,7 +128,8 @@ const Profile: React.FC = () => {
         {/* Header */}
         <div className="bg-white shadow-sm sticky top-0 z-10 border-b-primary border-b-2 pt-[2.5rem]">
           <div className="flex justify-between items-center px-8 py-4">
-            <h2 className="text-7xl font-bold text-primary font-rubik">Profile</h2>
+            <h2 className="text-7xl font-bold text-primary font-rubik">{t('profile.title')}</h2>
+            <LanguageSwitcher />
           </div>
         </div>
 

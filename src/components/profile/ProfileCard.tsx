@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Camera, KeyRound } from 'lucide-react';
-import ProfileAvatar from './ProfileAvatar';
 
 interface ProfileCardProps {
   avatarUrl: string;
@@ -19,11 +19,12 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
   onChangePasswordClick,
   onLogout,
 }) => {
+  const { t } = useTranslation();
   const [imageLoading, setImageLoading] = useState(true);
   const [imageError, setImageError] = useState<string | null>(null);
-  const loadTimeoutRef = React.useRef<NodeJS.Timeout>();
+  const loadTimeoutRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 
-  React.useEffect(() => {
+  useEffect(() => {
     console.log('📸 ProfileCard mounted with avatarUrl:', avatarUrl);
     
     // 3 second timeout untuk CloudFront
@@ -42,7 +43,6 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
   }, [avatarUrl, imageLoading]);
 
   const handleImageError = (error: React.SyntheticEvent<HTMLImageElement, Event>) => {
-    const img = error.target as HTMLImageElement;
     console.error('❌ Avatar image failed to load');
     console.error('URL:', avatarUrl);
     console.error('Error event:', error.type);
@@ -126,7 +126,7 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
               className="px-6 py-2 border-2 border-primary text-primary hover:bg-lessongray-50 rounded-lg font-semibold font-poppins transition flex items-center gap-2"
             >
               <KeyRound size={18} />
-              Change Password
+              {t('profile.changePassword')}
             </button>
           )}
           {onLogout && (
@@ -134,7 +134,7 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
               onClick={onLogout}
               className="px-6 py-2 bg-record-red hover:bg-record-red-dark text-white rounded-lg font-semibold font-poppins transition"
             >
-              Log Out
+              {t('profile.logout')}
             </button>
           )}
         </div>

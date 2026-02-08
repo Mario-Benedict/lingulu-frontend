@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import Sidebar from '@components/common/Sidebar';
 import { useEffect, useState } from 'react'
 import bannerBg from '@assets/leaderboard/banner-leaderboard.svg'
@@ -9,6 +10,7 @@ import type { LeaderboardEntry, LeaderboardApiUser } from '@/types';
 
 
 const Leaderboard: React.FC = () => {
+	const { t } = useTranslation();
 	const [entries, setEntries] = useState<LeaderboardEntry[]>([]);
 	const [currentUser, setCurrentUser] = useState<LeaderboardEntry | null>(null);
 	const [loading, setLoading] = useState<boolean>(false);
@@ -106,8 +108,8 @@ const Leaderboard: React.FC = () => {
 							☰
 						</button>
 						<div>
-							<h1 className="text-3xl md:text-5xl font-rubik font-medium text-orange-500">Leaderboard</h1>
-							<p className="text-sm md:text-base text-gray-800 mt-1">Based on XP from completed lessons</p>
+							<h1 className="text-3xl md:text-5xl font-rubik font-medium text-orange-500">{t('leaderboard.title')}</h1>
+							<p className="text-sm md:text-base text-gray-800 mt-1">{t('leaderboard.yourPosition')}</p>
 						</div>
 					</div>
 				</header>
