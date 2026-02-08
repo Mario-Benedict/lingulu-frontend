@@ -76,13 +76,19 @@
     "points": "Points",
     "yourPosition": "Based on XP from completed lessons",
     "noData": "No leaderboard data yet",
-    "completeToJoin": "Complete lessons to join the leaderboard!"
+    "completeToJoin": "Complete lessons to join the leaderboard!",
+    "completeLesson": "Complete lessons to join the leaderboard!",
+    "yourRank": "Your rank on the leaderboard"
   },
   "conversation": {
     "title": "AI Conversation",
     "startNew": "Start New Conversation",
     "typeMessage": "Practice speaking",
-    "send": "Send"
+    "send": "Send",
+    "tapToSpeak": "TAP TO SPEAK",
+    "recording": "RECORDING...",
+    "processing": "Processing...",
+    "listenAgain": "Listen again"
   },
   "auth": {
     "login": "Login",

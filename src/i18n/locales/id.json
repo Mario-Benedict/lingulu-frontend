@@ -76,13 +76,19 @@
     "points": "Poin",
     "yourPosition": "Berdasarkan XP dari pelajaran yang diselesaikan",
     "noData": "Belum ada data papan peringkat",
-    "completeToJoin": "Selesaikan pelajaran untuk masuk papan peringkat!"
+    "completeToJoin": "Selesaikan pelajaran untuk masuk papan peringkat!",
+    "completeLesson": "Ayo selesaikan pelajaran untuk masuk papan peringkat!",
+    "yourRank": "Peringkatmu di papan peringkat"
   },
   "conversation": {
     "title": "Percakapan AI",
     "startNew": "Mulai Percakapan Baru",
     "typeMessage": "Latihan berbicara",
-    "send": "Kirim"
+    "send": "Kirim",
+    "tapToSpeak": "KETUK UNTUK BICARA",
+    "recording": "MEREKAM...",
+    "processing": "Memproses...",
+    "listenAgain": "Dengarkan lagi"
   },
   "auth": {
     "login": "Masuk",

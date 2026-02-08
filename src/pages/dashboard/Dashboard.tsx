@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Flame, Trophy } from 'lucide-react';
 import startConvo from '@assets/dashboard/start-convo.svg';
-import Sidebar from '@components/common/Sidebar';
+import PageLayout from '@components/common/PageLayout';
 import { getCurrentUserProfile, getDashboard, getUserRank, getAuthenticatedUser } from '@api/services/user';
 
 interface DashboardData {
@@ -132,81 +132,74 @@ const Dashboard: FC = () => {
   };
 
   return (
-    <div className="flex h-screen w-screen bg-gray-100">
-      {/* Desktop sidebar */}
-      <div className="hidden md:block">
-        <Sidebar activeMenu="dashboard" />
+    <PageLayout
+      activeMenu="dashboard"
+      title={t('dashboard.welcomeBack', { username: data.username })}
+    >
+      {/* Main Content Area */}
+      <div className="p-4 sm:p-6 lg:p-8 flex-1">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
+          {/* Left Column - Main Content */}
+          <div className="lg:col-span-2 flex flex-col gap-4 sm:gap-6">
+            {/* Learning Progress Card - Dynamic color based on level */}
+            <div className={`${getLevelStyle(data.currentLevel)} rounded-lg p-4 sm:p-6 text-white shadow-lg flex flex-col justify-between`}>
+              <div>
+                <div className="text-xl sm:text-2xl lg:text-3xl font-semibold opacity-90 mb-2 font-rubik">{t('dashboard.progress')}</div>
+                <h3 className="text-2xl sm:text-4xl lg:text-6xl font-bold mb-4 font-poppins">
+                  Level {data.currentLevel === 'Beginner' ? 1 : data.currentLevel === 'Intermediate' ? 2 : 3}: {t(`dashboard.${data.currentLevel.toLowerCase()}`)}
+                </h3>
+                <div className="w-full bg-white bg-opacity-30 rounded-full h-2">
+                  <div 
+                    className="h-full bg-white rounded-full transition-all duration-300" 
+                    style={{ width: `${data.progressPercentage}%` }}
+                  ></div>
+                </div>
+                <p className="text-sm mt-2 opacity-90">{Math.round(data.progressPercentage)}% Complete</p>
+              </div>
+              <button 
+                onClick={handleContinueLearning}
+                className="bg-white text-primary px-4 sm:px-6 py-2 rounded-full font-semibold hover:bg-gray-100 transition self-end mt-4 sm:mt-6 font-rubik text-sm sm:text-base">
+                {t('dashboard.continueLearning')}
+              </button>
+            </div>
+
+            {/* Stats Cards */}
+            <div className="grid grid-cols-2 gap-4 sm:gap-6">
+              {/* Card 1 - Streak */}
+              <div className="bg-dashboard-streak rounded-lg p-4 sm:p-6 lg:p-8 text-white shadow-lg flex flex-col items-center justify-center gap-2 sm:gap-4">
+                <Flame size={32} className="sm:w-12 sm:h-12" />
+                <div className="text-3xl sm:text-4xl lg:text-6xl font-bold font-rubik">{data.streak}</div>
+                <span className="text-sm sm:text-lg lg:text-xl font-poppins text-center">{t('dashboard.streak')}</span>
+              </div>
+
+              {/* Card 2 - Global Ranking */}
+              <div className="bg-dashboard-gold rounded-lg p-4 sm:p-6 lg:p-8 text-white shadow-lg flex flex-col items-center justify-center gap-2 sm:gap-4">
+                <Trophy size={32} className="sm:w-12 sm:h-12" />
+                <div className="text-3xl sm:text-4xl lg:text-6xl font-bold font-rubik">{data.globalRank === 0 ? '-' : data.globalRank}</div>
+                <span className="text-sm sm:text-lg lg:text-xl font-poppins text-center">{t('dashboard.globalRank')}</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Right Column - Character & CTA */}
+          <div className="flex flex-col gap-4 sm:gap-6 lg:col-span-1">
+            {/* Character Card */}
+            <div className="bg-white rounded-lg p-4 sm:p-6 shadow-lg text-center flex flex-col items-center gap-4 sm:gap-6 h-full font-poppins">
+              <div className="w-32 h-32 sm:w-40 sm:h-40 lg:w-48 lg:h-48 bg-gray-100 rounded-full mx-auto flex items-center justify-center mt-2 sm:mt-4">
+                <img src={startConvo} alt="" className='w-full h-full object-cover rounded-full'/>
+              </div>
+              <div className="text-lg sm:text-xl lg:text-2xl font-semibold text-gray-700 bg-gray-300 p-3 sm:p-4 mt-2 sm:mt-4 rounded-lg">{t('dashboard.practiceDescription')}</div>
+              <button 
+                onClick={handleStartConversation}
+                className="w-full bg-primary hover:bg-primary/90 text-white font-semibold py-2.5 sm:py-3 rounded-lg transition mt-auto shadow-lg text-sm sm:text-base"
+              >
+                {t('dashboard.startConversation')}
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
-      <main className="flex-1 overflow-y-auto">
-        {/* Header mirip Lessons */}
-        <div className="bg-white shadow-sm sticky top-0 z-10 border-b-primary border-b-2 pt-[2.5rem]">
-          <div className="flex justify-between items-center px-8 py-4">
-            <h2 className="text-7xl font-bold text-primary font-rubik">{t('dashboard.welcomeBack', { username: data.username })}</h2>
-          </div>
-        </div>
-        {/* Main Content Area */}
-        <div className="p-8">
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            {/* Left Column - Main Content */}
-            <div className="lg:col-span-2 flex flex-col gap-6">
-              {/* Learning Progress Card - Dynamic color based on level */}
-              <div className={`${getLevelStyle(data.currentLevel)} rounded-lg p-6 text-white shadow-lg flex flex-col justify-between`}>
-                <div>
-                  <div className="text-3xl font-semibold opacity-90 mb-2 font-rubik">{t('dashboard.progress')}</div>
-                  <h3 className="text-6xl font-bold mb-4 font-poppins">Level {data.currentLevel === 'Beginner' ? 1 : data.currentLevel === 'Intermediate' ? 2 : 3}: {t(`dashboard.${data.currentLevel.toLowerCase()}`)}</h3>
-                  <div className="w-full bg-white bg-opacity-30 rounded-full h-2">
-                    <div 
-                      className="h-full bg-white rounded-full transition-all duration-300" 
-                      style={{ width: `${data.progressPercentage}%` }}
-                    ></div>
-                  </div>
-                  <p className="text-sm mt-2 opacity-90">{Math.round(data.progressPercentage)}% Complete</p>
-                </div>
-                <button 
-                  onClick={handleContinueLearning}
-                  className="bg-white text-primary px-6 py-2 rounded-full font-semibold hover:bg-gray-100 transition self-end mt-6 font-rubik">
-                  {t('dashboard.continueLearning')}
-                </button>
-              </div>
-
-              {/* Stats Cards */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                {/* Card 1 - Streak */}
-                <div className="flex-1 bg-dashboard-streak rounded-lg p-8 text-white shadow-lg aspect-square flex flex-col items-center justify-center gap-4 w-full max-h-[34vh]">
-                  <Flame size={48}></Flame>
-                  <div className="text-6xl font-bold font-rubik">{data.streak}</div>
-                  <span className="text-xl font-poppins">{t('dashboard.streak')}</span>
-                </div>
-
-                {/* Card 2 - Global Ranking */}
-                <div className="flex-1 bg-dashboard-gold rounded-lg p-8 text-white shadow-lg aspect-square flex flex-col items-center justify-center gap-4 max-h-[34vh] w-full">
-                  <Trophy size={48}></Trophy>
-                  <div className="text-6xl font-bold font-rubik">{data.globalRank === 0 ? '-' : data.globalRank}</div>
-                  <span className="text-xl font-poppins">{t('dashboard.globalRank')}</span>
-                </div>
-              </div>
-            </div>
-
-            {/* Right Column - Character & CTA */}
-            <div className="flex flex-col gap-6 lg:col-span-1">
-              {/* Character Card */}
-              <div className="bg-white rounded-lg p-6 shadow-lg text-center flex flex-col items-center gap-6 h-full font-poppins">
-                <div className="w-48 h-48 bg-gray-100 rounded-full mx-auto mb-4 flex items-center justify-center mt-4">
-                  <img src={startConvo} alt="" className='w-full h-full object-cover rounded-full'/>
-                </div>
-                <div className="text-2xl font-semibold text-gray-700 bg-gray-300 p-4 mt-4 rounded-lg">{t('dashboard.practiceDescription')}</div>
-                <button 
-                  onClick={handleStartConversation}
-                  className="w-full bg-primary hover:bg-primary/90 text-white font-semibold py-3 rounded-lg transition mt-auto shadow-lg"
-                >
-                  {t('dashboard.startConversation')}
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </main>
-    </div>
+    </PageLayout>
   );
 };
 

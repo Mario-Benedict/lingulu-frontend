@@ -70,19 +70,19 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
   };
 
   return (
-    <div className="bg-white rounded-xl shadow-md p-8">
-      <div className="flex items-start justify-between gap-8">
+    <div className="bg-white rounded-xl shadow-md p-4 sm:p-6 lg:p-8">
+      <div className="flex flex-col sm:flex-row items-center sm:items-start justify-between gap-4 sm:gap-8">
         {/* Left Side - Avatar and Profile Info */}
-        <div className="flex items-center gap-6">
+        <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-6 w-full sm:w-auto">
           <div className="relative flex-shrink-0">
             {imageError ? (
-              <div className="w-24 h-24 rounded-full border-4 border-primary bg-gradient-to-br from-primary to-primary/70 flex items-center justify-center">
-                <span className="text-white font-bold text-2xl font-rubik">
+              <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full border-4 border-primary bg-gradient-to-br from-primary to-primary/70 flex items-center justify-center">
+                <span className="text-white font-bold text-xl sm:text-2xl font-rubik">
                   {getInitials(username)}
                 </span>
               </div>
             ) : imageLoading ? (
-              <div className="w-24 h-24 rounded-full border-4 border-primary bg-lessongray-100 flex items-center justify-center">
+              <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full border-4 border-primary bg-lessongray-100 flex items-center justify-center">
                 <div className="text-center">
                   <div className="animate-spin inline-block w-6 h-6 border-2 border-primary border-t-transparent rounded-full"></div>
                 </div>
@@ -91,7 +91,7 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
               <img
                 src={avatarUrl}
                 alt={username}
-                className="w-24 h-24 rounded-full border-4 border-primary object-cover"
+                className="w-20 h-20 sm:w-24 sm:h-24 rounded-full border-4 border-primary object-cover"
                 onError={handleImageError}
                 onLoad={handleImageLoad}
                 referrerPolicy="no-referrer"
@@ -100,15 +100,15 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
             {onChangeAvatar && (
               <button
                 onClick={onChangeAvatar}
-                className="absolute bottom-0 right-0 bg-primary text-white p-2 rounded-full hover:bg-primary/90 transition"
+                className="absolute bottom-0 right-0 bg-primary text-white p-1.5 sm:p-2 rounded-full hover:bg-primary/90 transition"
               >
-                <Camera size={16} />
+                <Camera size={14} className="sm:w-4 sm:h-4" />
               </button>
             )}
           </div>
-          <div className="flex flex-col">
-            <h2 className="text-4xl font-bold text-lessongray-800 font-rubik">{username}</h2>
-            <p className="text-lessongray-600 text-lg font-poppins mt-2">{email}</p>
+          <div className="flex flex-col text-center sm:text-left">
+            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-lessongray-800 font-rubik">{username}</h2>
+            <p className="text-lessongray-600 text-base sm:text-lg font-poppins mt-1 sm:mt-2">{email}</p>
             {imageError && (
               <div className="mt-2">
                 <p className="text-sm text-lessongray-600">Avatar: {imageError}</p>
@@ -119,20 +119,21 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
         </div>
 
         {/* Right Side - Buttons */}
-        <div className="flex flex-col gap-3 min-w-max">
+        <div className="flex flex-row sm:flex-col gap-2 sm:gap-3 w-full sm:w-auto sm:min-w-max">
           {onChangePasswordClick && (
             <button
               onClick={onChangePasswordClick}
-              className="px-6 py-2 border-2 border-primary text-primary hover:bg-lessongray-50 rounded-lg font-semibold font-poppins transition flex items-center gap-2"
+              className="flex-1 sm:flex-none px-3 sm:px-6 py-2 border-2 border-primary text-primary hover:bg-lessongray-50 rounded-lg font-semibold font-poppins transition flex items-center justify-center gap-2 text-sm sm:text-base"
             >
-              <KeyRound size={18} />
-              {t('profile.changePassword')}
+              <KeyRound size={16} className="sm:w-[18px] sm:h-[18px]" />
+              <span className="hidden xs:inline">{t('profile.changePassword')}</span>
+              <span className="xs:hidden">Change Password</span>
             </button>
           )}
           {onLogout && (
             <button
               onClick={onLogout}
-              className="px-6 py-2 bg-record-red hover:bg-record-red-dark text-white rounded-lg font-semibold font-poppins transition"
+              className="flex-1 sm:flex-none px-3 sm:px-6 py-2 bg-record-red hover:bg-record-red-dark text-white rounded-lg font-semibold font-poppins transition text-sm sm:text-base"
             >
               {t('profile.logout')}
             </button>

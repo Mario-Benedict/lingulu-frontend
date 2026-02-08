@@ -30,10 +30,10 @@ const MultipleChoiceOption: React.FC<MultipleChoiceOptionProps> = ({
   return (
     <button
       onClick={onClick}
-      className={`w-full p-4 rounded-lg flex items-center gap-4 transition-all ${getOptionStyle()}`}
+      className={`w-full p-3 sm:p-4 rounded-lg flex items-center gap-3 sm:gap-4 transition-all ${getOptionStyle()}`}
     >
       <div
-        className={`w-6 h-6 rounded-full border-2 flex items-center justify-center flex-shrink-0 ${
+        className={`w-5 h-5 sm:w-6 sm:h-6 rounded-full border-2 flex items-center justify-center flex-shrink-0 ${
           isSelected
             ? showResult && isCorrect
               ? 'border-green-500 bg-green-500'
@@ -45,7 +45,7 @@ const MultipleChoiceOption: React.FC<MultipleChoiceOptionProps> = ({
       >
         {isSelected && (
           <svg
-            className="w-4 h-4 text-white"
+            className="w-3 h-3 sm:w-4 sm:h-4 text-white"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -59,7 +59,7 @@ const MultipleChoiceOption: React.FC<MultipleChoiceOptionProps> = ({
           </svg>
         )}
       </div>
-      <span className="text-lg text-lessongray-700 font-poppins text-left">{text}</span>
+      <span className="text-sm sm:text-base md:text-lg text-lessongray-700 font-poppins text-left">{text}</span>
     </button>
   );
 };

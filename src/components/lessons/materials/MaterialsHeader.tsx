@@ -13,20 +13,20 @@ const MaterialsHeader: React.FC<MaterialsHeaderProps> = ({
   const navigate = useNavigate();
 
   return (
-    <div className="bg-white shadow-sm sticky top-0 z-10 border-b-primary border-b-2 py-2">
-      <div className="flex items-center px-8 py-4 gap-6">
+    <div className="bg-white shadow-sm sticky top-0 z-10 border-b-primary border-b-2 py-1 sm:py-2">
+      <div className="flex items-center px-4 sm:px-6 md:px-8 py-3 sm:py-4 gap-3 sm:gap-6">
         <button
           onClick={() => navigate(-1)}
-          className="group transition p-4 hover:bg-lessongray-50 hover:shadow-primary shadow-lg rounded-lg bg-primary"
+          className="group transition p-2 sm:p-3 md:p-4 hover:bg-lessongray-50 hover:shadow-primary shadow-lg rounded-lg bg-primary shrink-0"
         >
           <ArrowLeft
-            className="text-white font-semibold group-hover:text-lessongray-800"
+            className="text-white font-semibold group-hover:text-lessongray-800 w-5 h-5 sm:w-6 sm:h-6 md:w-7 md:h-7"
             size={28}
           />
         </button>
-        <div className="text-lessongray-600">
-          <p className="text-lg text-lessongray-600 font-poppins">{label}</p>
-          <h2 className="text-5xl font-bold text-primary font-rubik">{title}</h2>
+        <div className="text-lessongray-600 min-w-0">
+          <p className="text-sm sm:text-base md:text-lg text-lessongray-600 font-poppins">{label}</p>
+          <h2 className="text-2xl sm:text-3xl md:text-5xl font-bold text-primary font-rubik truncate">{title}</h2>
         </div>
       </div>
     </div>

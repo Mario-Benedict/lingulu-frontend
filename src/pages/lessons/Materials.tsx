@@ -1,5 +1,5 @@
 import { useParams } from 'react-router-dom';
-import Sidebar from '@components/common/Sidebar';
+import PageLayout from '@components/common/PageLayout';
 import MaterialsHeader from '@components/lessons/materials/MaterialsHeader';
 import { MaterialContent, MaterialNotFound } from '@components/lessons/materials/MaterialContent';
 
@@ -17,12 +17,11 @@ const Materials: React.FC = () => {
     contentType === 'material' && contentId && contentId in materialsData ? materialsData[contentId] : null;
 
   return (
-    <div className="flex h-screen bg-lessongray-100 w-screen">
-      <Sidebar activeMenu="lessons" />
+    <PageLayout activeMenu="lessons" showHeader={false}>
       <div className="flex-1 flex flex-col min-w-0 font-poppins">
         <MaterialsHeader title={currentData?.title || 'Loading...'} />
         <div className="flex-1 overflow-y-auto">
-          <div className="p-8">
+          <div className="p-4 sm:p-6 md:p-8">
             {currentData ? (
               <MaterialContent title={currentData.title} content={currentData.content} />
             ) : (
@@ -31,7 +30,7 @@ const Materials: React.FC = () => {
           </div>
         </div>
       </div>
-    </div>
+    </PageLayout>
   );
 };
 
