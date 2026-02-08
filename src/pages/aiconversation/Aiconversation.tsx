@@ -1,6 +1,6 @@
 import { useState, useRef, useCallback } from 'react';
-import Sidebar from '@components/common/Sidebar';
-import ConversationHeader from '@components/aiconversation/ConversationHeader';
+import { useTranslation } from 'react-i18next';
+import PageLayout from '@components/common/PageLayout';
 import MessageList from '@components/aiconversation/MessageList';
 import ConversationInput from '@components/aiconversation/ConversationInput';
 import type { Message } from '@/types';
@@ -65,6 +65,7 @@ const downsampleTo16k = (samples: Float32Array, fromRate: number): Float32Array 
 };
 
 const Aiconversation: React.FC = () => {
+  const { t } = useTranslation();
   const streamRef = useRef<MediaStream | null>(null);
   const audioCtxRef = useRef<AudioContext | null>(null);
   const processorRef = useRef<ScriptProcessorNode | null>(null);
@@ -199,21 +200,22 @@ const Aiconversation: React.FC = () => {
   }, [playAudio]);
 
   return (
-    <div className="flex h-screen bg-lessongray-100 w-screen">
-      <div className="hidden md:block">
-        <Sidebar activeMenu="conversation" />
-      </div>
-
-      <div className="flex-1 flex flex-col min-w-0">
-        <ConversationHeader />
+    <PageLayout 
+      activeMenu="conversation" 
+      title={t('conversation.title')}
+      subtitle={t('conversation.typeMessage')}
+      className="flex flex-col"
+    >
+      <div className="flex-1 flex flex-col min-h-0">
         <MessageList messages={messages} />
         <ConversationInput
           isRecording={isRecording}
+          isLoading={isLoading}
           onTapToSpeak={handleTapToSpeak}
           onListenAgain={handleListenAgain}
         />
       </div>
-    </div>
+    </PageLayout>
   );
 };
 

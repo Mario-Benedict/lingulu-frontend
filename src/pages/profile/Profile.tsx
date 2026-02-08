@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import Sidebar from '@components/common/Sidebar';
+import { useTranslation } from 'react-i18next';
+import PageLayout from '@components/common/PageLayout';
 import ProfileCard from '@components/profile/ProfileCard';
 import StatsCard from '@components/profile/StatsCard';
 import BioCard from '@components/profile/BioCard';
+import LanguageSwitcher from '@components/common/LanguageSwitcher';
 import { useAuth } from '@hooks/useAuth';
 
 // Types khusus untuk Profile page
@@ -22,6 +24,7 @@ interface UserStats {
 }
 
 const Profile: React.FC = () => {
+  const { t } = useTranslation();
   const { logout } = useAuth();
   const navigate = useNavigate();
   const [profile, setProfile] = useState<UserProfile | null>(null);
@@ -115,55 +118,45 @@ const Profile: React.FC = () => {
   };
 
   return (
-    <div className="flex h-screen w-screen bg-gray-100">
-      {/* Desktop sidebar */}
-      <div className="hidden md:block">
-        <Sidebar activeMenu="profile" />
-      </div>
-
-      <main className="flex-1 overflow-y-auto">
-        {/* Header */}
-        <div className="bg-white shadow-sm sticky top-0 z-10 border-b-primary border-b-2 pt-[2.5rem]">
-          <div className="flex justify-between items-center px-8 py-4">
-            <h2 className="text-7xl font-bold text-primary font-rubik">Profile</h2>
+    <PageLayout
+      activeMenu="profile"
+      title={t('profile.title')}
+      rightElement={<LanguageSwitcher />}
+    >
+      {/* Main Content */}
+      <div className="p-4 sm:p-6 lg:p-8 flex-1">
+        {loading ? (
+          <div className="flex items-center justify-center h-64">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
           </div>
-        </div>
+        ) : (
+          <div className="space-y-4 sm:space-y-6">
+            {/* Profile Card - Full Width */}
+            <ProfileCard
+              avatarUrl={currentProfile.avatarUrl}
+              username={currentProfile.username}
+              email={currentProfile.email}
+              onChangeAvatar={handleChangeAvatar}
+              onChangePasswordClick={handleChangePasswordClick}
+              onLogout={handleLogout}
+            />
 
-        {/* Main Content */}
-        <div className="p-8">
-          {loading ? (
-            <div className="flex items-center justify-center h-64">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
-            </div>
-          ) : (
-            <div className="space-y-6">
-              {/* Profile Card - Full Width */}
-              <ProfileCard
-                avatarUrl={currentProfile.avatarUrl}
-                username={currentProfile.username}
-                email={currentProfile.email}
-                onChangeAvatar={handleChangeAvatar}
-                onChangePasswordClick={handleChangePasswordClick}
-                onLogout={handleLogout}
-              />
+            {/* Stats & Bio Row */}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
+              {/* Stats Card */}
+              <div className="lg:col-span-2">
+                <StatsCard stats={currentStats} />
+              </div>
 
-              {/* Stats & Bio Row */}
-              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                {/* Stats Card */}
-                <div className="lg:col-span-2">
-                  <StatsCard stats={currentStats} />
-                </div>
-
-                {/* Bio Card */}
-                <div className="lg:col-span-1">
-                  <BioCard bio={currentProfile.bio} onEditBio={handleEditBio} />
-                </div>
+              {/* Bio Card */}
+              <div className="lg:col-span-1">
+                <BioCard bio={currentProfile.bio} onEditBio={handleEditBio} />
               </div>
             </div>
-          )}
-        </div>
-      </main>
-    </div>
+          </div>
+        )}
+      </div>
+    </PageLayout>
   );
 };
 

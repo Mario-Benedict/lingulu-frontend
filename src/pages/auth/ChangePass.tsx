@@ -52,27 +52,27 @@ const ChangePass: React.FC = () => {
   };
 
   return (
-    <div className="flex items-center justify-center w-screen h-screen auth-gradient overflow-hidden">
+    <div className="flex items-center justify-center w-screen h-screen auth-gradient overflow-hidden px-4 py-6">
       {/* White Card Container */}
-      <div className="bg-white rounded-2xl shadow-2xl px-12 py-10 w-full max-w-lg mx-4">
+      <div className="bg-white rounded-2xl shadow-2xl px-6 sm:px-10 md:px-12 py-8 sm:py-10 w-full max-w-lg">
         {/* Logo & Mascot */}
-        <div className="flex flex-col items-center mb-4">
-          <img src={mascotLogin} alt="Lingulu Mascot" className="w-24 h-24 object-contain" />
+        <div className="flex flex-col items-center mb-3 sm:mb-4">
+          <img src={mascotLogin} alt="Lingulu Mascot" className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 object-contain" />
         </div>
 
         {/* Title */}
-        <h1 className="text-center text-primary text-3xl font-bold font-rubik mb-2">
+        <h1 className="text-center text-primary text-2xl sm:text-3xl font-bold font-rubik mb-2">
           Change Your Password
         </h1>
 
         {/* Subtitle */}
-        <p className="text-center text-lessongray-600 text-sm mb-8 font-poppins">
+        <p className="text-center text-lessongray-600 text-xs sm:text-sm mb-6 sm:mb-8 font-poppins">
           Enter your old password and new password below to change password
         </p>
 
         {/* Success Message */}
         {success && (
-          <div className="bg-green-50 text-green-600 px-4 py-3 rounded-lg mb-6 border-l-4 border-green-500 text-sm flex items-center gap-2">
+          <div className="bg-green-50 text-green-600 px-3 sm:px-4 py-2 sm:py-3 rounded-lg mb-4 sm:mb-6 border-l-4 border-green-500 text-xs sm:text-sm flex items-center gap-2">
             <span>✓</span>
             Password changed successfully! Redirecting to profile...
           </div>

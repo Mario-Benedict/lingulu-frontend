@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import Sidebar from '@components/common/Sidebar';
+import PageLayout from '@components/common/PageLayout';
 import ExerciseHeader from '@components/lessons/exercises/ExerciseHeader';
 import ProgressBar from '@components/lessons/exercises/ProgressBar';
 import MultipleChoiceQuestion from '@components/lessons/exercises/MultipleChoiceQuestion';
@@ -69,8 +69,7 @@ const Exercise: React.FC = () => {
   };
 
   return (
-    <div className="flex h-screen bg-lessongray-100 w-screen">
-      <Sidebar activeMenu="lessons" />
+    <PageLayout activeMenu="lessons" showHeader={false}>
       <div className="flex-1 flex flex-col min-w-0">
         <ExerciseHeader
           title="Lessons 2 : judul soal"
@@ -78,19 +77,21 @@ const Exercise: React.FC = () => {
           totalQuestions={totalQuestions}
         />
 
-        <div className="flex-1 overflow-y-auto">
-          <div className="p-8">
-            <div className="bg-white rounded-lg shadow-md p-8">
-              <ProgressBar progress={progressPercentage} className="mb-8" />
-              {currentQuestionData && (
-                <MultipleChoiceQuestion
-                  questionNumber={currentQuestion}
-                  questionText={currentQuestionData.question}
-                  options={currentQuestionData.options}
-                  selectedOptionId={selectedAnswers[currentQuestion] || null}
-                  onSelectOption={handleSelectOption}
-                />
-              )}
+        <div className="flex-1 overflow-y-auto md:overflow-y-visible flex flex-col">
+          <div className="flex-1 flex items-center md:items-start justify-center p-4 sm:p-6 md:p-8">
+            <div className="bg-white rounded-lg shadow-md p-4 sm:p-6 md:p-8 w-full max-w-3xl min-h-[50vh] md:min-h-0 md:h-fit flex flex-col">
+              <ProgressBar progress={progressPercentage} className="mb-4 sm:mb-6 md:mb-8" />
+              <div className="flex-1 flex flex-col justify-center md:justify-start">
+                {currentQuestionData && (
+                  <MultipleChoiceQuestion
+                    questionNumber={currentQuestion}
+                    questionText={currentQuestionData.question}
+                    options={currentQuestionData.options}
+                    selectedOptionId={selectedAnswers[currentQuestion] || null}
+                    onSelectOption={handleSelectOption}
+                  />
+                )}
+              </div>
               <NavigationButtons
                 currentQuestion={currentQuestion}
                 totalQuestions={totalQuestions}
@@ -101,7 +102,7 @@ const Exercise: React.FC = () => {
           </div>
         </div>
       </div>
-    </div>
+    </PageLayout>
   );
 }
 

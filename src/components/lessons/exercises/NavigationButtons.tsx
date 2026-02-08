@@ -12,11 +12,11 @@ const NavigationButtons: React.FC<NavigationButtonsProps> = ({
   onNext,
 }) => {
   return (
-    <div className="flex gap-4 justify-between mt-12">
+    <div className="flex gap-3 sm:gap-4 justify-between mt-2 sm:mt-8 md:mt-4">
       <button
         onClick={onBack}
         disabled={currentQuestion === 1}
-        className={`flex-1 py-3 rounded-lg font-semibold transition font-rubik ${
+        className={`flex-1 py-2 sm:py-3 rounded-lg font-semibold transition font-rubik text-sm sm:text-base ${
           currentQuestion === 1
             ? 'bg-lessongray-300 text-lessongray-500 cursor-not-allowed'
             : 'bg-lessongray-500 text-white hover:bg-lessongray-600'
@@ -27,7 +27,7 @@ const NavigationButtons: React.FC<NavigationButtonsProps> = ({
       <button
         onClick={onNext}
         disabled={currentQuestion === totalQuestions}
-        className={`flex-1 text-white py-3 rounded-lg font-semibold transition font-rubik ${
+        className={`flex-1 text-white py-2 sm:py-3 rounded-lg font-semibold transition font-rubik text-sm sm:text-base ${
           currentQuestion === totalQuestions
             ? 'bg-lessongray-300 cursor-not-allowed'
             : 'bg-primary hover:bg-primary-dark'

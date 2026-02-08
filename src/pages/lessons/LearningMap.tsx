@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import learningMapBg from '@assets/lessons/learning-map.svg';
-import Sidebar from '@components/common/Sidebar';
+import PageLayout from '@components/common/PageLayout';
 import LearningMapHeader from '@components/lessons/learningmap/LearningMapHeader';
 import LessonsList from '@components/lessons/learningmap/LessonsList';
 import type { Lesson } from '@/types';
@@ -34,9 +34,8 @@ const LearningMap: React.FC = () => {
   ]);
 
   return (
-    <div className="flex h-screen bg-lessongray-100 w-screen">
-      <Sidebar activeMenu="lessons" />
-      <div className="flex-1 flex flex-col min-w-0 font-poppins">
+    <PageLayout activeMenu="lessons" showHeader={false}>
+      <div className="flex-1 flex flex-col min-w-0 font-poppins h-full">
         <div className="flex-1 overflow-hidden relative">
           <div
             className="absolute inset-0 bg-cover bg-bottom bg-no-repeat"
@@ -49,7 +48,7 @@ const LearningMap: React.FC = () => {
           <LessonsList lessons={lessons} />
         </div>
       </div>
-    </div>
+    </PageLayout>
   );
 };
 

@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { PencilIcon } from 'lucide-react';
 
 interface BioCardProps {
@@ -6,10 +7,12 @@ interface BioCardProps {
 }
 
 const BioCard: React.FC<BioCardProps> = ({ bio, onEditBio }) => {
+  const { t } = useTranslation();
+
   return (
     <div className="bg-white rounded-xl shadow-md p-6 flex flex-col h-full">
       <div className="flex items-center gap-2 mb-4">
-        <h3 className="text-xl font-bold text-primary font-rubik">Your Bio</h3>
+        <h3 className="text-xl font-bold text-primary font-rubik">{t('profile.yourBio')}</h3>
         {onEditBio && (
           <button onClick={onEditBio} className="w-9 h-9 flex items-center justify-center bg-primary rounded-full text-lessongray-100 hover:bg-primary/70 transition">
             <PencilIcon size={20} />

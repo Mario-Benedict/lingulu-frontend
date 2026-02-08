@@ -4,6 +4,7 @@ import RegisterForm from '@components/auth/register/RegisterForm';
 import GoogleSignUpButton from '@components/auth/register/GoogleSignUpButton';
 import LoginLink from '@components/auth/register/LoginLink';
 import mascotRegister from '@assets/auth/mascot-register.svg'
+import logoVertical from '@assets/auth/logo-vertical.svg';
 import { registerUser } from '@api/services/user';
 
 const Register: React.FC = () => {
@@ -27,20 +28,27 @@ const Register: React.FC = () => {
   };
 
   return (
-    <div className="flex w-screen h-screen bg-dark overflow-hidden max-md:flex-col">
-      <div className="flex-1 auth-gradient flex justify-center items-center p-10 relative max-md:min-h-[40vh] max-md:p-7">
+    <div className="flex w-screen h-screen bg-dark overflow-hidden">
+      {/* Mascot section - hidden on mobile */}
+      <div className="hidden md:flex flex-1 auth-gradient justify-center items-center p-10 relative">
         <div className="text-center text-white relative z-10">
-          <img src={mascotRegister} alt="" className="min-w-[15em] max-w-[35em] w-[40vw] m-0 p-0 animate-bounce-slow block max-md:min-w-[12em] max-md:max-w-[25em] max-md:w-[50vw]" />
+          <img src={mascotRegister} alt="" className="w-[clamp(15em,40vw,35em)] m-0 p-0 animate-bounce-slow block" />
         </div>
       </div>
 
-      <div className="flex-1 bg-background flex justify-center items-center px-10 py-5 overflow-hidden h-full relative max-md:min-h-[60vh] max-md:px-5 max-md:pt-10 max-md:justify-start">
-        <div className="bg-background w-full max-w-[420px] px-10 py-7 flex flex-col justify-start my-auto max-md:px-6">
-          <h1 className="text-center text-primary text-title min-text-[28px] max-text-[36px] font-bold font-rubik m-0 mb-5">CREATE ACCOUNT</h1>
+      {/* Form section - full width on mobile */}
+      <div className="w-full md:flex-1 bg-background flex justify-center items-center px-4 sm:px-6 md:px-10 py-6 sm:py-8 md:py-5 overflow-y-auto h-full">
+        <div className="bg-background w-full max-w-[420px] px-4 sm:px-6 md:px-10 py-6 sm:py-7 flex flex-col justify-center my-auto">
+          {/* Logo */}
+          <div className="flex justify-center mb-3 sm:mb-4">
+            <img src={logoVertical} alt="Lingulu" className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 object-contain" />
+          </div>
+          
+          <h1 className="text-center text-primary text-2xl sm:text-3xl md:text-title font-bold font-rubik m-0 mb-4 sm:mb-5">CREATE ACCOUNT</h1>
 
           <RegisterForm onSubmit={handleRegisterSubmit} loading={isLoading} />
 
-          <div className="text-center text-neutral text-xs my-3 relative before:content-[''] before:absolute before:top-1/2 before:left-0 before:w-[35%] before:h-px before:bg-border after:content-[''] after:absolute after:top-1/2 after:right-0 after:w-[35%] after:h-px after:bg-border">
+          <div className="text-center text-neutral text-xs my-2 sm:my-3 relative before:content-[''] before:absolute before:top-1/2 before:left-0 before:w-[35%] before:h-px before:bg-border after:content-[''] after:absolute after:top-1/2 after:right-0 after:w-[35%] after:h-px after:bg-border">
             Or Sign Up with
           </div>
 

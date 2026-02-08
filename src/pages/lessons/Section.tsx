@@ -1,5 +1,5 @@
 import { BookOpenText, FileText, ClipboardList, Mic } from 'lucide-react';
-import Sidebar from '@components/common/Sidebar';
+import PageLayout from '@components/common/PageLayout';
 import SectionHeader from '@components/lessons/section/SectionHeader';
 import SectionCard from '@components/lessons/section/SectionCard';
 
@@ -42,13 +42,12 @@ const Section: React.FC = () => {
   ];
 
   return (
-    <div className="flex h-screen bg-lessongray-100 w-screen">
-      <Sidebar activeMenu="lessons" />
+    <PageLayout activeMenu="lessons" showHeader={false}>
       <div className="flex-1 flex flex-col min-w-0 font-poppins">
         <SectionHeader levelTitle="Level 1: Beginner" lessonTitle="Section 2" />
         <div className="flex-1 overflow-y-auto">
-          <div className="p-8">
-            <div className="space-y-4">
+          <div className="p-4 sm:p-6 md:p-8">
+            <div className="space-y-3 sm:space-y-4">
               {sections.map((section) => (
                 <SectionCard
                   key={section.id}
@@ -63,7 +62,7 @@ const Section: React.FC = () => {
           </div>
         </div>
       </div>
-    </div>
+    </PageLayout>
   );
 };
 
