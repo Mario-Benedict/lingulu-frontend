@@ -45,7 +45,7 @@ const Section: React.FC = () => {
     <div className="flex h-screen bg-lessongray-100 w-screen">
       <Sidebar activeMenu="lessons" />
       <div className="flex-1 flex flex-col min-w-0 font-poppins">
-        <SectionHeader levelTitle="Level 1: Beginner" lessonTitle="Section 2" />
+        <SectionHeader levelTitle="Level 1: Beginner" lessonTitle="Lesson 2" />
         <div className="flex-1 overflow-y-auto">
           <div className="p-8">
             <div className="space-y-4">
