@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import learningMapBg from '@assets/lessons/learning-map.svg';
+import learningMapBg from '@assets/lessons/learning-map-new.png';
 import PageLayout from '@components/common/PageLayout';
 import LearningMapHeader from '@components/lessons/learningmap/LearningMapHeader';
 import LessonsList from '@components/lessons/learningmap/LessonsList';
