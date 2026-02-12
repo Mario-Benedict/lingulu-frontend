@@ -1,7 +1,7 @@
 import React from 'react';
 import { Lock, CheckCircle } from 'lucide-react';
 // Pastikan path import ini benar sesuai struktur project Anda
-import learningMapBg from '@assets/lessons/learning-map.svg';
+import learningMapBg from '@assets/lessons/learning-map-new.png';
 
 type LessonStatus = 'completed' | 'in-progress' | 'locked';
 
