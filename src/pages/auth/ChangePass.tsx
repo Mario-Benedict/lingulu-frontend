@@ -2,50 +2,47 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import mascotLogin from '@assets/auth/logo-vertical.svg';
 import ChangePasswordForm from '@components/auth/changepassword/ChangePasswordForm';
+import { changePassword } from '@api/services/user';
 
 const ChangePass: React.FC = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  const handleChangePassword = async (oldPassword: string, newPassword: string, confirmPassword: string) => {
+  const handleChangePassword = async (currentPassword: string, newPassword: string, confirmPassword: string) => {
     setLoading(true);
+    setError(null);
     try {
-      const API_BASE = import.meta.env.VITE_API_URL ?? 'http://localhost:8080';
-      const token = localStorage.getItem('token');
-      
-      if (!token) {
-        throw new Error('No authentication token found');
-      }
-
-      const response = await fetch(`${API_BASE}/api/account/change-password`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          oldPassword,
-          newPassword,
-          confirmPassword,
-        }),
+      const result = await changePassword({
+        currentPassword,
+        newPassword,
+        confirmPassword,
       });
 
-      const result = await response.json();
-
       if (!result.success) {
-        throw new Error(result.message || 'Failed to change password');
+        throw new Error(result.message || 'Gagal mengubah password');
       }
 
       setSuccess(true);
-      // Redirect to profile after 2 seconds
+      // Redirect to login after 2 seconds
       setTimeout(() => {
-        navigate('/profile', {
-          state: { message: 'Password changed successfully!' },
+        navigate('/login', {
+          state: { message: 'Password berhasil diubah! Silakan login kembali.' },
         });
       }, 2000);
-    } catch (error) {
-      throw error;
+    } catch (error: any) {
+      const backendMessage = error.response?.data?.message || error.message || 'Gagal mengubah password';
+      
+      // Translate common error messages
+      let errorMsg = backendMessage;
+      if (backendMessage.toLowerCase().includes('password') && backendMessage.toLowerCase().includes('invalid')) {
+        errorMsg = 'Password tidak valid';
+      } else if (backendMessage.toLowerCase().includes('current password') && backendMessage.toLowerCase().includes('incorrect')) {
+        errorMsg = 'Password saat ini salah';
+      }
+      
+      setError(errorMsg);
     } finally {
       setLoading(false);
     }
@@ -62,19 +59,27 @@ const ChangePass: React.FC = () => {
 
         {/* Title */}
         <h1 className="text-center text-primary text-2xl sm:text-3xl font-bold font-rubik mb-2">
-          Change Your Password
+          Ubah Password
         </h1>
 
         {/* Subtitle */}
         <p className="text-center text-lessongray-600 text-xs sm:text-sm mb-6 sm:mb-8 font-poppins">
-          Enter your old password and new password below to change password
+          Masukkan password saat ini dan password baru untuk mengubah password
         </p>
 
         {/* Success Message */}
         {success && (
           <div className="bg-green-50 text-green-600 px-3 sm:px-4 py-2 sm:py-3 rounded-lg mb-4 sm:mb-6 border-l-4 border-green-500 text-xs sm:text-sm flex items-center gap-2">
             <span>✓</span>
-            Password changed successfully! Redirecting to profile...
+            Password berhasil diubah! Mengarahkan ke login...
+          </div>
+        )}
+
+        {/* Error Message */}
+        {error && (
+          <div className="bg-red-50 text-red-600 px-3 sm:px-4 py-2 sm:py-3 rounded-lg mb-4 sm:mb-6 border-l-4 border-red-500 text-xs sm:text-sm flex items-center gap-2">
+            <span>✗</span>
+            {error}
           </div>
         )}
 
