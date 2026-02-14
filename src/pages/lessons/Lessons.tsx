@@ -1,17 +1,16 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
 import Beginner from '@assets/lessons/beginner.svg';
 import Intermediate from '@assets/lessons/intermediate.svg';
 import Advanced from '@assets/lessons/advance.svg';
-import PageLayout from '@components/common/PageLayout';
+import Sidebar from '@components/common/Sidebar';
 import LessonLevelCard from '@/components/lessons/lessons/LessonLevelCard';
+import LessonsHeader from '@components/lessons/lessons/LessonsHeader';
 import LoadingOverlay from '@components/lessons/lessons/LoadingOverlay';
 import ErrorOverlay from '@components/lessons/lessons/ErrorOverlay';
 import { api } from '@api/axios/instance';
 
 const Lessons: React.FC = () => {
-  const { t } = useTranslation();
   const navigate = useNavigate();
   const [progress, setProgress] = useState<{ level1: number; level2: number; level3: number }>({
     level1: 0,
@@ -30,11 +29,21 @@ const Lessons: React.FC = () => {
         console.log('Progress response:', res.data);
         const data = res.data ?? [];
         let level1 = 0, level2 = 0, level3 = 0;
-        if (data.length > 0) {
-          level1 = data[0]?.progressPercentage ?? 0;
-          level2 = data[1]?.progressPercentage ?? 0;
-          level3 = data[2]?.progressPercentage ?? 0;
-        }
+        
+        // Parse courseTitle to determine level since backend order is inconsistent
+        data.forEach((course: any) => {
+          const title = course?.courseTitle?.toLowerCase() || '';
+          const progress = course?.progressPercentage ?? 0;
+          
+          if (title.includes('beginner')) {
+            level1 = progress;
+          } else if (title.includes('intermediate')) {
+            level2 = progress;
+          } else if (title.includes('advanced')) {
+            level3 = progress;
+          }
+        });
+        
         setProgress({ level1, level2, level3 });
       } catch (err) {
         console.error('Fetch progress error:', err);
@@ -101,13 +110,15 @@ const Lessons: React.FC = () => {
   ];
 
   return (
-    <>
+    <div className="flex h-screen bg-gray-100 w-screen">
       {loading && <LoadingOverlay message="Loading progress..." />}
       {error && <ErrorOverlay message={error} />}
-      <PageLayout activeMenu="lessons" title={t('lessons.title')}>
+      <Sidebar activeMenu="lessons" />
+      <div className="flex-1 flex flex-col min-w-0">
+        <LessonsHeader title="Start Your Journey" />
         <div className="flex-1 overflow-y-auto">
-          <div className="p-4 sm:p-6 lg:p-8">
-            <div className="flex flex-col gap-4 sm:gap-6 mx-auto">
+          <div className="p-8">
+            <div className="flex flex-col gap-6 mx-auto">
               {levels.map((level) => (
                 <LessonLevelCard
                   key={level.id}
@@ -128,8 +139,8 @@ const Lessons: React.FC = () => {
             </div>
           </div>
         </div>
-      </PageLayout>
-    </>
+      </div>
+    </div>
   );
 }
 
