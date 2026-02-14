@@ -38,6 +38,11 @@ export const getAvatarUrl = (cloudFrontUrl: string): string => {
     return cloudFrontUrl;
 };
 
+// Update User Bio
+export const updateUserBio = async (bio: string): Promise<any> => {
+    return await api.post("/api/account/profile/bio", { bio });
+};
+
 // Get Current User Rank
 export const getUserRank = async (): Promise<any> => {
     return await api.get("/api/leaderboard/user-rank");
