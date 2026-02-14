@@ -5,20 +5,20 @@ import eyeIcon from '@assets/auth/eye-icon.png';
 import closedEyeIcon from '@assets/auth/closedeye-icon.png';
 
 interface ChangePasswordFormProps {
-  onSubmit: (oldPassword: string, newPassword: string, confirmPassword: string) => Promise<void>;
+  onSubmit: (currentPassword: string, newPassword: string, confirmPassword: string) => Promise<void>;
   loading?: boolean;
 }
 
 const ChangePasswordForm: React.FC<ChangePasswordFormProps> = ({ onSubmit, loading = false }) => {
   const navigate = useNavigate();
-  const [oldPassword, setOldPassword] = useState('');
+  const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [showOldPassword, setShowOldPassword] = useState(false);
+  const [showCurrentPassword, setShowCurrentPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [error, setError] = useState<string>('');
-  const oldPasswordRef = useRef<HTMLInputElement>(null);
+  const currentPasswordRef = useRef<HTMLInputElement>(null);
   const passwordRef = useRef<HTMLInputElement>(null);
   const confirmPasswordRef = useRef<HTMLInputElement>(null);
 
@@ -41,7 +41,7 @@ const ChangePasswordForm: React.FC<ChangePasswordFormProps> = ({ onSubmit, loadi
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!oldPassword || !newPassword || !confirmPassword) {
+    if (!currentPassword || !newPassword || !confirmPassword) {
       setError('Semua field harus diisi');
       return;
     }
@@ -57,7 +57,7 @@ const ChangePasswordForm: React.FC<ChangePasswordFormProps> = ({ onSubmit, loadi
       return;
     }
 
-    if (oldPassword === newPassword) {
+    if (currentPassword === newPassword) {
       setError('Password baru tidak boleh sama dengan password lama');
       return;
     }
@@ -65,19 +65,35 @@ const ChangePasswordForm: React.FC<ChangePasswordFormProps> = ({ onSubmit, loadi
     setError('');
 
     try {
-      await onSubmit(oldPassword, newPassword, confirmPassword);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Gagal mengubah password');
+      await onSubmit(currentPassword, newPassword, confirmPassword);
+    } catch (err: any) {
+      // Get error message from backend or error object
+      const backendMessage = err.response?.data?.message || (err instanceof Error ? err.message : 'Gagal mengubah password');
+      
+      // Translate backend error messages to Indonesian
+      let errorMessage = backendMessage;
+      const lowerMessage = backendMessage.toLowerCase();
+      
+      if ((lowerMessage.includes('password') && lowerMessage.includes('invalid')) || 
+          (lowerMessage.includes('password') && lowerMessage.includes('tidak valid'))) {
+        errorMessage = 'Password tidak valid';
+      } else if ((lowerMessage.includes('current') && lowerMessage.includes('incorrect')) ||
+                 (lowerMessage.includes('current') && lowerMessage.includes('salah')) ||
+                 (lowerMessage.includes('password') && lowerMessage.includes('salah'))) {
+        errorMessage = 'Password saat ini salah';
+      }
+      
+      setError(errorMessage);
     }
   };
 
-  const handleToggleOldPassword = (e: React.MouseEvent<HTMLButtonElement>) => {
+  const handleToggleCurrentPassword = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    setShowOldPassword(!showOldPassword);
+    setShowCurrentPassword(!showCurrentPassword);
     setTimeout(() => {
-      if (oldPasswordRef.current) {
-        oldPasswordRef.current.focus();
-        oldPasswordRef.current.setSelectionRange(oldPassword.length, oldPassword.length);
+      if (currentPasswordRef.current) {
+        currentPasswordRef.current.focus();
+        currentPasswordRef.current.setSelectionRange(currentPassword.length, currentPassword.length);
       }
     }, 0);
   };
@@ -119,13 +135,13 @@ const ChangePasswordForm: React.FC<ChangePasswordFormProps> = ({ onSubmit, loadi
           <img src={lockIcon} alt="password" className="w-6 h-6 mr-2 ml-1.5 flex-shrink-0 object-contain" />
         </label>
         <input
-          ref={oldPasswordRef}
-          id="oldPassword"
-          type={showOldPassword ? 'text' : 'password'}
-          placeholder="Old Password"
-          value={oldPassword}
+          ref={currentPasswordRef}
+          id="currentPassword"
+          type={showCurrentPassword ? 'text' : 'password'}
+          placeholder="Current Password"
+          value={currentPassword}
           onChange={(e) => {
-            setOldPassword(e.target.value);
+            setCurrentPassword(e.target.value);
             if (error) setError('');
           }}
           required
@@ -134,9 +150,9 @@ const ChangePasswordForm: React.FC<ChangePasswordFormProps> = ({ onSubmit, loadi
         <button
           type="button"
           className="bg-transparent border-none p-0 cursor-pointer ml-2 w-fit mr-3 flex items-center justify-center hover:text-primary"
-          onClick={handleToggleOldPassword}
+          onClick={handleToggleCurrentPassword}
         >
-          <img src={showOldPassword ? eyeIcon : closedEyeIcon} alt="toggle password" className="w-6 h-6 object-contain" />
+          <img src={showCurrentPassword ? eyeIcon : closedEyeIcon} alt="toggle password" className="w-6 h-6 object-contain" />
         </button>
       </div>
 

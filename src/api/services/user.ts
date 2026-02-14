@@ -126,3 +126,13 @@ export const forgotPassword = async (
 export const getDashboard = async (): Promise<any> => {
     return await api.get("/api/dashboard");
 }
+
+
+// Change Password Service
+export const changePassword = async (data: {
+  currentPassword: string;
+  newPassword: string;
+  confirmPassword: string;
+}): Promise<{ success: boolean; message: string }> => {
+  return await api.post("/api/account/change-password", data);
+};
