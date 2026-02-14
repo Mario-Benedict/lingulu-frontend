@@ -59,16 +59,6 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
     setImageError(null);
   };
 
-  // Generate initials dari username
-  const getInitials = (name: string): string => {
-    return name
-      .split(' ')
-      .map(part => part[0])
-      .join('')
-      .toUpperCase()
-      .slice(0, 2);
-  };
-
   return (
     <div className="bg-white rounded-xl shadow-md p-4 sm:p-6 lg:p-8">
       <div className="flex flex-col sm:flex-row items-center sm:items-start justify-between gap-4 sm:gap-8">

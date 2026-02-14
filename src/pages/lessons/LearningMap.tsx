@@ -15,12 +15,10 @@ const LearningMap: React.FC = () => {
   const [lessons, setLessons] = useState<Lesson[]>([]);
   const [courseTitle, setCourseTitle] = useState('Learning Course');
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
       if (!courseId) {
-        setError('No course selected');
         setLoading(false);
         return;
       }
@@ -66,11 +64,9 @@ const LearningMap: React.FC = () => {
         });
         
         setLessons(mappedLessons.length > 0 ? mappedLessons : getDefaultLessons());
-        setError(null);
       } catch (err) {
         console.error('❌ Error fetching lessons:', err);
         setLessons(getDefaultLessons());
-        setError(null);
       } finally {
         setLoading(false);
       }
