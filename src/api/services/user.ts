@@ -105,17 +105,22 @@ export const registerUser = async (data: {
 }
 
 // Reset Password Services
-export const sendResetPasswordEmail = async (email: string): Promise<{ success: boolean; message: string }> => {
-    return await api.post("/api/account/send-reset-password", { email });
-}
-
 export const resetPassword = async (data: {
-    email: string;
-    newPassword: string;
-    confirmPassword: string;
+  token: string;
+  password: string;
+  confirmPassword: string;
 }): Promise<{ success: boolean; message: string }> => {
-    return await api.post("/api/account/reset-password", data);
-}
+  return await api.post("/api/account/reset-password", data);
+};
+
+
+// Forgot Password Service
+export const forgotPassword = async (
+  email: string
+): Promise<{ success: boolean; message: string }> => {
+  return await api.post("/api/account/forgot-password", { email });
+};
+
 
 // Dashboard Service
 export const getDashboard = async (): Promise<any> => {

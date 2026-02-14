@@ -1,8 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import mascotLogin from '@assets/auth/logo-vertical.svg';
 import ResetPasswordEmail from '@components/auth/resetpassword/ResetPasswordEmail';
 import ResetPasswordForm from '@components/auth/resetpassword/ResetPasswordForm';
+import { forgotPassword, resetPassword } from '@/api/services/user';
+import { useSearchParams } from 'react-router-dom';
+
 
 type ResetStep = 'email' | 'form';
 
@@ -12,71 +15,72 @@ const ResetPass: React.FC = () => {
   const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [emailSent, setEmailSent] = useState(false);
+  const [searchParams] = useSearchParams();
+  const token = searchParams.get('token');
+
+  // Auto-switch to form step jika ada token di URL
+  useEffect(() => {
+    if (token) {
+      setStep('form');
+    }
+  }, [token]);
 
   const handleEmailSubmit = async (emailValue: string) => {
     setLoading(true);
     try {
-      const API_BASE = import.meta.env.VITE_API_URL ?? 'http://localhost:8080';
-      
-      const response = await fetch(`${API_BASE}/api/account/send-reset-password`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email: emailValue }),
-      });
+       const result = await forgotPassword(emailValue);
 
-      const result = await response.json();
+    if (!result.success) {
+      throw new Error(result.message);
+    }
 
-      if (!result.success) {
-        throw new Error(result.message || 'Failed to send reset link');
-      }
+    // Kalau berhasil
+    setEmail(emailValue);
+    setEmailSent(true); // trigger UI sukses
 
-      setEmail(emailValue);
-      setStep('form');
-    } catch (error) {
-      throw error;
+  } catch (error: any) {
+    alert(error.response?.data?.message || "Failed to send reset email");
     } finally {
-      setLoading(false);
+    setLoading(false);
     }
   };
 
   const handlePasswordSubmit = async (newPassword: string, confirmPassword: string) => {
+  if (!token) {
+    alert("Invalid or missing reset token");
+    return;
+  }
+
     setLoading(true);
+
     try {
-      const API_BASE = import.meta.env.VITE_API_URL ?? 'http://localhost:8080';
-      
-      const response = await fetch(`${API_BASE}/api/account/reset-password`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          email,
-          newPassword,
-          confirmPassword,
-        }),
-      });
+          const result = await resetPassword({
+            token,
+            password: newPassword,
+            confirmPassword,
+          });
 
-      const result = await response.json();
+          if (!result.success) {
+            throw new Error(result.message);
+          }
 
-      if (!result.success) {
-        throw new Error(result.message || 'Failed to reset password');
-      }
+          setSuccess(true);
 
-      setSuccess(true);
-      // Redirect to login after 2 seconds
-      setTimeout(() => {
-        navigate('/login', {
-          state: { message: 'Password reset successfully! Please login with your new password.' },
-        });
-      }, 2000);
-    } catch (error) {
-      throw error;
-    } finally {
-      setLoading(false);
+          setTimeout(() => {
+            navigate('/login', {
+              state: {
+                message:
+                  'Password reset successfully! Please login with your new password.',
+              },
+            });
+          }, 2000);
+        } catch (error: any) {
+          alert(error.response?.data?.message || "Failed to reset password");
+        } finally {
+          setLoading(false);
     }
-  };
+};
 
   return (
     <div className="flex items-center justify-center w-screen h-screen auth-gradient overflow-hidden px-4 py-6">
@@ -107,7 +111,20 @@ const ResetPass: React.FC = () => {
           </div>
         )}
 
-        {/* Render appropriate form based on step */}
+        {/* Email Sent Success Message */}
+        {emailSent && step === 'email' && (
+          <div className="text-center text-sm text-gray-600 mb-4">
+            <div className="bg-green-50 text-green-600 px-4 py-3 rounded-lg border-l-4 border-green-500">
+              <p className="font-semibold">Email sent!</p>
+              <p className="mt-1">
+                We've sent a password reset link to <b>{email}</b>.
+                Please check your inbox.
+              </p>
+            </div>
+          </div>
+        )}
+
+        {/* Render Form Based on Step */}
         {step === 'email' ? (
           <ResetPasswordEmail onSubmit={handleEmailSubmit} loading={loading} />
         ) : (
