@@ -129,7 +129,6 @@ const ResetPass: React.FC = () => {
           <ResetPasswordEmail onSubmit={handleEmailSubmit} loading={loading} />
         ) : (
           <ResetPasswordForm 
-            email={email} 
             onSubmit={handlePasswordSubmit} 
             onBack={() => setStep('email')}
             showBackToLogin={true}

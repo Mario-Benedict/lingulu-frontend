@@ -1,9 +1,9 @@
-import React, { type FC, useState, useEffect } from 'react';
+import { type FC, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Flame, Trophy } from 'lucide-react';
 import startConvo from '@assets/dashboard/start-convo.svg';
 import Sidebar from '@components/common/Sidebar';
-import { getCurrentUserProfile, getDashboard, getUserRank, getAuthenticatedUser, getLeaderboard } from '@api/services/user';
+import { getCurrentUserProfile, getLeaderboard } from '@api/services/user';
 import { api } from '@api/axios/instance';
 
 interface DashboardData {
@@ -23,8 +23,8 @@ const Dashboard: FC = () => {
     currentLevel: 'Beginner',
     progressPercentage: 0
   });
-  const [loading, setLoading] = useState(true);
   const [courseIds, setCourseIds] = useState<{ beginner?: string; intermediate?: string; advanced?: string }>({});
+  const [loading, setLoading] = useState(true);
 
   // Level color mapping - sama dengan Lessons
   const getLevelStyle = (level: string) => {
