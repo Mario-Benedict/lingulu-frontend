@@ -180,6 +180,14 @@ const Dashboard: FC = () => {
     navigate(`/lessons/map?courseId=${targetCourseId}`);
   };
 
+  if (loading) {
+    return (
+      <div className="flex h-screen w-screen items-center justify-center">
+        <p className="text-xl text-gray-500">Loading your dashboard...</p>
+      </div>
+    )
+  }
+
   return (
     <div className="flex h-screen w-screen bg-gray-100">
       {/* Desktop sidebar */}
