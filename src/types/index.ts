@@ -49,6 +49,7 @@ export interface LessonLevelCardProps {
 
 export interface Lesson {
   id: number;
+  lessonUuid: string;
   title: string;
   description: string;
   status: 'completed' | 'in-progress' | 'locked';

@@ -5,14 +5,13 @@ import eyeIcon from '@assets/auth/eye-icon.png';
 import closedEyeIcon from '@assets/auth/closedeye-icon.png';
 
 interface ResetPasswordFormProps {
-  email: string;
   onSubmit: (newPassword: string, confirmPassword: string) => Promise<void>;
   onBack?: () => void;
   showBackToLogin?: boolean;
   loading?: boolean;
 }
 
-const ResetPasswordForm: React.FC<ResetPasswordFormProps> = ({ email, onSubmit, onBack, showBackToLogin = false, loading = false }) => {
+const ResetPasswordForm: React.FC<ResetPasswordFormProps> = ({ onSubmit, onBack, showBackToLogin = false, loading = false }) => {
   const navigate = useNavigate();
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
