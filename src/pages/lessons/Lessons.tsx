@@ -17,6 +17,7 @@ const Lessons: React.FC = () => {
     level2: 0,
     level3: 0,
   });
+  const [courseIds, setCourseIds] = useState<{ beginner?: string; intermediate?: string; advanced?: string }>({});
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -31,20 +32,26 @@ const Lessons: React.FC = () => {
         let level1 = 0, level2 = 0, level3 = 0;
         
         // Parse courseTitle to determine level since backend order is inconsistent
+        const ids: { beginner?: string; intermediate?: string; advanced?: string } = {};
         data.forEach((course: any) => {
           const title = course?.courseTitle?.toLowerCase() || '';
           const progress = course?.progressPercentage ?? 0;
+          const courseId = course?.courseId;
           
           if (title.includes('beginner')) {
             level1 = progress;
+            ids.beginner = courseId;
           } else if (title.includes('intermediate')) {
             level2 = progress;
+            ids.intermediate = courseId;
           } else if (title.includes('advanced')) {
             level3 = progress;
+            ids.advanced = courseId;
           }
         });
         
         setProgress({ level1, level2, level3 });
+        setCourseIds(ids);
       } catch (err) {
         console.error('Fetch progress error:', err);
         if (err instanceof Error) {
@@ -133,7 +140,10 @@ const Lessons: React.FC = () => {
                   lockMessage={level.lockMessage}
                   mascotImage={level.mascotImage}
                   progress={level.progress}
-                  onStart={level.isLocked ? undefined : () => navigate(`/lessons/map`)}
+                  onStart={level.isLocked ? undefined : () => {
+                    const courseId = level.id === 1 ? courseIds.beginner : level.id === 2 ? courseIds.intermediate : courseIds.advanced;
+                    navigate(`/lessons/map?courseId=${courseId}`);
+                  }}
                 />
               ))}
             </div>
