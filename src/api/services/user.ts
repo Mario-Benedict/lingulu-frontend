@@ -136,3 +136,8 @@ export const changePassword = async (data: {
 }): Promise<{ success: boolean; message: string }> => {
   return await api.post("/api/account/change-password", data);
 };
+
+// Get Lessons by Course ID
+export const getLessonsByCourse = async (courseId: string): Promise<any> => {
+  return await api.get(`/learning/progress/lessons?courseId=${courseId}`);
+};

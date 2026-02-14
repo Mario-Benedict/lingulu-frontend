@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Flame, Trophy } from 'lucide-react';
 import startConvo from '@assets/dashboard/start-convo.svg';
 import Sidebar from '@components/common/Sidebar';
-import { getCurrentUserProfile, getUserRank } from '@api/services/user';
+import { getCurrentUserProfile, getDashboard, getUserRank, getAuthenticatedUser } from '@api/services/user';
 import { api } from '@api/axios/instance';
 
 interface DashboardData {
@@ -24,6 +24,7 @@ const Dashboard: FC = () => {
     progressPercentage: 0
   });
   const [loading, setLoading] = useState(true);
+  const [courseIds, setCourseIds] = useState<{ beginner?: string; intermediate?: string; advanced?: string }>({});
 
   // Level color mapping - sama dengan Lessons
   const getLevelStyle = (level: string) => {
@@ -81,18 +82,25 @@ const Dashboard: FC = () => {
           console.log('✅ Progress Courses:', data);
           
           // Parse courseTitle to determine level since backend order is inconsistent
+          const ids: { beginner?: string; intermediate?: string; advanced?: string } = {};
           data.forEach((course: any) => {
-            const normalizedTitle = (course?.courseTitle || '').trim().toLowerCase();
+            const title = course?.courseTitle?.toLowerCase() || '';
             const progress = course?.progressPercentage ?? 0;
+            const courseId = course?.courseId;
             
-            if (/^beginner\b/.test(normalizedTitle)) {
+            if (title.includes('beginner')) {
               beginnerProgress = progress;
-            } else if (/^intermediate\b/.test(normalizedTitle)) {
+              ids.beginner = courseId;
+            } else if (title.includes('intermediate')) {
               intermediateProgress = progress;
-            } else if (/^advanced\b/.test(normalizedTitle)) {
+              ids.intermediate = courseId;
+            } else if (title.includes('advanced')) {
               advancedProgress = progress;
+              ids.advanced = courseId;
             }
           });
+          
+          setCourseIds(ids);
           
           // Determine level based on completion
           if (beginnerProgress === 100 && intermediateProgress === 100) {
@@ -147,7 +155,15 @@ const Dashboard: FC = () => {
   };
 
   const handleContinueLearning = () => {
-    navigate('/lessons/map');
+    let targetCourseId = courseIds.beginner;
+    
+    if (data.currentLevel === 'Intermediate') {
+      targetCourseId = courseIds.intermediate;
+    } else if (data.currentLevel === 'Advanced') {
+      targetCourseId = courseIds.advanced;
+    }
+    
+    navigate(`/lessons/map?courseId=${targetCourseId}`);
   };
 
   return (
@@ -160,7 +176,7 @@ const Dashboard: FC = () => {
         {/* Header mirip Lessons */}
         <div className="bg-white shadow-sm sticky top-0 z-10 border-b-primary border-b-2 pt-[2.5rem]">
           <div className="flex justify-between items-center px-8 py-4">
-            <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold text-primary font-rubik">WELCOME BACK, {data.username}!</h2>
+            <h2 className="text-7xl font-bold text-primary font-rubik">WELCOME BACK, {data.username}!</h2>
           </div>
         </div>
         {/* Main Content Area */}
