@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Flame, Trophy } from 'lucide-react';
 import startConvo from '@assets/dashboard/start-convo.svg';
 import Sidebar from '@components/common/Sidebar';
-import { getCurrentUserProfile, getDashboard, getUserRank, getAuthenticatedUser } from '@api/services/user';
+import { getCurrentUserProfile, getUserRank } from '@api/services/user';
 import { api } from '@api/axios/instance';
 
 interface DashboardData {
