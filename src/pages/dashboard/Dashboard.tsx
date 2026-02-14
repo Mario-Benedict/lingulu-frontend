@@ -82,14 +82,14 @@ const Dashboard: FC = () => {
           
           // Parse courseTitle to determine level since backend order is inconsistent
           data.forEach((course: any) => {
-            const title = course?.courseTitle?.toLowerCase() || '';
+            const normalizedTitle = (course?.courseTitle || '').trim().toLowerCase();
             const progress = course?.progressPercentage ?? 0;
             
-            if (title.includes('beginner')) {
+            if (/^beginner\b/.test(normalizedTitle)) {
               beginnerProgress = progress;
-            } else if (title.includes('intermediate')) {
+            } else if (/^intermediate\b/.test(normalizedTitle)) {
               intermediateProgress = progress;
-            } else if (title.includes('advanced')) {
+            } else if (/^advanced\b/.test(normalizedTitle)) {
               advancedProgress = progress;
             }
           });
