@@ -27,20 +27,20 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
   useEffect(() => {
     console.log('📸 ProfileCard mounted with avatarUrl:', avatarUrl);
     
+    // Reset state ketika avatarUrl berubah
+    setImageLoading(true);
+    setImageError(null);
+    
     // 3 second timeout untuk CloudFront
     loadTimeoutRef.current = setTimeout(() => {
-      if (imageLoading) {
-        console.error('⏱️ Avatar timeout after 3s - CloudFront unreachable');
-        console.error('URL:', avatarUrl);
-        setImageError('Timeout');
-        setImageLoading(false);
-      }
+      setImageError('Timeout');
+      setImageLoading(false);
     }, 3000);
 
     return () => {
       if (loadTimeoutRef.current) clearTimeout(loadTimeoutRef.current);
     };
-  }, [avatarUrl, imageLoading]);
+  }, [avatarUrl]);
 
   const handleImageError = (error: React.SyntheticEvent<HTMLImageElement, Event>) => {
     console.error('❌ Avatar image failed to load');
@@ -75,13 +75,7 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
         {/* Left Side - Avatar and Profile Info */}
         <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-6 w-full sm:w-auto">
           <div className="relative flex-shrink-0">
-            {imageError ? (
-              <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full border-4 border-primary bg-gradient-to-br from-primary to-primary/70 flex items-center justify-center">
-                <span className="text-white font-bold text-xl sm:text-2xl font-rubik">
-                  {getInitials(username)}
-                </span>
-              </div>
-            ) : imageLoading ? (
+            {imageLoading ? (
               <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full border-4 border-primary bg-lessongray-100 flex items-center justify-center">
                 <div className="text-center">
                   <div className="animate-spin inline-block w-6 h-6 border-2 border-primary border-t-transparent rounded-full"></div>
@@ -91,7 +85,7 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
               <img
                 src={avatarUrl}
                 alt={username}
-                className="w-20 h-20 sm:w-24 sm:h-24 rounded-full border-4 border-primary object-cover"
+                className="w-20 h-20 sm:w-24 sm:h-24 rounded-full border-4 border-primary object-cover shadow-[0_4px_10px_rgba(0,0,0,0.15)] bg-white"
                 onError={handleImageError}
                 onLoad={handleImageLoad}
                 referrerPolicy="no-referrer"
