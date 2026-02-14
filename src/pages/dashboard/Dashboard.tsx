@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Flame, Trophy } from 'lucide-react';
 import startConvo from '@assets/dashboard/start-convo.svg';
 import Sidebar from '@components/common/Sidebar';
-import { getCurrentUserProfile, getDashboard, getUserRank, getAuthenticatedUser } from '@api/services/user';
+import { getCurrentUserProfile, getDashboard, getUserRank, getAuthenticatedUser, getLeaderboard } from '@api/services/user';
 import { api } from '@api/axios/instance';
 
 interface DashboardData {
@@ -61,14 +61,28 @@ const Dashboard: FC = () => {
           }
         }
 
-        // Fetch user rank separately
+        // Fetch user rank dari leaderboard (sudah sorted dengan tie-breaker based on waktu)
         let userRank = 0;
         try {
-          const rankResponse = await getUserRank();
-          userRank = rankResponse.data?.rank || 0;
-          console.log('✅ User Rank Response:', rankResponse.data);
+          const leaderboardResponse = await getLeaderboard();
+          
+          if (leaderboardResponse && userProfile) {
+            const rawData = leaderboardResponse.data?.data || leaderboardResponse.data;
+            const leaderboardData = Array.isArray(rawData) ? rawData : [];
+            
+            // Find current user's position in leaderboard (already sorted by backend with tie-breaker)
+            const currentUsername = userProfile.userName?.toLowerCase().trim();
+            const foundIdx = leaderboardData.findIndex((item: any) => 
+              (item.username || item.name || '').toLowerCase().trim() === currentUsername
+            );
+            
+            if (foundIdx !== -1) {
+              userRank = foundIdx + 1;
+            }
+            console.log('✅ User Rank from Leaderboard:', userRank);
+          }
         } catch (rankErr) {
-          console.error('❌ Failed to fetch rank:', rankErr);
+          console.error('❌ Failed to fetch rank from leaderboard:', rankErr);
         }
 
         // Fetch progress from /learning/progress/courses (same endpoint as Lessons)
