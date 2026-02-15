@@ -141,3 +141,8 @@ export const changePassword = async (data: {
 export const getLessonsByCourse = async (courseId: string): Promise<any> => {
   return await api.get(`/learning/progress/lessons?courseId=${courseId}`);
 };
+
+// Get Sections by Lesson ID
+export const getSectionsByLesson = async (lessonId: string): Promise<any> => {
+  return await api.get(`/learning/progress/sections?lessonId=${lessonId}`);
+};

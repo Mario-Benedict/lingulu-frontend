@@ -5,20 +5,30 @@ interface SectionHeaderProps {
   levelTitle: string;
   lessonTitle: string;
   backPath?: string;
+  courseId?: string;
 }
 
 const SectionHeader: React.FC<SectionHeaderProps> = ({
   levelTitle,
   lessonTitle,
   backPath = '/lessons/map',
+  courseId,
 }) => {
   const navigate = useNavigate();
+  
+  const handleBack = () => {
+    if (courseId) {
+      navigate(`${backPath}?courseId=${courseId}`);
+    } else {
+      navigate(backPath);
+    }
+  };
 
   return (
     <div className="bg-white shadow-sm sticky top-0 z-10 border-b-primary border-b-2 py-1 sm:py-2">
       <div className="flex items-center px-4 sm:px-6 md:px-8 py-3 sm:py-4 gap-3 sm:gap-6">
         <button
-          onClick={() => navigate(backPath)}
+          onClick={handleBack}
           className="group transition p-2 sm:p-3 md:p-4 hover:bg-lessongray-50 hover:shadow-primary shadow-lg rounded-lg bg-primary shrink-0"
         >
           <ArrowLeft
