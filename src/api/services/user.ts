@@ -43,11 +43,6 @@ export const updateUserBio = async (bio: string): Promise<any> => {
     return await api.post("/api/account/profile/bio", { bio });
 };
 
-// Get Current User Rank
-export const getUserRank = async (): Promise<any> => {
-    return await api.get("/api/leaderboard/user-rank");
-}
-
 // Fetch avatar from AWS S3 through backend proxy
 export const fetchAvatarAsBlob = async (s3Url: string): Promise<string> => {
     try {

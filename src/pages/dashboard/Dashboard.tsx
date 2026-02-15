@@ -3,8 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Flame, Trophy } from 'lucide-react';
 import startConvo from '@assets/dashboard/start-convo.svg';
 import Sidebar from '@components/common/Sidebar';
-import { getCurrentUserProfile, getLeaderboard } from '@api/services/user';
-import { api } from '@api/axios/instance';
+import { getDashboard } from '@api/services/user';
 
 interface DashboardData {
   username: string;
@@ -12,18 +11,19 @@ interface DashboardData {
   globalRank: number;
   currentLevel: 'Beginner' | 'Intermediate' | 'Advanced';
   progressPercentage: number;
+  courseId?: string;
 }
 
 const Dashboard: FC = () => {
   const navigate = useNavigate();
   const [data, setData] = useState<DashboardData>({
-    username: localStorage.getItem('username') || 'User',
-    streak: 200,
+    username: 'User',
+    streak: 0,
     globalRank: 0,
     currentLevel: 'Beginner',
-    progressPercentage: 0
+    progressPercentage: 0,
+    courseId: ''
   });
-  const [courseIds, setCourseIds] = useState<{ beginner?: string; intermediate?: string; advanced?: string }>({});
   const [loading, setLoading] = useState(true);
 
   // Level color mapping - sama dengan Lessons
@@ -45,117 +45,60 @@ const Dashboard: FC = () => {
       try {
         setLoading(true);
         
-        // Fetch user profile data (includes username, streak)
-        let userProfile = null;
-        try {
-          const profileResponse = await getCurrentUserProfile();
-          userProfile = profileResponse.data;
-          console.log('✅ Profile Response:', userProfile);
-        } catch (profileErr) {
-          console.error('❌ Failed to fetch profile:', profileErr);
-          // Try to get username from localStorage as fallback
-          const storedUsername = localStorage.getItem('username');
-          if (storedUsername) {
-            userProfile = { userName: storedUsername };
-            console.log('📦 Using fallback username from localStorage:', storedUsername);
-          }
-        }
+        // Fetch all data from dashboard endpoint
+        const dashboardRes = await getDashboard();
+        console.log('📊 Raw Dashboard Response:', dashboardRes);
+        const dashboardData = dashboardRes.data?.data || dashboardRes.data;
+        console.log('✅ Dashboard Response:', dashboardData);
 
-        // Fetch user rank dari leaderboard (sudah sorted dengan tie-breaker based on waktu)
-        let userRank = 0;
-        try {
-          const leaderboardResponse = await getLeaderboard();
-          
-          if (leaderboardResponse && userProfile) {
-            const rawData = leaderboardResponse.data?.data || leaderboardResponse.data;
-            const leaderboardData = Array.isArray(rawData) ? rawData : [];
-            
-            // Find current user's position in leaderboard (already sorted by backend with tie-breaker)
-            const currentUsername = userProfile.userName?.toLowerCase().trim();
-            const foundIdx = leaderboardData.findIndex((item: any) => 
-              (item.username || item.name || '').toLowerCase().trim() === currentUsername
-            );
-            
-            if (foundIdx !== -1) {
-              userRank = foundIdx + 1;
-            }
-            console.log('✅ User Rank from Leaderboard:', userRank);
-          }
-        } catch (rankErr) {
-          console.error('❌ Failed to fetch rank from leaderboard:', rankErr);
-        }
+        const {
+          username = 'User',
+          streak = 0,
+          rank = 0,
+          courseResponse = null
+        } = dashboardData;
 
-        // Fetch progress from /learning/progress/courses (same endpoint as Lessons)
-        let progressPercentage = 0;
+        // Extract course progress data
         let currentLevel: 'Beginner' | 'Intermediate' | 'Advanced' = 'Beginner';
-        let beginnerProgress = 0, intermediateProgress = 0, advancedProgress = 0;
-        
-        try {
-          const res = await api.get('/learning/progress/courses');
-          const data = res.data ?? [];
-          console.log('✅ Progress Courses:', data);
-          
-          // Parse courseTitle to determine level since backend order is inconsistent
-          const ids: { beginner?: string; intermediate?: string; advanced?: string } = {};
-          data.forEach((course: any) => {
-            const title = course?.courseTitle?.toLowerCase() || '';
-            const progress = course?.progressPercentage ?? 0;
-            const courseId = course?.courseId;
-            
-            if (title.includes('beginner')) {
-              beginnerProgress = progress;
-              ids.beginner = courseId;
-            } else if (title.includes('intermediate')) {
-              intermediateProgress = progress;
-              ids.intermediate = courseId;
-            } else if (title.includes('advanced')) {
-              advancedProgress = progress;
-              ids.advanced = courseId;
-            }
-          });
-          
-          setCourseIds(ids);
-          
-          // Determine level based on completion
-          if (beginnerProgress === 100 && intermediateProgress === 100) {
+        let progressPercentage = 0;
+        let courseId = '';
+
+        if (courseResponse) {
+          const { courseTitle = '', progressPercentage: progress = 0, courseId: cId = '' } = courseResponse;
+          progressPercentage = progress;
+          courseId = cId;
+
+          // Determine level based on course title
+          const titleLower = courseTitle.toLowerCase();
+          if (titleLower.includes('advanced')) {
             currentLevel = 'Advanced';
-            progressPercentage = advancedProgress;
-          } else if (beginnerProgress === 100) {
+          } else if (titleLower.includes('intermediate')) {
             currentLevel = 'Intermediate';
-            progressPercentage = intermediateProgress;
           } else {
             currentLevel = 'Beginner';
-            progressPercentage = beginnerProgress;
           }
-          
-          console.log('✅ Current Level:', currentLevel, 'Progress:', progressPercentage);
-        } catch (err) {
-          console.error('❌ Failed to fetch progress:', err);
         }
 
-        // Determine username fallback chain
-        const displayUsername = 
-          userProfile?.userName || 
-          localStorage.getItem('username') || 
-          'User';
-
-        console.log('📊 Final Data:', {
-          username: displayUsername,
-          streak: userProfile?.streak || 0,
-          globalRank: userRank,
+        console.log('📊 Final Dashboard Data:', {
+          username,
+          streak,
+          globalRank: rank,
           currentLevel,
-          progressPercentage
+          progressPercentage,
+          courseId
         });
 
         setData({
-          username: displayUsername,
-          streak: userProfile?.streak || 0,
-          globalRank: userRank,
+          username,
+          streak,
+          globalRank: rank,
           currentLevel,
-          progressPercentage
+          progressPercentage,
+          courseId
         });
       } catch (err) {
-        console.error('Failed to fetch dashboard data:', err);
+        
+        console.error('❌ Failed to fetch dashboard:', err);
       } finally {
         setLoading(false);
       }
@@ -169,24 +112,10 @@ const Dashboard: FC = () => {
   };
 
   const handleContinueLearning = () => {
-    let targetCourseId = courseIds.beginner;
-    
-    if (data.currentLevel === 'Intermediate') {
-      targetCourseId = courseIds.intermediate;
-    } else if (data.currentLevel === 'Advanced') {
-      targetCourseId = courseIds.advanced;
+    if (data.courseId) {
+      navigate(`/lessons/map?courseId=${data.courseId}`);
     }
-    
-    navigate(`/lessons/map?courseId=${targetCourseId}`);
   };
-
-  if (loading) {
-    return (
-      <div className="flex h-screen w-screen items-center justify-center">
-        <p className="text-xl text-gray-500">Loading your dashboard...</p>
-      </div>
-    )
-  }
 
   return (
     <div className="flex h-screen w-screen bg-gray-100">
