@@ -102,62 +102,6 @@ npm run preview
 
 ---
 
-## 🔗 API Integration Example
-
-User wants to login
-
-Frontend sends:
-
-```bash
-POST /api/account/login
-```
-
-Request body:
-```json
-{
-  "username": "string",
-  "password": "********"
-}
-```
-
-Backend response:
-
-1. Login successful
-
-```json
-{
-  "token": "string",
-  "user": {
-    "id": "string",
-    "username": "string",
-    "email": "user@example.com"
-  }
-}
-```
-
-2. Invalid username or password
-
-```json
-{
-  "error": "Invalid username or password"
-}
-```
-
-3. Server error
-
-```json
-{
-  "error": "string"
-}
-```
-
-Frontend then:
-- Goes to dashboard if successful
-- Show error message
-- Show invalid username or password message
-
----
-
 ## 🌍 Multi-Language Support
 
 The project supports internationalization through:
@@ -184,7 +128,7 @@ Backend validates user
 ↓
 JWT token returned
 ↓
-Token stored (localStorage)
+Token stored (cookie)
 ↓
 AuthProvider updates global state
 ↓
