@@ -32,17 +32,6 @@ const router = createBrowserRouter([
   { path: '/otp-verify', element: <Otp /> },
   { path: '/reset-password', element: <ResetPass /> },
   { path: '/oauth2/success', element: <OAuthSuccess /> },
-  { path: '/dashboard', element: <Dashboard /> },
-      { path: '/lessons', element: <Lessons /> },
-      { path: '/lessons/map', element: <LearningMap /> },
-      { path: '/lessons/:lessonId', element: <Section /> },
-      { path: '/lessons/materials/:materialId', element: <Materials /> },
-      { path: '/lessons/exercises/:exerciseId', element: <Exercises /> },
-      { path: '/lessons/pronunciation/:exerciseId', element: <PronunciationExercise /> },
-      { path: '/leaderboard', element: <Leaderboard /> },
-      { path: '/conversation', element: <Aiconversation /> },
-      { path: '/profile', element: <Profile /> },
-      { path: '/change-password', element: <ChangePass /> },
   {
     element: (
       <ProtectedRoute />
