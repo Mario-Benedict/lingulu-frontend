@@ -3,6 +3,8 @@ interface NavigationButtonsProps {
   totalQuestions: number;
   onBack: () => void;
   onNext: () => void;
+  isNextDisabled?: boolean;
+  isRetryDisabled?: boolean;
 }
 
 const NavigationButtons: React.FC<NavigationButtonsProps> = ({
@@ -10,6 +12,8 @@ const NavigationButtons: React.FC<NavigationButtonsProps> = ({
   totalQuestions,
   onBack,
   onNext,
+  isNextDisabled = false,
+  isRetryDisabled = false,
 }) => {
   const isLastQuestion = currentQuestion === totalQuestions;
 
@@ -17,18 +21,23 @@ const NavigationButtons: React.FC<NavigationButtonsProps> = ({
     <div className="flex gap-3 sm:gap-4 justify-between mt-2 sm:mt-8 md:mt-4">
       <button
         onClick={onBack}
-        disabled={currentQuestion === 1}
+        disabled={isRetryDisabled}
         className={`flex-1 py-2 sm:py-3 rounded-lg font-semibold transition font-rubik text-sm sm:text-base ${
-          currentQuestion === 1
+          isRetryDisabled
             ? 'bg-lessongray-300 text-lessongray-500 cursor-not-allowed'
             : 'bg-lessongray-500 text-white hover:bg-lessongray-600'
         }`}
       >
-        Back
+        Retry Answer
       </button>
       <button
         onClick={onNext}
-        className="flex-1 text-white py-2 sm:py-3 rounded-lg font-semibold transition font-rubik text-sm sm:text-base bg-primary hover:bg-primary-dark"
+        disabled={isNextDisabled}
+        className={`flex-1 text-white py-2 sm:py-3 rounded-lg font-semibold transition font-rubik text-sm sm:text-base ${
+          isNextDisabled
+            ? 'bg-lessongray-300 text-lessongray-500 cursor-not-allowed'
+            : 'bg-primary hover:bg-primary-dark'
+        }`}
       >
         {isLastQuestion ? 'Submit' : 'Next'}
       </button>

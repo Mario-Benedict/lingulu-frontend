@@ -6,6 +6,7 @@ import ProgressBar from '@components/lessons/exercises/ProgressBar';
 import PronunciationQuestion from '@components/lessons/exercises/PronunciationQuestion';
 import NavigationButtons from '@components/lessons/exercises/NavigationButtons';
 import SummaryResultPronunciation from '@components/lessons/exercises/SummaryResultPronunciation';
+import SpeakingReview from '@components/lessons/exercises/SpeakingReview';
 
 const PronunciationExercise: React.FC = () => {
   const navigate = useNavigate();
@@ -15,7 +16,8 @@ const PronunciationExercise: React.FC = () => {
   
   const [currentQuestion, setCurrentQuestion] = useState(1);
   const [isListening, setIsListening] = useState(false);
-  const [showSummary, setShowSummary] = useState(true);
+  const [showSummary, setShowSummary] = useState(false);
+  const [showReview, setShowReview] = useState(false);
   const [scores, setScores] = useState<Record<number, number>>({});
   const totalQuestions = 10;
   const progressPercentage = (currentQuestion / totalQuestions) * 100;
@@ -85,6 +87,62 @@ const PronunciationExercise: React.FC = () => {
 
   const currentQuestionData = questions[currentQuestion - 1];
 
+  // Dummy data for speaking review - unique feedback for each question
+  const reviewDataByQuestion: Record<number, { score: number; corrections: ('correct' | 'okay' | 'incorrect')[]; feedback: string }> = {
+    1: {
+      score: 92,
+      corrections: ['correct', 'correct'],
+      feedback: 'Sempurna! Pelafalan Anda sangat bagus, lanjutkan semangat ini!',
+    },
+    2: {
+      score: 88,
+      corrections: ['correct', 'okay'],
+      feedback: 'Bagus! Hanya perlu sedikit perbaikan pada suku kata terakhir.',
+    },
+    3: {
+      score: 85,
+      corrections: ['correct', 'okay', 'okay'],
+      feedback: 'Cukup baik! Intonasi perlu ditingkatkan sedikit lagi.',
+    },
+    4: {
+      score: 90,
+      corrections: ['correct', 'correct', 'correct'],
+      feedback: 'Kerja bagus! Tinggal sedikit lagi supaya pengucapanmu sempurna.',
+    },
+    5: {
+      score: 87,
+      corrections: ['okay', 'correct', 'correct'],
+      feedback: 'Hampir sempurna! Coba perjelas kata pertama pada percobaan berikutnya.',
+    },
+    6: {
+      score: 90,
+      corrections: ['correct', 'correct', 'correct', 'okay', 'correct'],
+      feedback: 'Kerja bagus! Tinggal sedikit lagi supaya pengucapanmu sempurna.',
+    },
+    7: {
+      score: 84,
+      corrections: ['okay', 'correct', 'okay', 'correct', 'okay'],
+      feedback: 'Sudah cukup baik, terus latih untuk mencapai kesempurnaan!',
+    },
+    8: {
+      score: 89,
+      corrections: ['correct', 'correct', 'okay', 'correct', 'correct'],
+      feedback: 'Sangat bagus! Hanya butuh sedikit perbaikan di tengah kalimat.',
+    },
+    9: {
+      score: 91,
+      corrections: ['correct', 'correct', 'correct'],
+      feedback: 'Hebat! Pelafalan Anda semakin membaik. Pertahankan konsistensi ini!',
+    },
+    10: {
+      score: 93,
+      corrections: ['correct', 'correct', 'correct'],
+      feedback: 'Luar biasa! Anda telah menunjukkan peningkatan signifikan.',
+    },
+  };
+
+  const currentReviewData = reviewDataByQuestion[currentQuestion];
+
   // Helper function to generate per-word corrections based on score
   const generateWordCorrections = (text: string, score: number) => {
     const words = text.split(' ');
@@ -128,19 +186,28 @@ const PronunciationExercise: React.FC = () => {
    */
 
   const handleNext = () => {
-    if (currentQuestion < totalQuestions) {
-      setCurrentQuestion(currentQuestion + 1);
-      setIsListening(false);
+    // Show review popup when Next is clicked
+    if (scores[currentQuestion] !== undefined) {
+      setShowReview(true);
     } else {
-      setShowSummary(true);
+      // If no score yet, just proceed
+      if (currentQuestion < totalQuestions) {
+        setCurrentQuestion(currentQuestion + 1);
+        setIsListening(false);
+      } else {
+        setShowSummary(true);
+      }
     }
   };
 
-  const handleBack = () => {
-    if (currentQuestion > 1) {
-      setCurrentQuestion(currentQuestion - 1);
-      setIsListening(false);
-    }
+  const handleRetryAnswer = () => {
+    // Reset the score for current question to allow re-recording
+    setScores((prev) => {
+      const updated = { ...prev };
+      delete updated[currentQuestion];
+      return updated;
+    });
+    setIsListening(false);
   };
 
   const handleMicrophoneClick = () => {
@@ -149,8 +216,8 @@ const PronunciationExercise: React.FC = () => {
       setIsListening(true);
     } else {
       setIsListening(false);
-      // Generate random score between 60-100
-      const randomScore = Math.floor(Math.random() * 41) + 60;
+      // Generate random score between 80-95 for demo
+      const randomScore = Math.floor(Math.random() * 16) + 80;
       setScores((prev) => ({
         ...prev,
         [currentQuestion]: randomScore,
@@ -170,6 +237,7 @@ const PronunciationExercise: React.FC = () => {
     setCurrentQuestion(1);
     setScores({});
     setShowSummary(false);
+    setShowReview(false);
     setIsListening(false);
   };
 
@@ -179,6 +247,16 @@ const PronunciationExercise: React.FC = () => {
       navigate(`/lessons/${lessonId}${params}`);
     } else {
       navigate('/lessons');
+    }
+  };
+
+  const handleReviewNext = () => {
+    setShowReview(false);
+    setIsListening(false);
+    if (currentQuestion < totalQuestions) {
+      setCurrentQuestion(currentQuestion + 1);
+    } else {
+      setShowSummary(true);
     }
   };
 
@@ -207,6 +285,15 @@ const PronunciationExercise: React.FC = () => {
 
   return (
     <PageLayout activeMenu="lessons" showHeader={false}>
+      {showReview && currentReviewData && (
+        <SpeakingReview
+          score={currentReviewData.score}
+          text={currentQuestionData.text}
+          corrections={currentReviewData.corrections}
+          feedback={currentReviewData.feedback}
+          onNext={handleReviewNext}
+        />
+      )}
       <div className="flex-1 flex flex-col min-w-0">
         <ExerciseHeader
           title="Latihan Pronunciation"
@@ -226,14 +313,17 @@ const PronunciationExercise: React.FC = () => {
                     questionText={currentQuestionData.question}
                     isListening={isListening}
                     onMicrophoneClick={handleMicrophoneClick}
+                    isAnswered={scores[currentQuestion] !== undefined}
                   />
                 )}
               </div>
               <NavigationButtons
                 currentQuestion={currentQuestion}
                 totalQuestions={totalQuestions}
-                onBack={handleBack}
+                onBack={handleRetryAnswer}
                 onNext={handleNext}
+                isNextDisabled={scores[currentQuestion] === undefined}
+                isRetryDisabled={isListening}
               />
             </div>
           </div>

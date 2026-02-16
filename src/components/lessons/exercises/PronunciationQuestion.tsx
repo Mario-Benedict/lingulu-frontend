@@ -6,6 +6,7 @@ interface PronunciationQuestionProps {
   questionText: string;
   isListening: boolean;
   onMicrophoneClick: () => void;
+  isAnswered?: boolean;
 }
 
 const PronunciationQuestion: React.FC<PronunciationQuestionProps> = ({
@@ -13,11 +14,12 @@ const PronunciationQuestion: React.FC<PronunciationQuestionProps> = ({
   questionText,
   isListening,
   onMicrophoneClick,
+  isAnswered = false,
 }) => {
   return (
     <div className="flex flex-col">
       <QuestionCard questionNumber={questionNumber} questionText={questionText} />
-      <MicrophoneButton isListening={isListening} onClick={onMicrophoneClick} />
+      <MicrophoneButton isListening={isListening} onClick={onMicrophoneClick} isAnswered={isAnswered} />
     </div>
   );
 };
