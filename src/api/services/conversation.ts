@@ -43,7 +43,7 @@ export const sendConversationAudio = async (
   });
 
   // Interceptor unwraps response.data, so result is ConversationApiResponse
-  const result = await api.post('/api/conversation', formData, {
+  const result = await api.post('/conversation', formData, {
     headers: {
       'Content-Type': 'multipart/form-data',
     },

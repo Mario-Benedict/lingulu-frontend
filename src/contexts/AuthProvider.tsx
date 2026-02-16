@@ -1,6 +1,5 @@
 import { createContext, useEffect, useState, type ReactNode } from "react";
-import { api } from "@/api/axios/index";
-import { getAuthenticatedUser } from "@/api/services/auth";
+import { getAuthenticatedUser, logoutUser } from "@/api/services";
 
 type AuthContextType = {
   isAuthenticated: boolean;
@@ -23,21 +22,35 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     const checkAuth = async () => {
       try {
         const response = await getAuthenticatedUser();
-        setIsAuthenticated(response.data?.authenticated || false);
-      } catch {
-        setIsAuthenticated(false);
+        const isValid = response.data?.authenticated || false;
+        setIsAuthenticated(isValid);
       } finally {
         setLoading(false);
       }
     };
+
     checkAuth();
+
+    const handleLogoutEvent = () => {
+      setIsAuthenticated(false);
+    };
+
+    window.addEventListener('user-logged-out', handleLogoutEvent);
+    
+    return () => {
+      window.removeEventListener('user-logged-out', handleLogoutEvent);
+    };
   }, []);
 
   const logout = async () => {
     try {
-      await api.post("/api/account/logout"); 
+      await logoutUser();
+    } catch (error) {
+      console.error('Logout error:', error);
     } finally {
       setIsAuthenticated(false);
+      // Dispatch event for other tabs
+      window.dispatchEvent(new Event('user-logged-out'));
       window.location.href = "/login";
     }
   };

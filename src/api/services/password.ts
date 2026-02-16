@@ -5,13 +5,13 @@ export const resetPassword = async (data: {
   password: string;
   confirmPassword: string;
 }): Promise<{ success: boolean; message: string }> => {
-  return await api.post("/api/account/reset-password", data);
+  return await api.post("/account/reset-password", data);
 };
 
 export const forgotPassword = async (
   email: string
 ): Promise<{ success: boolean; message: string }> => {
-  return await api.post("/api/account/forgot-password", { email });
+  return await api.post("/account/forgot-password", { email });
 };
 
 export const changePassword = async (data: {
@@ -19,5 +19,5 @@ export const changePassword = async (data: {
   newPassword: string;
   confirmPassword: string;
 }): Promise<{ success: boolean; message: string }> => {
-  return await api.post("/api/account/change-password", data);
+  return await api.post("/account/change-password", data);
 };
