@@ -11,6 +11,8 @@ const NavigationButtons: React.FC<NavigationButtonsProps> = ({
   onBack,
   onNext,
 }) => {
+  const isLastQuestion = currentQuestion === totalQuestions;
+
   return (
     <div className="flex gap-3 sm:gap-4 justify-between mt-2 sm:mt-8 md:mt-4">
       <button
@@ -26,14 +28,9 @@ const NavigationButtons: React.FC<NavigationButtonsProps> = ({
       </button>
       <button
         onClick={onNext}
-        disabled={currentQuestion === totalQuestions}
-        className={`flex-1 text-white py-2 sm:py-3 rounded-lg font-semibold transition font-rubik text-sm sm:text-base ${
-          currentQuestion === totalQuestions
-            ? 'bg-lessongray-300 cursor-not-allowed'
-            : 'bg-primary hover:bg-primary-dark'
-        }`}
+        className="flex-1 text-white py-2 sm:py-3 rounded-lg font-semibold transition font-rubik text-sm sm:text-base bg-primary hover:bg-primary-dark"
       >
-        Next
+        {isLastQuestion ? 'Submit' : 'Next'}
       </button>
     </div>
   );

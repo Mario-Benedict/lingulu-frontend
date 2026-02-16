@@ -67,7 +67,17 @@
     "materials": "Materi",
     "exercises": "Latihan",
     "learningMap": "Peta Belajar",
-    "sections": "Bagian"
+    "sections": "Bagian",
+    "resultSummary": "Ringkasan Hasil",
+    "review": "Ulasan",
+    "yourAnswer": "Jawaban Kamu:",
+    "retry": "Coba Lagi",
+    "finish": "Selesai",
+    "correct": "Benar",
+    "okay": "Cukup",
+    "incorrect": "Salah",
+    "question": "Soal",
+    "avgScore": "NILAI RATA-RATA"
   },
   "leaderboard": {
     "title": "Papan Peringkat",
