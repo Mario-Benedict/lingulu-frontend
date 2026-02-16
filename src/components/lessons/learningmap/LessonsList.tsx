@@ -1,4 +1,4 @@
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import LessonCircleButton from './LessonCircleButton';
 import type { Lesson } from '@/types';
 
@@ -8,6 +8,8 @@ interface LessonsListProps {
 
 const LessonsList: React.FC<LessonsListProps> = ({ lessons }) => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const courseId = searchParams.get('courseId');
 
   return (
     <div className="relative w-full h-full flex items-center justify-center font-poppins pt-20 sm:pt-0">
@@ -19,7 +21,7 @@ const LessonsList: React.FC<LessonsListProps> = ({ lessons }) => {
               lessonId={lesson.id}
               onClick={
                 lesson.status !== 'locked'
-                  ? () => navigate(`/lessons/${lesson.id}`)
+                  ? () => navigate(`/lessons/${lesson.lessonUuid}?courseId=${courseId}`)
                   : undefined
               }
               disabled={lesson.status === 'locked'}

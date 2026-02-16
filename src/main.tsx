@@ -40,7 +40,7 @@ const router = createBrowserRouter([
       { path: '/dashboard', element: <Dashboard /> },
       { path: '/lessons', element: <Lessons /> },
       { path: '/lessons/map', element: <LearningMap /> },
-      { path: '/lessons/:LevelId', element: <Section /> },
+      { path: '/lessons/:lessonId', element: <Section /> },
       { path: '/lessons/materials/:materialId', element: <Materials /> },
       { path: '/lessons/exercises/:exerciseId', element: <Exercises /> },
       { path: '/lessons/pronunciation/:exerciseId', element: <PronunciationExercise /> },
