@@ -72,7 +72,12 @@
     "review": "Review",
     "yourAnswer": "Your Answer:",
     "retry": "Retry",
-    "finish": "Finish"
+    "finish": "Finish",
+    "correct": "Correct",
+    "okay": "Okay",
+    "incorrect": "Incorrect",
+    "question": "Question",
+    "avgScore": "AVG SCORE"
   },
   "leaderboard": {
     "title": "Leaderboard",

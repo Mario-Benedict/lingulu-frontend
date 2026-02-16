@@ -13,7 +13,6 @@ interface SectionData {
   description?: string;
   icon: typeof BookOpenText;
   type: 'material' | 'exercise' | 'pronunciation';
-  status?: 'COMPLETED' | 'IN_PROGRESS' | 'NOT_STARTED';
 }
 
 const Section: React.FC = () => {
@@ -257,7 +256,6 @@ const Section: React.FC = () => {
                   description={section.description}
                   icon={section.icon}
                   type={section.type}
-                  status={section.status}
                 />
               ))}
             </div>

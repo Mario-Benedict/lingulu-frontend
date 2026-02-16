@@ -72,7 +72,12 @@
     "review": "Ulasan",
     "yourAnswer": "Jawaban Kamu:",
     "retry": "Coba Lagi",
-    "finish": "Selesai"
+    "finish": "Selesai",
+    "correct": "Benar",
+    "okay": "Cukup",
+    "incorrect": "Salah",
+    "question": "Soal",
+    "avgScore": "NILAI RATA-RATA"
   },
   "leaderboard": {
     "title": "Papan Peringkat",

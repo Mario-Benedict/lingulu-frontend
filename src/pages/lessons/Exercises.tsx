@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import PageLayout from '@components/common/PageLayout';
 import ExerciseHeader from '@components/lessons/exercises/ExerciseHeader';
 import ProgressBar from '@components/lessons/exercises/ProgressBar';
@@ -7,9 +8,14 @@ import NavigationButtons from '@components/lessons/exercises/NavigationButtons';
 import SummaryResult from '@components/lessons/exercises/SummaryResult';
 
 const Exercise: React.FC = () => {
+  const navigate = useNavigate();
+  const { lessonId } = useParams<{ lessonId: string }>();
+  const [searchParams] = useSearchParams();
+  const courseId = searchParams.get('courseId');
+  
   const [currentQuestion, setCurrentQuestion] = useState(1);
   const [selectedAnswers, setSelectedAnswers] = useState<Record<number, string>>({});
-  const [showSummary, setShowSummary] = useState(true);
+  const [showSummary, setShowSummary] = useState(false);
   const totalQuestions = 10;
   const progressPercentage = (currentQuestion / totalQuestions) * 100;
 
@@ -182,8 +188,12 @@ const Exercise: React.FC = () => {
   };
 
   const handleFinish = () => {
-    // Navigate to lessons or dashboard
-    window.location.href = '/lessons';
+    if (lessonId) {
+      const params = courseId ? `?courseId=${courseId}` : '';
+      navigate(`/lessons/${lessonId}${params}`);
+    } else {
+      navigate('/lessons');
+    }
   };
 
   if (showSummary) {
