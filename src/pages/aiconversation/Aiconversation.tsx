@@ -5,7 +5,7 @@ import ConversationHeader from '@components/aiconversation/ConversationHeader';
 import MessageList from '@components/aiconversation/MessageList';
 import ConversationInput from '@components/aiconversation/ConversationInput';
 import type { Message } from '@/types';
-import { sendConversationAudio } from '@api/services/conversation';
+import { sendConversationAudio } from '@api/services';
 
 const makeId = () =>
   crypto.randomUUID?.() ??

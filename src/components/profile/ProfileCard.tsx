@@ -20,40 +20,34 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
   onLogout,
 }) => {
   const { t } = useTranslation();
-  const [imageLoading, setImageLoading] = useState(true);
+  const [imageLoading, setImageLoading] = useState<boolean>(true);
   const [imageError, setImageError] = useState<string | null>(null);
   const loadTimeoutRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 
-  useEffect(() => {
-    console.log('📸 ProfileCard mounted with avatarUrl:', avatarUrl);
+  useEffect(() => {    
+    const initialStateTimer = setTimeout(() => {
+      setImageLoading(true);
+      setImageError(null);
+    }, 0);
     
-    // Reset state ketika avatarUrl berubah
-    setImageLoading(true);
-    setImageError(null);
-    
-    // 3 second timeout untuk CloudFront
     loadTimeoutRef.current = setTimeout(() => {
       setImageError('Timeout');
       setImageLoading(false);
     }, 3000);
 
     return () => {
+      clearTimeout(initialStateTimer);
       if (loadTimeoutRef.current) clearTimeout(loadTimeoutRef.current);
     };
   }, [avatarUrl]);
 
-  const handleImageError = (error: React.SyntheticEvent<HTMLImageElement, Event>) => {
-    console.error('❌ Avatar image failed to load');
-    console.error('URL:', avatarUrl);
-    console.error('Error event:', error.type);
-    
+  const handleImageError = () => {    
     if (loadTimeoutRef.current) clearTimeout(loadTimeoutRef.current);
     setImageError('Failed');
     setImageLoading(false);
   };
 
   const handleImageLoad = () => {
-    console.log('✅ Avatar loaded successfully from:', avatarUrl);
     if (loadTimeoutRef.current) clearTimeout(loadTimeoutRef.current);
     setImageLoading(false);
     setImageError(null);
@@ -62,7 +56,6 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
   return (
     <div className="bg-white rounded-xl shadow-md p-4 sm:p-6 lg:p-8">
       <div className="flex flex-col sm:flex-row items-center sm:items-start justify-between gap-4 sm:gap-8">
-        {/* Left Side - Avatar and Profile Info */}
         <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-6 w-full sm:w-auto">
           <div className="relative flex-shrink-0">
             {imageLoading ? (
@@ -102,7 +95,6 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
           </div>
         </div>
 
-        {/* Right Side - Buttons */}
         <div className="flex flex-row sm:flex-col gap-2 sm:gap-3 w-full sm:w-auto sm:min-w-max">
           {onChangePasswordClick && (
             <button

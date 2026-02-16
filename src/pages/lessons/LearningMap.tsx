@@ -6,7 +6,7 @@ import LearningMapHeader from '@components/lessons/learningmap/LearningMapHeader
 import LessonsList from '@components/lessons/learningmap/LessonsList';
 import type { Lesson } from '@/types';
 import { api } from '@api/axios/instance';
-import { getLessonsByCourse } from '@/api/services/user';
+import { getLessonsByCourse } from '@/api/services';
 
 const LearningMap: React.FC = () => {
   const [searchParams] = useSearchParams();

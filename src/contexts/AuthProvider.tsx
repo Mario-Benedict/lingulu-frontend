@@ -1,6 +1,6 @@
 import { createContext, useEffect, useState, type ReactNode } from "react";
 import { api } from "@/api/axios/index";
-import { getAuthenticatedUser } from "@/api/services/user";
+import { getAuthenticatedUser } from "@/api/services/auth";
 
 type AuthContextType = {
   isAuthenticated: boolean;

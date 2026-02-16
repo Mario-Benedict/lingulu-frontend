@@ -5,7 +5,7 @@ import GoogleSignUpButton from '@components/auth/register/GoogleSignUpButton';
 import LoginLink from '@components/auth/register/LoginLink';
 import mascotRegister from '@assets/auth/mascot-register.svg'
 import logoVertical from '@assets/auth/logo-vertical.svg';
-import { registerUser } from '@api/services/user';
+import { registerUser } from '@/api/services';
 
 const Register: React.FC = () => {
   const navigate = useNavigate()

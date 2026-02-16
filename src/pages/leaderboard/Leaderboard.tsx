@@ -4,10 +4,7 @@ import bannerBg from '@assets/leaderboard/banner-leaderboard.svg'
 import lbEmptyImg from '@assets/leaderboard/LB-empty.svg'
 import LeaderboardRow from '@components/leaderboard/LeaderboardRow';
 import type { LeaderboardEntry, LeaderboardApiUser } from '@/types';
-import { getLeaderboard, getUserRank } from '@api/services/user';
-
-
-
+import { getLeaderboard, getUserRank } from '@/api/services';
 
 const Leaderboard: React.FC = () => {
 	const [entries, setEntries] = useState<LeaderboardEntry[]>([]);

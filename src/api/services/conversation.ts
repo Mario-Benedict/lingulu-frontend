@@ -1,4 +1,4 @@
-import { api } from '@api/axios/index';
+import { api } from '@api/axios';
 
 export interface ConversationData {
   userText: string;

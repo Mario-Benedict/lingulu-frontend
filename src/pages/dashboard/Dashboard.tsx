@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Flame, Trophy } from 'lucide-react';
 import startConvo from '@assets/dashboard/start-convo.svg';
 import Sidebar from '@components/common/Sidebar';
-import { getDashboard } from '@api/services/user';
+import { getDashboard } from '@/api/services';
 
 interface DashboardData {
   username: string;

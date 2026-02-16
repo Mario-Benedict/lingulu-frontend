@@ -7,7 +7,7 @@ import ForgotPasswordLink from '@components/auth/login/ForgotPasswordLink';
 import GoogleLoginButton from '@components/auth/login/GoogleLoginButton';
 import SignUpLink from '@components/auth/login/SignUpLink';
 import { useAuth } from '@/hooks/useAuth';
-import { loginUser } from '@api/services/user';
+import { loginUser } from '@/api/services';
 
 const Login: React.FC = () => {
   const navigate = useNavigate();

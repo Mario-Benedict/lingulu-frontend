@@ -5,22 +5,9 @@ import ProfileCard from '@components/profile/ProfileCard';
 import StatsCard from '@components/profile/StatsCard';
 import BioCard from '@components/profile/BioCard';
 import { useAuth } from '@hooks/useAuth';
-import { getCurrentUserProfile, uploadAvatar, updateUserBio, getLeaderboard } from '@api/services/user';
+import { getCurrentUserProfile, uploadAvatar, updateUserBio, getLeaderboard } from '@api/services';
 import LanguageSwitcher from '@/components/common/LanguageSwitcher';
-
-interface UserProfile {
-  username: string;
-  email: string;
-  avatarUrl: string;
-  bio: string;
-}
-
-interface UserStats {
-  streak: number;
-  xp: number;
-  rank: number;
-  completedLessons: number;
-}
+import type { Leaderboard, UserProfile, UserStats } from '@/types';
 
 const Profile: React.FC = () => {
   const { logout } = useAuth();
@@ -28,9 +15,9 @@ const Profile: React.FC = () => {
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [stats, setStats] = useState<UserStats | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
-  const [showBioModal, setShowBioModal] = useState(false);
-  const [bioText, setBioText] = useState('');
-  const [isBioSaving, setIsBioSaving] = useState(false);
+  const [showBioModal, setShowBioModal] = useState<boolean>(false);
+  const [bioText, setBioText] = useState<string>('');
+  const [isBioSaving, setIsBioSaving] = useState<boolean>(false);
   const [displayAvatarUrl, setDisplayAvatarUrl] = useState<string>('/avatars/tiger-1.svg');
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -39,77 +26,37 @@ const Profile: React.FC = () => {
       try {
         setLoading(true);
 
-        // Fetch profile dan leaderboard untuk mendapatkan rank dengan tie-breaker
         const [profileResponse, leaderboardResponse] = await Promise.all([
           getCurrentUserProfile(),
           getLeaderboard().catch(() => null)
         ]);
         
-        const data = profileResponse.data;
-        console.log('✅ Profile Response:', data);
-        console.log('📊 Profile Response Keys:', Object.keys(data || {}));
-        console.log('📈 Available fields:', {
-          userName: data?.userName,
-          email: data?.email,
-          avatarUrl: data?.avatarUrl,
-          bio: data?.bio,
-          streak: data?.streak,
-          totalPoints: data?.totalPoints,
-          completedSections: data?.completedSections,
-          completedLessons: data?.completedLessons,
-          allFields: JSON.stringify(data, null, 2)
-        });
-        
-        // Check raw response structure
-        console.log('🔍 Full profileResponse object:', profileResponse);
-        console.log('🔍 profileResponse.data:', profileResponse?.data);
-        console.log('🔍 Is profileResponse directly the data?', profileResponse?.completedSections);
+        const profileData = profileResponse.data;
+        const leaderboardData = leaderboardResponse?.data || null;
 
-        // Calculate rank from leaderboard data (already sorted by backend with tie-breaker)
         let userRank = 0;
-        if (leaderboardResponse && data) {
-          const rawData = leaderboardResponse.data?.data || leaderboardResponse.data;
-          const leaderboardData = Array.isArray(rawData) ? rawData : [];
-          
-          // Find current user's position in leaderboard (already sorted by totalPoints, then by earliest time)
-          const currentUsername = data.userName?.toLowerCase().trim();
-          const foundIdx = leaderboardData.findIndex((item: any) => 
-            (item.username || item.name || '').toLowerCase().trim() === currentUsername
+        if (leaderboardData && profileData) {
+          const currentUsername = profileData.username?.toLowerCase().trim();
+          const foundIdx = leaderboardData.findIndex((item: Leaderboard) => 
+            item.username.toLowerCase().trim() === currentUsername
           );
           
-          if (foundIdx !== -1) {
-            userRank = foundIdx + 1;
-          }
-          console.log('✅ User Rank from Leaderboard:', userRank);
+          if (foundIdx !== -1) userRank = foundIdx + 1;
         }
 
-        if (data) {
-          // Use avatarUrl directly like Leaderboard (presigned S3 URL from backend)
-          const avatarUrl = data.avatarUrl || '/avatars/tiger-1.svg';
+        if (profileData) {
+          const avatarUrl = profileData.avatarUrl || '/avatars/tiger-1.svg';
           
-          setProfile({
-            username: data.userName ?? 'User',
-            email: data.email ?? '',
-            avatarUrl: avatarUrl,
-            bio: data.bio ?? 'No bio added yet',
-          });
-
-          // Display avatar URL directly (backend returns presigned S3 URL)
+          setProfile(profileData);
           setDisplayAvatarUrl(avatarUrl);
 
           setStats({
-            streak: data.streak ?? 0,
-            xp: data.totalPoints ?? 0,
+            streak: profileData.streak ?? 0,
+            xp: profileData.totalPoints ?? 0,
             rank: userRank,
-            completedLessons: data.completedSections ?? 0,
+            completedLessons: profileData.completedSections ?? 0,
           });
-          
-          console.log('✅ Stats Set:', {
-            streak: data.streak ?? 0,
-            xp: data.totalPoints ?? 0,
-            rank: userRank,
-            completedLessons: data.completedSections ?? 0,
-          });
+
         }
       } catch (error) {
         console.error('❌ Error fetching profile:', error);
@@ -126,6 +73,10 @@ const Profile: React.FC = () => {
     email: '',
     avatarUrl: '/avatars/tiger-1.svg',
     bio: 'No bio added yet',
+    completedSections: 0,
+    rank: 0,
+    streak: 0,
+    totalPoints: 0,
   };
 
   const defaultStats: UserStats = {
@@ -151,57 +102,28 @@ const Profile: React.FC = () => {
     if (!file) return;
 
     try {
-      console.log('📤 Uploading avatar:', file.name, 'Size:', `${(file.size / 1024 / 1024).toFixed(2)}MB`, 'Type:', file.type);
-      
-      // Validate file size
       if (file.size > 2 * 1024 * 1024) {
         throw new Error('File size must be less than 2MB');
       }
 
-      const response = await uploadAvatar(file);
-      console.log('✅ Full upload response:', JSON.stringify(response, null, 2));
-      
-      // Debug: Check what structure we actually got
-      console.log('Response properties:', {
-        hasData: !!response.data,
-        dataKeys: response.data ? Object.keys(response.data) : [],
-        hasAvatarUrl: !!response.avatarUrl,
-        hasDataAvatarUrl: !!response.data?.avatarUrl,
-        responseKeys: Object.keys(response),
-      });
-      
-      // Response format after interceptor returns response.data
-      // Backend returns: { success, message, data: { avatarUrl, ... } }
-      // So response = { success, message, data: { avatarUrl, ... } }
-      const avatarUrl = response.data?.avatarUrl || response.avatarUrl;
-      console.log('🖼️ Extracted Avatar URL:', avatarUrl);
-      console.log('📊 Profile state before update:', profile);
-      
+      const formData = new FormData();
+      formData.append('avatarFile', file);
+
+      const response = await uploadAvatar(formData);
+      const avatarUrl = response.data?.avatarUrl || response.data?.avatarUrl;
+
       if (avatarUrl) {
-        console.log('🔄 Updating profile with new avatar URL:', avatarUrl);
-        setProfile(prev => {
-          const updated = prev ? { ...prev, avatarUrl } : null;
-          console.log('📊 Updated profile:', updated);
-          return updated;
-        });
-        
-        // Display avatar URL directly (presigned S3 URL from backend)
-        console.log('🎨 Setting display avatar URL:', avatarUrl);
+        setProfile(prev => prev ? { ...prev, avatarUrl } : null);        
         setDisplayAvatarUrl(avatarUrl);
         
-        // Reset file input
         if (fileInputRef.current) {
           fileInputRef.current.value = '';
-        }
-        
-        console.log('✅ Avatar updated in profile state');
+        }        
       } else {
         throw new Error('No avatar URL in response - check console for response structure');
       }
-    } catch (error: any) {
-      const errorMsg = error.response?.data?.message || error.message || 'Unknown error';
-      console.error('❌ Failed to upload avatar:', errorMsg);
-      alert(`Failed to upload avatar: ${errorMsg}`);
+    } catch (e) {
+      console.error(e);
     }
   };
 
@@ -223,14 +145,11 @@ const Profile: React.FC = () => {
       const response = await updateUserBio(bioText);
       console.log('✅ Bio saved response:', response);
       
-      // Update local state
       setProfile(prev => prev ? { ...prev, bio: bioText } : null);
       setShowBioModal(false);
       console.log('✅ Bio updated successfully');
-    } catch (error: any) {
-      const errorMsg = error.response?.data?.message || error.message || 'Unknown error';
-      console.error('❌ Failed to save bio:', errorMsg);
-      alert(`Failed to save bio: ${errorMsg}`);
+    } catch (e) {
+      console.error(e);
     } finally {
       setIsBioSaving(false);
     }
@@ -242,7 +161,6 @@ const Profile: React.FC = () => {
 
   return (
     <div className="flex h-screen w-screen bg-gray-100">
-      {/* Hidden file input for avatar upload */}
       <input
         type="file"
         ref={fileInputRef}
@@ -251,13 +169,11 @@ const Profile: React.FC = () => {
         className="hidden"
       />
 
-      {/* Desktop sidebar */}
       <div className="hidden md:block">
         <Sidebar activeMenu="profile" />
       </div>
 
       <main className="flex-1 overflow-y-auto">
-        {/* Header */}
         <div className="bg-white shadow-sm sticky top-0 z-10 border-b-primary border-b-2 pt-[2.5rem]">
           <div className="flex justify-between items-center px-8 py-4">
             <h2 className="text-7xl font-bold text-primary font-rubik">Profile</h2>
@@ -265,7 +181,6 @@ const Profile: React.FC = () => {
           </div>
         </div>
 
-        {/* Main Content */}
         <div className="p-8">
           {loading ? (
             <div className="flex items-center justify-center h-64">
@@ -273,7 +188,6 @@ const Profile: React.FC = () => {
             </div>
           ) : (
             <div className="space-y-6">
-              {/* Profile Card - Full Width */}
               <ProfileCard
                 avatarUrl={displayAvatarUrl}
                 username={currentProfile.username}
@@ -283,14 +197,11 @@ const Profile: React.FC = () => {
                 onLogout={handleLogout}
               />
 
-              {/* Stats & Bio Row */}
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                {/* Stats Card */}
                 <div className="lg:col-span-2">
                   <StatsCard stats={currentStats} />
                 </div>
 
-                {/* Bio Card */}
                 <div className="lg:col-span-1">
                   <BioCard bio={currentProfile.bio} onEditBio={handleEditBio} />
                 </div>

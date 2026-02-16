@@ -5,7 +5,7 @@ import PageLayout from '@components/common/PageLayout';
 import SectionHeader from '@components/lessons/section/SectionHeader';
 import SectionCard from '@components/lessons/section/SectionCard';
 import { api } from '@api/axios/instance';
-import { getSectionsByLesson, getLessonsByCourse } from '@api/services/user';
+import { getSectionsByLesson, getLessonsByCourse } from '@/api/services';
 
 interface SectionData {
   id: number;

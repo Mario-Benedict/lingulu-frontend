@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import mascotLogin from '@assets/auth/logo-vertical.svg';
 import ResetPasswordEmail from '@components/auth/resetpassword/ResetPasswordEmail';
 import ResetPasswordForm from '@components/auth/resetpassword/ResetPasswordForm';
-import { forgotPassword, resetPassword } from '@/api/services/user';
+import { forgotPassword, resetPassword } from '@/api/services';
 import { useSearchParams } from 'react-router-dom';
 
 

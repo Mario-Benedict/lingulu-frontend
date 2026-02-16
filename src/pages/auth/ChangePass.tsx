@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import mascotLogin from '@assets/auth/logo-vertical.svg';
 import ChangePasswordForm from '@components/auth/changepassword/ChangePasswordForm';
-import { changePassword } from '@api/services/user';
+import { changePassword } from '@/api/services';
 
 const ChangePass: React.FC = () => {
   const navigate = useNavigate();

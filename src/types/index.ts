@@ -1,3 +1,5 @@
+export * from './profile';
+export * from './leaderboard';
 export interface ApiResponse<T> {
   success: boolean,
   message: string,
@@ -5,17 +7,6 @@ export interface ApiResponse<T> {
 }
 
 export type AuthStatusResponse = ApiResponse<{ authenticated: boolean }>;
-
-export interface LeaderboardApiUser {
-  user?: {
-    username?: string;
-    userId?: string;
-  };
-  totalPoints?: number;
-  profileUrl?: string;
-  porfileUrl?: string; // typo di backend, tetap di-handle
-}
-// Centralized TypeScript types and interfaces for Lingulu Frontend
 
 export interface Message {
   id: string;

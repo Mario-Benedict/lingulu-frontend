@@ -3,7 +3,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import mascotLogin from '@assets/auth/logo-vertical.svg';
 import OtpForm from '@components/auth/otp/OtpForm';
 import ResendOtpLink from '@components/auth/otp/ResendOtpLink';
-import { verifyOtp, requestOtp } from '@api/services/user';
+import { verifyOtp, requestOtp } from '@/api/services';
 
 const OTP_LENGTH = 6;
 
