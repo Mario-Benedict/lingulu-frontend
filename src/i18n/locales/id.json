@@ -67,7 +67,12 @@
     "materials": "Materi",
     "exercises": "Latihan",
     "learningMap": "Peta Belajar",
-    "sections": "Bagian"
+    "sections": "Bagian",
+    "resultSummary": "Ringkasan Hasil",
+    "review": "Ulasan",
+    "yourAnswer": "Jawaban Kamu:",
+    "retry": "Coba Lagi",
+    "finish": "Selesai"
   },
   "leaderboard": {
     "title": "Papan Peringkat",

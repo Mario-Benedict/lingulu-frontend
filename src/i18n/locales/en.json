@@ -67,7 +67,12 @@
     "materials": "Materials",
     "exercises": "Exercises",
     "learningMap": "Learning Map",
-    "sections": "Sections"
+    "sections": "Sections",
+    "resultSummary": "Result Summary",
+    "review": "Review",
+    "yourAnswer": "Your Answer:",
+    "retry": "Retry",
+    "finish": "Finish"
   },
   "leaderboard": {
     "title": "Leaderboard",
