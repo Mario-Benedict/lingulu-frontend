@@ -28,9 +28,9 @@ const SummaryResultPronunciation: React.FC<SummaryResultPronunciationProps> = ({
     
     // Color mapping berdasarkan koreksi status
     const correctionColors = {
-      correct: 'bg-[#c8e6c9] text-gray-900', // Hijau - Benar
-      okay: 'bg-[#fff9c4] text-gray-900',     // Kuning - Cukup
-      incorrect: 'bg-[#ffcdd2] text-gray-900', // Merah - Salah
+      correct: 'bg-[#c8e6c9] text-[#2e7d32]',      // Background hijau pastel terang, text hijau gelap
+      okay: 'bg-[#fff9c4] text-[#f57f17]',        // Background kuning pastel terang, text kuning gelap
+      incorrect: 'bg-[#ffcdd2] text-[#c62828]',   // Background merah pastel terang, text merah gelap
     };
 
     return (
