@@ -5,8 +5,10 @@ export const getCurrentUserProfile = async (): Promise<ApiResponse<UserProfile>>
     return await api.get("/account/profile");
 }
 
-export const uploadAvatar = async (formData: FormData): Promise<ApiResponse<{ avatarUrl: string }>> => {
-    return await api.patch("/account/profile/update-avatar", formData, {
+export const uploadAvatar = async (file: File): Promise<ApiResponse<{ avatarUrl: string }>> => {
+    const formData = new FormData();
+    formData.append('avatarFile', file);
+    return await api.post("/account/profile/avatar", formData, {
         headers: {
             'Content-Type': 'multipart/form-data',
         },
@@ -15,5 +17,5 @@ export const uploadAvatar = async (formData: FormData): Promise<ApiResponse<{ av
 }
 
 export const updateUserBio = async (bio: string): Promise<ApiResponse<null>> => {
-    return await api.patch("/account/profile/update-bio", { bio });
+    return await api.post("/account/profile/bio", { bio });
 };

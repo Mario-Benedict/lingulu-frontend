@@ -31,7 +31,11 @@ const Profile: React.FC = () => {
           getLeaderboard().catch(() => null)
         ]);
         
-        const profileData = profileResponse.data;
+        // Map userName (backend) ke username (frontend)
+        const profileData = {
+          ...profileResponse.data,
+          username: profileResponse.data.username || profileResponse.data.userName || '',
+        };
         const leaderboardData = leaderboardResponse?.data || null;
 
         let userRank = 0;
@@ -106,10 +110,7 @@ const Profile: React.FC = () => {
         throw new Error('File size must be less than 2MB');
       }
 
-      const formData = new FormData();
-      formData.append('avatarFile', file);
-
-      const response = await uploadAvatar(formData);
+      const response = await uploadAvatar(file);
       const avatarUrl = response.data?.avatarUrl || response.data?.avatarUrl;
 
       if (avatarUrl) {
