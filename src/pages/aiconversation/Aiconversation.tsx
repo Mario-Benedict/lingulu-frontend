@@ -1,6 +1,7 @@
 import { useState, useRef, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import PageLayout from '@components/common/PageLayout';
+import ConversationHeader from '@components/aiconversation/ConversationHeader';
 import MessageList from '@components/aiconversation/MessageList';
 import ConversationInput from '@components/aiconversation/ConversationInput';
 import type { Message } from '@/types';
@@ -202,10 +203,10 @@ const Aiconversation: React.FC = () => {
   return (
     <PageLayout 
       activeMenu="conversation" 
-      title={t('conversation.title')}
-      subtitle={t('conversation.typeMessage')}
+      showHeader={false}
       className="flex flex-col"
     >
+      <ConversationHeader />
       <div className="flex-1 flex flex-col min-h-0">
         <MessageList messages={messages} />
         <ConversationInput

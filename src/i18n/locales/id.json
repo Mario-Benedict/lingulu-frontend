@@ -88,7 +88,14 @@
     "tapToSpeak": "KETUK UNTUK BICARA",
     "recording": "MEREKAM...",
     "processing": "Memproses...",
-    "listenAgain": "Dengarkan lagi"
+    "listenAgain": "Dengarkan lagi",
+    "infoTitle": "Tentang Percakapan AI",
+    "whatIsIt": "Apa itu Percakapan AI?",
+    "whatIsItDesc": "Percakapan AI adalah fitur interaktif yang memungkinkan Anda berlatih berbicara bahasa Inggris dengan tutor AI. AI mendengarkan ucapan Anda, memahami pesan Anda, dan merespons secara alami untuk membantu meningkatkan pronesiasi, kosa kata, dan keterampilan percakapan Anda.",
+    "howToUse": "Cara Menggunakan",
+    "step1": "Klik 'KETUK UNTUK BICARA' dan berikan akses mikrofon",
+    "step2": "Berbicara dengan alami - AI akan mendengarkan dan memahami pesan Anda",
+    "step3": "Dengarkan respons AI dan lanjutkan percakapan"
   },
   "auth": {
     "login": "Masuk",

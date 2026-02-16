@@ -88,7 +88,14 @@
     "tapToSpeak": "TAP TO SPEAK",
     "recording": "RECORDING...",
     "processing": "Processing...",
-    "listenAgain": "Listen again"
+    "listenAgain": "Listen again",
+    "infoTitle": "About AI Conversation",
+    "whatIsIt": "What is AI Conversation?",
+    "whatIsItDesc": "AI Conversation is an interactive feature that allows you to practice speaking English with an AI tutor. The AI listens to your speech, understands your message, and responds naturally to help you improve your pronunciation, vocabulary, and conversational skills.",
+    "howToUse": "How to Use",
+    "step1": "Click 'TAP TO SPEAK' and grant microphone access",
+    "step2": "Speak naturally - the AI will listen and understand your message",
+    "step3": "Listen to the AI's response and continue the conversation"
   },
   "auth": {
     "login": "Login",
