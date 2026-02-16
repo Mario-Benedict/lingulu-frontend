@@ -68,9 +68,14 @@ export const fetchAvatarAsBlob = async (s3Url: string): Promise<string> => {
     }
 };
 
-// Get Full Leaderboard (for tie-breaker sorting)
+// Get Full Leaderboard (top 10)
 export const getLeaderboard = async (): Promise<any> => {
     return await api.get("/api/leaderboard/all");
+}
+
+// Get Current User's Rank
+export const getUserRank = async (): Promise<any> => {
+    return await api.get("/api/leaderboard/user-rank");
 }
 
 // Login Service

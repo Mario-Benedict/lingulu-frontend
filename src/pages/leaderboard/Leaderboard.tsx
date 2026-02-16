@@ -4,7 +4,7 @@ import bannerBg from '@assets/leaderboard/banner-leaderboard.svg'
 import lbEmptyImg from '@assets/leaderboard/LB-empty.svg'
 import LeaderboardRow from '@components/leaderboard/LeaderboardRow';
 import type { LeaderboardEntry, LeaderboardApiUser } from '@/types';
-import { getLeaderboard, getCurrentUserProfile } from '@api/services/user';
+import { getLeaderboard, getUserRank } from '@api/services/user';
 
 
 
@@ -22,21 +22,16 @@ const Leaderboard: React.FC = () => {
 				setLoading(true);
 				setError(null);
 				
-				// Fetch leaderboard dan profile untuk mendapatkan username asli
-				const [leaderboardResponse, profileResponse] = await Promise.all([
+				// Fetch top 10 leaderboard and current user's rank separately
+				const [leaderboardResponse, userRankResponse] = await Promise.all([
 					getLeaderboard(),
-					getCurrentUserProfile().catch(() => null)
+					getUserRank().catch(() => null)
 				]);
 				
-				// Handle response structure
+				// Normalize leaderboard data
 				const rawData = leaderboardResponse.data?.data || leaderboardResponse.data;
 				const leaderboardData: LeaderboardApiUser[] = Array.isArray(rawData) ? rawData : [];
 				
-				// Get current username - try from profile first, fallback to localStorage
-				const profileData = profileResponse?.data?.data || profileResponse?.data;
-				const currentUsername = profileData?.username || profileData?.userName || localStorage.getItem('username');
-				
-				// Normalize data - backend returns: userId (UUID string), username, totalPoints
 				const normalized: LeaderboardEntry[] = leaderboardData.map((item: any, idx: number) => ({
 					name: item.username || item.name || "",
 					xp: Number(item.totalPoints || item.points || 0),
@@ -47,24 +42,15 @@ const Leaderboard: React.FC = () => {
 				
 				setEntries(normalized);
 				
-				// Find current user by username (case-insensitive)
-				let foundIdx = -1;
-				
-				if (currentUsername) {
-					const searchUsername = currentUsername.toLowerCase().trim();
-					foundIdx = normalized.findIndex(e => 
-						e.name.toLowerCase().trim() === searchUsername
-					);
-				}
-				
-				if (foundIdx !== -1) {
-					const entry = normalized[foundIdx];
+				// Always fetch and display current user's rank from dedicated endpoint
+				if (userRankResponse?.data) {
+					const userData = userRankResponse.data.data || userRankResponse.data;
 					setCurrentUser({
-						name: entry.name,
-						xp: entry.xp,
-						avatarUrl: entry.avatarUrl,
-						userId: entry.userId,
-						rank: foundIdx + 1,
+						name: userData.username || userData.name || "",
+						xp: Number(userData.totalPoints || userData.points || 0),
+						avatarUrl: userData.avatarUrl || userData.profileUrl || undefined,
+						userId: String(userData.userId || userData.id || ""),
+						rank: Number(userData.rank || 0),
 					});
 				} else {
 					setCurrentUser(null);
