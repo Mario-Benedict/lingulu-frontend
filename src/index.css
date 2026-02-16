@@ -125,5 +125,35 @@
   .animate-slide-in-right {
     animation: slideInRight 0.3s ease-out;
   }
+
+  /* Markdown content styling - preserve original formatting */
+  .markdown-content {
+    @apply text-base;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+  }
+
+  .markdown-content > *:first-child {
+    margin-top: 0 !important;
+  }
+
+  .markdown-content > *:last-child {
+    margin-bottom: 0 !important;
+  }
+
+  /* Preserve whitespace in code blocks */
+  .markdown-content pre {
+    white-space: pre;
+    overflow-x: auto;
+  }
+
+  .markdown-content code {
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+
+  .markdown-content pre code {
+    white-space: pre;
+  }
 }
 

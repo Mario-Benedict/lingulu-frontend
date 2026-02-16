@@ -6,3 +6,4 @@ export * from "./dashboard";
 export * from "./otp";
 export * from "./password";
 export * from "./progress";
+export * from "./materials";

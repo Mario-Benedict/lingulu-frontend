@@ -1,5 +1,6 @@
 export * from './profile';
 export * from './leaderboard';
+export * from './course';
 export interface ApiResponse<T> {
   success: boolean,
   message: string,

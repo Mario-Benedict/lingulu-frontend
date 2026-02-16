@@ -25,8 +25,8 @@ const MaterialsHeader: React.FC<MaterialsHeaderProps> = ({
           />
         </button>
         <div className="text-lessongray-600 min-w-0">
-          <p className="text-sm sm:text-base md:text-lg text-lessongray-600 font-poppins">{label}</p>
-          <h2 className="text-2xl sm:text-3xl md:text-5xl font-bold text-primary font-rubik truncate">{title}</h2>
+          <p className="text-sm sm:text-base md:text-md text-lessongray-600 font-poppins">{label}</p>
+          <h2 className="text-lg sm:text-3xl md:text-3xl font-bold text-primary font-rubik truncate">{title}</h2>
         </div>
       </div>
     </div>
