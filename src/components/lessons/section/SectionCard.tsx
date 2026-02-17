@@ -1,35 +1,57 @@
 import { createElement } from 'react';
 import { useNavigate } from 'react-router-dom';
 import type { LucideIcon } from 'lucide-react';
+import type { LessonStatus } from '@/types/general';
 
 interface SectionCardProps {
-  id: number;
+  sectionId: string;
   title: string;
   description?: string;
   icon: LucideIcon;
   type: 'material' | 'exercise' | 'pronunciation';
+  status: LessonStatus;
 }
 
-const SectionCard: React.FC<SectionCardProps> = ({ id, title, description, icon, type }) => {
+const SectionCard: React.FC<SectionCardProps> = ({ sectionId, title, description, icon, type, status }) => {
   const navigate = useNavigate();
 
   const handleStart = () => {
     if (type === 'material') {
-      navigate(`/lessons/materials/${id}`);
+      navigate(`/lessons/materials/${sectionId}`);
     } else if (type === 'exercise') {
-      navigate(`/lessons/exercises/${id}`);
+      navigate(`/lessons/exercises/${sectionId}`);
     } else if (type === 'pronunciation') {
-      navigate(`/lessons/pronunciation/${id}`);
+      navigate(`/lessons/pronunciation/${sectionId}`);
     }
   };
 
+  const getStatusStyles = () => {
+    if (status === 'COMPLETED') {
+      return 'bg-green-50 border-2 border-green-500';
+    }
+    return 'bg-white';
+  };
+
+  const getButtonStyles = () => {
+    if (status === 'COMPLETED') {
+      return 'bg-green-600 hover:bg-green-700';
+    }
+    return 'bg-primary hover:bg-primary-dark';
+  };
+
+  const getButtonText = () => {
+    if (status === 'COMPLETED') return 'Review';
+    if (status === 'IN_PROGRESS') return 'Continue';
+    return 'Start';
+  };
+
   return (
-    <div className="bg-white rounded-lg p-4 sm:p-5 md:p-6 shadow-md flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 hover:shadow-lg transition-shadow">
+    <div className={`rounded-lg p-4 sm:p-5 md:p-6 shadow-md flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 hover:shadow-lg transition-shadow ${getStatusStyles()}`}>
       <div className="flex items-center gap-3 sm:gap-4 w-full sm:w-auto">
         <div className="p-2 sm:p-3 shrink-0">
           {createElement(icon, {
             size: 36,
-            className: 'text-primary sm:w-12 sm:h-12',
+            className: `${status === 'COMPLETED' ? 'text-green-600' : 'text-primary'} sm:w-12 sm:h-12`,
           })}
         </div>
         <div className="min-w-0 flex-1">
@@ -41,9 +63,9 @@ const SectionCard: React.FC<SectionCardProps> = ({ id, title, description, icon,
       </div>
       <button
         onClick={handleStart}
-        className="w-full sm:w-auto bg-primary text-white px-6 sm:px-8 md:px-10 py-2 rounded-lg font-semibold hover:bg-primary-dark transition text-sm sm:text-base shrink-0"
+        className={`w-full sm:w-auto text-white px-6 sm:px-8 md:px-10 py-2 rounded-lg font-semibold transition text-sm sm:text-base shrink-0 ${getButtonStyles()}`}
       >
-        Start
+        {getButtonText()}
       </button>
     </div>
   );

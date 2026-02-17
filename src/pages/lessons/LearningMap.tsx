@@ -1,18 +1,16 @@
 import { useState, useEffect } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import learningMapBg from '@assets/lessons/learning-map-new.png';
 import PageLayout from '@components/common/PageLayout';
 import LearningMapHeader from '@components/lessons/learningmap/LearningMapHeader';
 import LessonsList from '@components/lessons/learningmap/LessonsList';
-import type { Lesson } from '@/types';
-import { api } from '@api/axios/instance';
-import { getLessonsByCourse } from '@/api/services';
+import type { LessonProgress } from '@/types/progress';
+import { getCourseProgressDetail, getLessonsProgress } from '@/api/services';
 
 const LearningMap: React.FC = () => {
-  const [searchParams] = useSearchParams();
-  const courseId = searchParams.get('courseId');
+  const { courseId } = useParams();
   
-  const [lessons, setLessons] = useState<Lesson[]>([]);
+  const [lessons, setLessons] = useState<LessonProgress[]>([]);
   const [courseTitle, setCourseTitle] = useState('Learning Course');
   const [loading, setLoading] = useState(true);
 
@@ -26,47 +24,18 @@ const LearningMap: React.FC = () => {
       try {
         setLoading(true);
         
-        // Fetch course info to get title
-        const coursesRes = await api.get('/learning/progress/courses');
-        const courses = coursesRes.data ?? [];
-        const selectedCourse = courses.find((c: any) => c.courseId === courseId);
+        const courseDetailRes = await getCourseProgressDetail({ courseId });
         
-        if (selectedCourse) {
-          setCourseTitle(selectedCourse.courseTitle || 'Learning Course');
+        if (courseDetailRes.data) {
+          setCourseTitle(courseDetailRes.data.courseTitle || 'Learning Course');
         }
         
-        // Fetch lessons for this course
-        const lessonsRes = await getLessonsByCourse(courseId);
-        console.log('📖 Lessons response:', lessonsRes);
+        const progressRes = await getLessonsProgress({ courseId });
+        const progressData = progressRes.data ?? [];
         
-        const lessonsData = lessonsRes.data ?? [];
-        
-        // Map backend response to Lesson type
-        const mappedLessons: Lesson[] = lessonsData.map((lesson: any, index: number) => {
-          // Map ProgressStatus enum to lesson status
-          let lessonStatus: 'completed' | 'in-progress' | 'locked' = 'locked';
-          
-          if (lesson.status === 'COMPLETED') {
-            lessonStatus = 'completed';
-          } else if (lesson.status === 'IN_PROGRESS') {
-            lessonStatus = 'in-progress';
-          } else if (lesson.status === 'NOT_STARTED') {
-            lessonStatus = 'locked';
-          }
-          
-          return {
-            id: index + 1,
-            lessonUuid: lesson.lessonId,
-            title: lesson.lessonTitle || `Lesson ${index + 1}`,
-            description: lesson.description || '',
-            status: lessonStatus,
-          };
-        });
-        
-        setLessons(mappedLessons.length > 0 ? mappedLessons : getDefaultLessons());
-      } catch (err) {
-        console.error('❌ Error fetching lessons:', err);
-        setLessons(getDefaultLessons());
+        setLessons(progressData);
+      } catch {
+        setLessons([]);
       } finally {
         setLoading(false);
       }
@@ -75,14 +44,6 @@ const LearningMap: React.FC = () => {
     fetchData();
   }, [courseId]);
 
-  const getDefaultLessons = (): Lesson[] => [
-    { id: 1, lessonUuid: 'demo-1', title: 'Lesson 1', description: 'Introduction', status: 'completed' },
-    { id: 2, lessonUuid: 'demo-2', title: 'Lesson 2', description: 'Basic Phrases', status: 'in-progress' },
-    { id: 3, lessonUuid: 'demo-3', title: 'Lesson 3', description: 'Conversations', status: 'locked' },
-    { id: 4, lessonUuid: 'demo-4', title: 'Lesson 4', description: 'Advanced Topics', status: 'locked' },
-  ];
-
-  // Determine level from course title
   const getLevel = (title: string): string => {
     const titleLower = title.toLowerCase();
     if (titleLower.includes('beginner')) return 'Beginner';
@@ -110,7 +71,7 @@ const LearningMap: React.FC = () => {
               <p className="text-white text-lg">Loading lessons...</p>
             </div>
           ) : (
-            <LessonsList lessons={lessons} />
+            <LessonsList courseId={courseId} lessons={lessons} />
           )}
         </div>
       </div>

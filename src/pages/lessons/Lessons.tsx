@@ -8,16 +8,27 @@ import LessonLevelCard from '@/components/lessons/lessons/LessonLevelCard';
 import LessonsHeader from '@components/lessons/lessons/LessonsHeader';
 import LoadingOverlay from '@components/lessons/lessons/LoadingOverlay';
 import ErrorOverlay from '@components/lessons/lessons/ErrorOverlay';
-import { api } from '@api/axios/instance';
+import { getCoursesProgress } from '@/api/services';
+import type { CourseProgress } from '@/types';
+
+type LevelType = {
+  id: number;
+  courseId: string;
+  title: string;
+  description: string;
+  bgColor: string;
+  isLocked: boolean;
+  isComingSoon?: boolean;
+  buttonText: string;
+  buttonColor: string;
+  lockMessage?: string;
+  mascotImage: string;
+  progress?: number;
+};
 
 const Lessons: React.FC = () => {
   const navigate = useNavigate();
-  const [progress, setProgress] = useState<{ level1: number; level2: number; level3: number }>({
-    level1: 0,
-    level2: 0,
-    level3: 0,
-  });
-  const [courseIds, setCourseIds] = useState<{ beginner?: string; intermediate?: string; advanced?: string }>({});
+  const [courses, setCourses] = useState<CourseProgress[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -26,38 +37,23 @@ const Lessons: React.FC = () => {
       setLoading(true);
       setError(null);
       try {
-        const res = await api.get('/learning/progress/courses');
-        console.log('Progress response:', res.data);
+        const res = await getCoursesProgress();
         const data = res.data ?? [];
-        let level1 = 0, level2 = 0, level3 = 0;
         
-        // Parse courseTitle to determine level since backend order is inconsistent
-        const ids: { beginner?: string; intermediate?: string; advanced?: string } = {};
-        data.forEach((course: any) => {
-          const title = course?.courseTitle?.toLowerCase() || '';
-          const progress = course?.progressPercentage ?? 0;
-          const courseId = course?.courseId;
-          
-          if (title.includes('beginner')) {
-            level1 = progress;
-            ids.beginner = courseId;
-          } else if (title.includes('intermediate')) {
-            level2 = progress;
-            ids.intermediate = courseId;
-          } else if (title.includes('advanced')) {
-            level3 = progress;
-            ids.advanced = courseId;
-          }
+        const sortedCourses = data.sort((a, b) => {
+          const difficultyOrder = { 'Beginner': 1, 'Intermediate': 2, 'Advanced': 3 };
+          const orderA = difficultyOrder[a.difficulty as keyof typeof difficultyOrder] || 999;
+          const orderB = difficultyOrder[b.difficulty as keyof typeof difficultyOrder] || 999;
+          return orderA - orderB;
         });
         
-        setProgress({ level1, level2, level3 });
-        setCourseIds(ids);
+        setCourses(sortedCourses);
       } catch (err) {
         console.error('Fetch progress error:', err);
         if (err instanceof Error) {
           setError(err.message);
         } else {
-          setError('Gagal fetch progress');
+          setError('Failed to fetch courses');
         }
       } finally {
         setLoading(false);
@@ -66,55 +62,72 @@ const Lessons: React.FC = () => {
     fetchProgress();
   }, []);
 
-  const levels = [
-    {
-      id: 1,
-      title: 'Level 1: Beginner',
-      description: 'Start your journey! Basic words & phrases.',
+  const difficultyConfig = {
+    'Beginner': {
       bgColor: 'bg-gradient-to-br from-lesson-lv1-from to-lesson-lv1-to',
-      isLocked: false,
-      buttonText: 'Start Learn',
-      buttonColor: 'bg-white text-gray-700 hover:bg-gray-100',
       mascotImage: Beginner,
-      progress: progress.level1,
     },
-    {
-      id: 2,
-      title: 'Level 2: Intermediate',
-      description: 'Conversational skills. Speak with confidence.',
+    'Intermediate': {
       bgColor: 'bg-gradient-to-br from-lesson-lv2-from to-lesson-lv2-to',
-      isLocked: progress.level1 < 100,
-      buttonText: progress.level1 < 100 ? 'Locked' : 'Start Learn',
-      buttonColor: progress.level1 < 100 ? 'bg-gray-300 text-gray-600' : 'bg-white text-gray-700 hover:bg-gray-100',
-      lockMessage: 'Unlock by completing Level 1',
       mascotImage: Intermediate,
-      progress: progress.level1 >= 100 ? progress.level2 : undefined,
     },
-    {
-      id: 3,
-      title: 'Level 3: Advanced',
-      description: 'Mastery & fluency. Complex topics.',
+    'Advanced': {
       bgColor: 'bg-gradient-to-br from-lesson-lv3-from to-lesson-lv3-to',
-      isLocked: progress.level1 < 100 || progress.level2 < 100,
-      buttonText: (progress.level1 < 100 || progress.level2 < 100) ? 'Locked' : 'Start Learn',
-      buttonColor: (progress.level1 < 100 || progress.level2 < 100) ? 'bg-gray-300 text-gray-600' : 'bg-white text-gray-700 hover:bg-gray-100',
-      lockMessage: 'Unlock by completing Level 2',
       mascotImage: Advanced,
-      progress: (progress.level1 >= 100 && progress.level2 >= 100) ? progress.level3 : undefined,
     },
-    {
-      id: 4,
-      title: 'Level 4: Expert',
-      description: 'Professional fluency. Business & academic topics.',
-      bgColor: 'bg-gradient-to-br from-gray-500 to-gray-700',
-      isLocked: true,
-      isComingSoon: true,
-      buttonText: 'Coming Soon',
-      buttonColor: 'bg-gray-300 text-gray-600',
-      lockMessage: 'Coming Soon',
+  };
+
+  const levels: Array<LevelType> = courses.map((course, index) => {
+    const config = difficultyConfig[course.difficulty as keyof typeof difficultyConfig] || {
+      bgColor: 'bg-gradient-to-br from-gray-400 to-gray-600',
       mascotImage: '',
-    },
-  ];
+    };
+
+    const isLocked = index > 0 && course.status === 'NOT_STARTED';
+    const isCompleted = course.status === 'COMPLETED';
+
+    let buttonText = 'Start Learn';
+    let buttonColor = 'bg-white text-gray-700 hover:bg-gray-100';
+    
+    if (isCompleted) {
+      buttonText = 'Completed';
+      buttonColor = 'bg-green-500 text-white';
+    } else if (isLocked) {
+      buttonText = 'Locked';
+      buttonColor = 'bg-gray-300 text-gray-600';
+    } else if (course.status === 'IN_PROGRESS') {
+      buttonText = 'Continue';
+    }
+
+    return {
+      id: index + 1,
+      courseId: course.courseId,
+      title: `Level ${index + 1}: ${course.difficulty}`,
+      description: course.courseDescription,
+      bgColor: isCompleted ? 'bg-gradient-to-br from-green-400 to-green-600' : config.bgColor,
+      isLocked,
+      isComingSoon: false,
+      buttonText,
+      buttonColor,
+      lockMessage: isLocked ? `Unlock by completing Level ${index}` : undefined,
+      mascotImage: config.mascotImage,
+      progress: isLocked ? undefined : course.progressPercentage,
+    };
+  });
+
+  levels.push({
+    id: courses.length + 1,
+    courseId: '',
+    title: '???',
+    description: 'Something exciting is coming...',
+    bgColor: 'bg-gradient-to-br from-gray-500 to-gray-700',
+    isLocked: true,
+    isComingSoon: true,
+    buttonText: 'Coming Soon',
+    buttonColor: 'bg-gray-300 text-gray-600',
+    lockMessage: 'Coming Soon',
+    mascotImage: '',
+  });
 
   return (
     <div className="flex h-screen bg-gray-100 w-screen">
@@ -140,9 +153,8 @@ const Lessons: React.FC = () => {
                   lockMessage={level.lockMessage}
                   mascotImage={level.mascotImage}
                   progress={level.progress}
-                  onStart={level.isLocked ? undefined : () => {
-                    const courseId = level.id === 1 ? courseIds.beginner : level.id === 2 ? courseIds.intermediate : courseIds.advanced;
-                    navigate(`/lessons/map?courseId=${courseId}`);
+                  onStart={level.isLocked || level.isComingSoon ? undefined : () => {
+                    navigate(`/lessons/${level.courseId}/map`);
                   }}
                 />
               ))}

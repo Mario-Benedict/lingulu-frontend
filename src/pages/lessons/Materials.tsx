@@ -4,13 +4,13 @@ import PageLayout from '@components/common/PageLayout';
 import MaterialsHeader from '@components/lessons/materials/MaterialsHeader';
 import { MaterialContent, MaterialNotFound } from '@components/lessons/materials/MaterialContent';
 import { getMaterialContent, markMaterialAsCompleted } from '@api/services';
-import type { Material } from '@/types';
+import type { SectionContent } from '@/types';
 import { Check } from 'lucide-react';
 
 const Materials: React.FC = () => {
   const { materialId } = useParams();
   const navigate = useNavigate();
-  const [currentData, setCurrentData] = useState<Material | null>(null);
+  const [currentData, setCurrentData] = useState<SectionContent | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isMarking, setIsMarking] = useState(false);
@@ -30,9 +30,8 @@ const Materials: React.FC = () => {
         const response = await getMaterialContent(materialId);
         setCurrentData(response.data || null);
         setIsCompleted(response.data?.isCompleted || false);
-      } catch (err: any) {
-        console.error('Error loading material:', err);
-        setError(err.message || 'Failed to load material');
+      } catch {
+        setError('Failed to load material');
         setCurrentData(null);
       } finally {
         setLoading(false);
@@ -86,7 +85,6 @@ const Materials: React.FC = () => {
               <>
                 <MaterialContent content={currentData.grammar || currentData.vocabularies || null} type={currentData.sectionType} />
                 
-                {/* Mark as Done Button */}
                 <div className="mt-8 flex justify-center">
                   <button
                     onClick={handleMarkAsDone}

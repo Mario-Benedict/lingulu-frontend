@@ -1,7 +1,7 @@
-import type { ApiResponse, Material } from '@/types';
+import type { ApiResponse, SectionContent } from '@/types';
 import { api } from '@api/axios';
 
-export const getMaterialContent = async (materialId: string): Promise<ApiResponse<Material>> => {
+export const getMaterialContent = async (materialId: string): Promise<ApiResponse<SectionContent>> => {
   return await api.get(`/learning/sections/${materialId}/content`);
 };
 

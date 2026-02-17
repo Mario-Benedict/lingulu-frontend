@@ -1,30 +1,29 @@
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import LessonCircleButton from './LessonCircleButton';
-import type { Lesson } from '@/types';
+import type { LessonProgress } from '@/types/progress';
 
 interface LessonsListProps {
-  lessons: Lesson[];
+  courseId: string | undefined;
+  lessons: LessonProgress[];
 }
 
-const LessonsList: React.FC<LessonsListProps> = ({ lessons }) => {
+const LessonsList: React.FC<LessonsListProps> = ({ courseId, lessons }) => {
   const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
-  const courseId = searchParams.get('courseId');
 
   return (
     <div className="relative w-full h-full flex items-center justify-center font-poppins pt-20 sm:pt-0">
       <div className="flex flex-col gap-16 sm:gap-[5.5rem] items-center sm:items-end pl-0 sm:pl-10">
-        {lessons.map((lesson) => (
-          <div key={lesson.id} className="flex flex-col items-end">
+        {lessons.map((lesson, index) => (
+          <div key={lesson.lessonId} className="flex flex-col items-end">
             <LessonCircleButton
               status={lesson.status}
-              lessonId={lesson.id}
+              lessonId={index + 1}
               onClick={
-                lesson.status !== 'locked'
-                  ? () => navigate(`/lessons/${lesson.lessonUuid}?courseId=${courseId}`)
+                lesson.status !== 'NOT_STARTED'
+                  ? () => navigate(`/lessons/${courseId}/${lesson.lessonId}`)
                   : undefined
               }
-              disabled={lesson.status === 'locked'}
+              disabled={lesson.status === 'NOT_STARTED'}
             />
           </div>
         ))}

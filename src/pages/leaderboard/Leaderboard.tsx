@@ -3,12 +3,12 @@ import { useEffect, useState } from 'react'
 import bannerBg from '@assets/leaderboard/banner-leaderboard.svg'
 import lbEmptyImg from '@assets/leaderboard/LB-empty.svg'
 import LeaderboardRow from '@components/leaderboard/LeaderboardRow';
-import type { LeaderboardEntry, LeaderboardApiUser } from '@/types';
 import { getLeaderboard, getUserRank } from '@/api/services';
+import type { Leaderboard, UserRank } from '@/types';
 
-const Leaderboard: React.FC = () => {
-	const [entries, setEntries] = useState<LeaderboardEntry[]>([]);
-	const [currentUser, setCurrentUser] = useState<LeaderboardEntry | null>(null);
+const LeaderboardPage: React.FC = () => {
+	const [entries, setEntries] = useState<UserRank[]>([]);
+	const [currentUser, setCurrentUser] = useState<UserRank | null>(null);
 	const [loading, setLoading] = useState<boolean>(false);
 	const [error, setError] = useState<string | null>(null);
 	const [mobileMenuOpen, setMobileMenuOpen] = useState<boolean>(false);
@@ -19,42 +19,30 @@ const Leaderboard: React.FC = () => {
 				setLoading(true);
 				setError(null);
 				
-				// Fetch top 10 leaderboard and current user's rank separately
 				const [leaderboardResponse, userRankResponse] = await Promise.all([
 					getLeaderboard(),
 					getUserRank().catch(() => null)
 				]);
 				
-				// Normalize leaderboard data
-				const rawData = leaderboardResponse.data?.data || leaderboardResponse.data;
-				const leaderboardData: LeaderboardApiUser[] = Array.isArray(rawData) ? rawData : [];
+				const leaderboardData: Leaderboard[] = leaderboardResponse.data || [];
 				
-				const normalized: LeaderboardEntry[] = leaderboardData.map((item: any, idx: number) => ({
-					name: item.username || item.name || "",
-					xp: Number(item.totalPoints || item.points || 0),
-					avatarUrl: item.avatarUrl || item.profileUrl || item.avatar || undefined,
-					userId: String(item.userId || item.id || ""),
+				const normalized: UserRank[] = leaderboardData.map((item, idx) => ({
+					username: item.username,
+					totalPoints: item.totalPoints,
+					avatarUrl: item.avatarUrl,
+					userId: item.userId,
 					rank: idx + 1,
 				}));
 				
 				setEntries(normalized);
 				
-				// Always fetch and display current user's rank from dedicated endpoint
 				if (userRankResponse?.data) {
-					const userData = userRankResponse.data.data || userRankResponse.data;
-					setCurrentUser({
-						name: userData.username || userData.name || "",
-						xp: Number(userData.totalPoints || userData.points || 0),
-						avatarUrl: userData.avatarUrl || userData.profileUrl || undefined,
-						userId: String(userData.userId || userData.id || ""),
-						rank: Number(userData.rank || 0),
-					});
+					setCurrentUser(userRankResponse.data);
 				} else {
 					setCurrentUser(null);
 				}
-			} catch (err: any) {
-				console.error('❌ Failed to fetch leaderboard:', err);
-				setError(err?.message ?? 'Failed to fetch leaderboard');
+			} catch {
+				setError('Failed to fetch leaderboard');
 			} finally {
 				setLoading(false);
 			}
@@ -65,13 +53,11 @@ const Leaderboard: React.FC = () => {
 
 	return (
 		<div className="flex h-screen w-screen bg-gray-50">
-			{/* Desktop sidebar */}
 			<div className="hidden md:block">
 				<Sidebar activeMenu="leaderboard" />
 			</div>
 
 			<main className="flex-1 overflow-y-auto">
-				{/* Banner */}
 				<header className="relative h-40 overflow-hidden">
 					<img src={bannerBg} alt="" className="absolute inset-0 w-full h-full object-cover" />
 					<div className="relative h-full flex items-center px-6">
@@ -114,34 +100,30 @@ const Leaderboard: React.FC = () => {
 
 					{entries.slice(0, 10).map((entry, idx) => (
 						<LeaderboardRow
-							key={`${entry.name}-${idx}`}
+							key={`${entry.username}-${idx}`}
 							rank={idx + 1}
-							name={entry.name}
-							xp={entry.xp}
+							name={entry.username}
+							xp={entry.totalPoints}
 							avatarUrl={entry.avatarUrl}
 							isCurrentUser={!!(currentUser?.userId && entry.userId && currentUser.userId === entry.userId)}
 						/>
 					))}
 				</section>
 
-			{/* Spacer for sticky bar */}
 			{currentUser && <div className="h-24" />}
 		</main>
 
-		{/* Sticky "Your Rank" bar at bottom - always shows when user is logged in */}
 		{currentUser && (
 				<div className="fixed bottom-0 left-0 md:left-64 right-0 z-30 bg-gradient-to-r from-orange-500 to-amber-500 shadow-[0_-4px_20px_rgba(0,0,0,0.15)] border-t border-orange-400 animate-fade-in">
 					<div className="flex items-center gap-6 px-6 sm:px-10 py-[15px] sm:py-[23px] min-h-[73px] sm:min-h-[93px]">
-						{/* Rank badge */}
 						<div className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg bg-white/20 backdrop-blur border border-white/30 flex items-center justify-center font-rubik font-extrabold text-xl sm:text-3xl text-white shadow-md" style={{textShadow:'0 2px 8px rgba(0,0,0,0.25)'}}>
 							{currentUser.rank}
 						</div>
 
-						{/* Avatar */}
 						{currentUser.avatarUrl ? (
 							<img
 								src={currentUser.avatarUrl}
-								alt={currentUser.name}
+								alt={currentUser.username}
 								className="w-14 h-14 sm:w-16 sm:h-16 rounded-full object-cover shrink-0 border-2 border-white shadow-md"
 								referrerPolicy="no-referrer"
 							/>
@@ -149,24 +131,21 @@ const Leaderboard: React.FC = () => {
 							<div className="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-white border-2 border-white shadow-md grid place-items-center text-3xl sm:text-5xl shrink-0">🐯</div>
 						)}
 
-						{/* Name */}
 						<div className="flex-1 min-w-0">
 							<div className="text-xl sm:text-3xl font-rubik font-semibold text-white truncate">
-								{currentUser.name}
+								{currentUser.username}
 							</div>
 							<div className="text-base sm:text-lg text-white/70">Rank kamu di leaderboard</div>
 						</div>
 
-						{/* XP */}
 						<div className="flex items-baseline gap-2">
-							<span className="text-2xl sm:text-4xl font-bold text-white">{currentUser.xp.toLocaleString()}</span>
+							<span className="text-2xl sm:text-4xl font-bold text-white">{currentUser.totalPoints.toLocaleString()}</span>
 							<span className="text-base sm:text-lg text-white/80">XP</span>
 						</div>
 					</div>
 				</div>
 			)}
 
-			{/* Mobile sidebar drawer */}
 			{mobileMenuOpen && (
 				<>
 					<div className="fixed inset-0 z-40 bg-black/30" onClick={() => setMobileMenuOpen(false)} />
@@ -177,5 +156,5 @@ const Leaderboard: React.FC = () => {
 	);
 };
 
-export default Leaderboard;
+export default LeaderboardPage;
 

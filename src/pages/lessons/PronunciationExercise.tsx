@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 import PageLayout from '@components/common/PageLayout';
 import ExerciseHeader from '@components/lessons/exercises/ExerciseHeader';
 import ProgressBar from '@components/lessons/exercises/ProgressBar';
@@ -7,183 +7,72 @@ import PronunciationQuestion from '@components/lessons/exercises/PronunciationQu
 import NavigationButtons from '@components/lessons/exercises/NavigationButtons';
 import SummaryResultPronunciation from '@components/lessons/exercises/SummaryResultPronunciation';
 import SpeakingReview from '@components/lessons/exercises/SpeakingReview';
+import { getSpeakingExercises } from '@/api/services';
+import type { SpeakingExercise } from '@/types';
 
 const PronunciationExercise: React.FC = () => {
   const navigate = useNavigate();
-  const { lessonId } = useParams<{ lessonId: string }>();
-  const [searchParams] = useSearchParams();
-  const courseId = searchParams.get('courseId');
+  const { sectionId } = useParams<{ sectionId: string }>();
   
+  const [exercises, setExercises] = useState<SpeakingExercise[]>([]);
+  const [sectionTitle, setSectionTitle] = useState('Speaking Exercise');
+  const [loading, setLoading] = useState(true);
   const [currentQuestion, setCurrentQuestion] = useState(1);
   const [isListening, setIsListening] = useState(false);
   const [showSummary, setShowSummary] = useState(false);
   const [showReview, setShowReview] = useState(false);
   const [scores, setScores] = useState<Record<number, number>>({});
-  const totalQuestions = 10;
-  const progressPercentage = (currentQuestion / totalQuestions) * 100;
+  const totalQuestions = exercises.length;
+  const progressPercentage = totalQuestions > 0 ? (currentQuestion / totalQuestions) * 100 : 0;
 
-  const questions = [
-    {
-      id: 1,
-      question: 'Say "Selamat pagi" (Good morning)',
-      text: 'Selamat pagi',
-      type: 'pronunciation',
-    },
-    {
-      id: 2,
-      question: 'Say "Terima kasih" (Thank you)',
-      text: 'Terima kasih',
-      type: 'pronunciation',
-    },
-    {
-      id: 3,
-      question: 'Say "Apa kabar?" (How are you?)',
-      text: 'Apa kabar?',
-      type: 'pronunciation',
-    },
-    {
-      id: 4,
-      question: 'Say "Nama saya..." (My name is...)',
-      text: 'Nama saya...',
-      type: 'pronunciation',
-    },
-    {
-      id: 5,
-      question: 'Say "Selamat malam" (Good evening)',
-      text: 'Selamat malam',
-      type: 'pronunciation',
-    },
-    {
-      id: 6,
-      question: 'Say "Aku Sangat Suka Bermain Bola" (I really love to play football)',
-      text: 'Aku Sangat Suka Bermain Bola',
-      type: 'pronunciation',
-    },
-    {
-      id: 7,
-      question: 'Say "Bagaimana kabarmu hari ini?" (How are you today?)',
-      text: 'Bagaimana kabarmu hari ini?',
-      type: 'pronunciation',
-    },
-    {
-      id: 8,
-      question: 'Say "Saya senang belajar bahasa Inggris" (I enjoy learning English)',
-      text: 'Saya senang belajar bahasa Inggris',
-      type: 'pronunciation',
-    },
-    {
-      id: 9,
-      question: 'Say "Tolong bantu saya" (Please help me)',
-      text: 'Tolong bantu saya',
-      type: 'pronunciation',
-    },
-    {
-      id: 10,
-      question: 'Say "Sampai jumpa lagi" (See you again)',
-      text: 'Sampai jumpa lagi',
-      type: 'pronunciation',
-    },
-  ];
+  useEffect(() => {
+    const fetchExercises = async () => {
+      if (!sectionId) {
+        setLoading(false);
+        return;
+      }
 
-  const currentQuestionData = questions[currentQuestion - 1];
+      try {
+        setLoading(true);
+        const response = await getSpeakingExercises(sectionId);
+        
+        if (response.data) {
+          setSectionTitle(response.data.sectionTitle || 'Speaking Exercise');
+          setExercises(response.data.speakings || []);
+        }
+      } catch {
+        setExercises([]);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  // Dummy data for speaking review - unique feedback for each question
-  const reviewDataByQuestion: Record<number, { score: number; corrections: ('correct' | 'okay' | 'incorrect')[]; feedback: string }> = {
-    1: {
-      score: 92,
-      corrections: ['correct', 'correct'],
-      feedback: 'Sempurna! Pelafalan Anda sangat bagus, lanjutkan semangat ini!',
-    },
-    2: {
-      score: 88,
-      corrections: ['correct', 'okay'],
-      feedback: 'Bagus! Hanya perlu sedikit perbaikan pada suku kata terakhir.',
-    },
-    3: {
-      score: 85,
-      corrections: ['correct', 'okay', 'okay'],
-      feedback: 'Cukup baik! Intonasi perlu ditingkatkan sedikit lagi.',
-    },
-    4: {
-      score: 90,
-      corrections: ['correct', 'correct', 'correct'],
-      feedback: 'Kerja bagus! Tinggal sedikit lagi supaya pengucapanmu sempurna.',
-    },
-    5: {
-      score: 87,
-      corrections: ['okay', 'correct', 'correct'],
-      feedback: 'Hampir sempurna! Coba perjelas kata pertama pada percobaan berikutnya.',
-    },
-    6: {
-      score: 90,
-      corrections: ['correct', 'correct', 'correct', 'okay', 'correct'],
-      feedback: 'Kerja bagus! Tinggal sedikit lagi supaya pengucapanmu sempurna.',
-    },
-    7: {
-      score: 84,
-      corrections: ['okay', 'correct', 'okay', 'correct', 'okay'],
-      feedback: 'Sudah cukup baik, terus latih untuk mencapai kesempurnaan!',
-    },
-    8: {
-      score: 89,
-      corrections: ['correct', 'correct', 'okay', 'correct', 'correct'],
-      feedback: 'Sangat bagus! Hanya butuh sedikit perbaikan di tengah kalimat.',
-    },
-    9: {
-      score: 91,
-      corrections: ['correct', 'correct', 'correct'],
-      feedback: 'Hebat! Pelafalan Anda semakin membaik. Pertahankan konsistensi ini!',
-    },
-    10: {
-      score: 93,
-      corrections: ['correct', 'correct', 'correct'],
-      feedback: 'Luar biasa! Anda telah menunjukkan peningkatan signifikan.',
-    },
-  };
+    fetchExercises();
+  }, [sectionId]);
 
-  const currentReviewData = reviewDataByQuestion[currentQuestion];
-
-  // Helper function to generate per-word corrections based on score
-  const generateWordCorrections = (text: string, score: number) => {
+  const generateWordCorrections = (text: string, score: number): ('correct' | 'okay' | 'incorrect')[] => {
     const words = text.split(' ');
     return words.map(() => {
-      // Score mapping: >= 85 = correct (hijau), 70-84 = okay (kuning), < 70 = incorrect (merah)
       if (score >= 85) return 'correct';
       if (score >= 70) return 'okay';
       return 'incorrect';
     });
   };
 
-  // Dummy data for testing summary
-  const dummySummaryData = questions.map((q) => ({
-    questionNumber: q.id,
-    questionText: q.text,
-    score: 98, // All questions get 98 score for demo
-    corrections: generateWordCorrections(q.text, 98), // Generate per-word corrections
-  }));
+  const getFeedbackForScore = (score: number): string => {
+    if (score >= 90) return 'Sempurna! Pelafalan Anda sangat bagus!';
+    if (score >= 80) return 'Bagus! Terus tingkatkan pelafalan Anda!';
+    if (score >= 70) return 'Cukup baik! Terus berlatih!';
+    return 'Perlu lebih banyak latihan. Jangan menyerah!';
+  };
 
-  /**
-   * DUMMY DATA FOR TESTING
-   * 
-   * This dummy data is used to preview the summary result page without completing all 10 questions.
-   * Each question has a score of 98 (as shown in the design mockup).
-   * 
-   * Score mapping for word corrections:
-   * - >= 85: correct (Hijau) 
-   * - 70-84: okay (Kuning)
-   * - < 70: incorrect (Merah)
-   * 
-   * To remove this test feature in production:
-   * 1. Delete the dummySummaryData variable
-   * 2. Delete the showDummySummary function
-   * 3. Remove the "Preview Summary (Dev)" button from the UI
-   * 
-   * Expected summary structure:
-   * - questionNumber: 1-10
-   * - questionText: The text to be pronounced (e.g., "Aku Sangat Suka Bermain Bola")
-   * - score: Average pronunciation score (0-100)
-   * - averageScore: Total average of all scores (auto-calculated in component)
-   */
+  const currentQuestionData = exercises[currentQuestion - 1];
+
+  const currentReviewData = scores[currentQuestion] ? {
+    score: scores[currentQuestion],
+    corrections: generateWordCorrections(currentQuestionData?.sentence || '', scores[currentQuestion]),
+    feedback: getFeedbackForScore(scores[currentQuestion]),
+  } : undefined;
 
   const handleNext = () => {
     // Show review popup when Next is clicked
@@ -226,10 +115,10 @@ const PronunciationExercise: React.FC = () => {
   };
 
   const getSummaryData = () => {
-    return questions.map((q) => ({
-      questionNumber: q.id,
-      questionText: q.text,
-      score: scores[q.id] || 0,
+    return exercises.map((exercise, index) => ({
+      questionNumber: index + 1,
+      questionText: exercise.sentence,
+      score: scores[index + 1] || 0,
     }));
   };
 
@@ -242,12 +131,7 @@ const PronunciationExercise: React.FC = () => {
   };
 
   const handleFinish = () => {
-    if (lessonId) {
-      const params = courseId ? `?courseId=${courseId}` : '';
-      navigate(`/lessons/${lessonId}${params}`);
-    } else {
-      navigate('/lessons');
-    }
+    navigate(-1);
   };
 
   const handleReviewNext = () => {
@@ -272,23 +156,32 @@ const PronunciationExercise: React.FC = () => {
     );
   }
 
-  // Test function to show dummy summary (remove in production)
-  const showDummySummary = () => {
-    setShowSummary(true);
-    setScores(
-      dummySummaryData.reduce((acc, item) => {
-        acc[item.questionNumber] = item.score;
-        return acc;
-      }, {} as Record<number, number>)
+  if (loading) {
+    return (
+      <PageLayout activeMenu="lessons" showHeader={false}>
+        <div className="flex-1 flex items-center justify-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+        </div>
+      </PageLayout>
     );
-  };
+  }
+
+  if (!exercises || exercises.length === 0) {
+    return (
+      <PageLayout activeMenu="lessons" showHeader={false}>
+        <div className="flex-1 flex items-center justify-center">
+          <p className="text-lessongray-600">No exercises available</p>
+        </div>
+      </PageLayout>
+    );
+  }
 
   return (
     <PageLayout activeMenu="lessons" showHeader={false}>
-      {showReview && currentReviewData && (
+      {showReview && currentReviewData && currentQuestionData && (
         <SpeakingReview
           score={currentReviewData.score}
-          text={currentQuestionData.text}
+          text={currentQuestionData.sentence}
           corrections={currentReviewData.corrections}
           feedback={currentReviewData.feedback}
           onNext={handleReviewNext}
@@ -296,7 +189,7 @@ const PronunciationExercise: React.FC = () => {
       )}
       <div className="flex-1 flex flex-col min-w-0">
         <ExerciseHeader
-          title="Latihan Pronunciation"
+          title={sectionTitle}
           currentQuestion={currentQuestion}
           totalQuestions={totalQuestions}
         />
@@ -310,7 +203,8 @@ const PronunciationExercise: React.FC = () => {
                 {currentQuestionData && (
                   <PronunciationQuestion
                     questionNumber={currentQuestion}
-                    questionText={currentQuestionData.question}
+                    questionText={currentQuestionData.sentence}
+                    audioPath={currentQuestionData.audioPath}
                     isListening={isListening}
                     onMicrophoneClick={handleMicrophoneClick}
                     isAnswered={scores[currentQuestion] !== undefined}

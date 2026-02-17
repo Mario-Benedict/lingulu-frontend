@@ -7,3 +7,4 @@ export * from "./otp";
 export * from "./password";
 export * from "./progress";
 export * from "./materials";
+export * from "./exercises";

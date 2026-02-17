@@ -17,7 +17,7 @@ import Materials from '@pages/lessons/Materials.tsx';
 import Exercises from '@pages/lessons/Exercises.tsx';
 import PronunciationExercise from '@pages/lessons/PronunciationExercise.tsx';
 import OAuthSuccess from './components/auth/OAuthSuccess';
-import Leaderboard from '@/pages/leaderboard/Leaderboard';
+import LeaderboardPage from '@pages/leaderboard/Leaderboard';
 import Aiconversation from '@pages/aiconversation/Aiconversation.tsx';
 import Profile from '@pages/profile/Profile.tsx';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
@@ -34,12 +34,12 @@ const router = createBrowserRouter([
   { path: '/oauth2/success', element: <OAuthSuccess /> },
   { path: '/dashboard', element: <Dashboard /> },
       { path: '/lessons', element: <Lessons /> },
-      { path: '/lessons/map', element: <LearningMap /> },
-      { path: '/lessons/:lessonId', element: <Section /> },
+      { path: '/lessons/:courseId/map', element: <LearningMap /> },
+      { path: '/lessons/:courseId/:lessonId', element: <Section /> },
       { path: '/lessons/materials/:materialId', element: <Materials /> },
-      { path: '/lessons/exercises/:exerciseId', element: <Exercises /> },
-      { path: '/lessons/pronunciation/:exerciseId', element: <PronunciationExercise /> },
-      { path: '/leaderboard', element: <Leaderboard /> },
+      { path: '/lessons/exercises/:sectionId', element: <Exercises /> },
+      { path: '/lessons/pronunciation/:sectionId', element: <PronunciationExercise /> },
+      { path: '/leaderboard', element: <LeaderboardPage /> },
       { path: '/conversation', element: <Aiconversation /> },
       { path: '/profile', element: <Profile /> },
       { path: '/change-password', element: <ChangePass /> },
@@ -55,7 +55,7 @@ const router = createBrowserRouter([
       { path: '/lessons/materials/:materialId', element: <Materials /> },
       { path: '/lessons/exercises/:exerciseId', element: <Exercises /> },
       { path: '/lessons/pronunciation/:exerciseId', element: <PronunciationExercise /> },
-      { path: '/leaderboard', element: <Leaderboard /> },
+      { path: '/leaderboard', element: <LeaderboardPage /> },
       { path: '/conversation', element: <Aiconversation /> },
       { path: '/profile', element: <Profile /> },
       { path: '/change-password', element: <ChangePass /> },

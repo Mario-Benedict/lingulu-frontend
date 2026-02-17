@@ -27,22 +27,6 @@ export const MaterialContent: React.FC<MaterialContentProps> = ({ content, type 
       case "VOCABULARY":
         return <VocabularyList vocabularyItems={content as Array<Vocabulary>} />;
       
-      // case "SPEAKING":
-      //   // TODO: Implement Speaking component
-      //   return (
-      //     <div className="bg-blue-50 border-l-4 border-blue-500 p-4 rounded-r-lg">
-      //       <p className="text-blue-700 font-poppins">Speaking content coming soon...</p>
-      //     </div>
-      //   );
-      
-      // case "MCQ":
-      //   // TODO: Implement MCQ component
-      //   return (
-      //     <div className="bg-green-50 border-l-4 border-green-500 p-4 rounded-r-lg">
-      //       <p className="text-green-700 font-poppins">MCQ content coming soon...</p>
-      //     </div>
-      //   );
-      
       default:
         return (
           <p className="text-lessongray-600 font-poppins">Unknown content type.</p>
