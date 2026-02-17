@@ -1,5 +1,19 @@
 import { Lock, Clock, HelpCircle } from 'lucide-react';
-import type { LessonLevelCardProps } from '@/types';
+
+type LessonLevelCardProps = {
+  id: number;
+  title: string;
+  description: string;
+  bgColor: string;
+  isLocked: boolean;
+  isComingSoon?: boolean;
+  buttonText: string;
+  buttonColor: string;
+  lockMessage?: string;
+  mascotImage: string;
+  progress?: number;
+  onStart?: () => void;
+};
 
 const LessonLevelCard: React.FC<LessonLevelCardProps> = ({
   title,

@@ -12,8 +12,8 @@ import type { Leaderboard, UserProfile, UserStats } from '@/types';
 const Profile: React.FC = () => {
   const { logout } = useAuth();
   const navigate = useNavigate();
-  const [profile, setProfile] = useState<UserProfile | null>(null);
-  const [stats, setStats] = useState<UserStats | null>(null);
+  const [profile, setProfile] = useState<UserProfile>({} as UserProfile);
+  const [stats, setStats] = useState<UserStats>({} as UserStats);
   const [loading, setLoading] = useState<boolean>(true);
   const [showBioModal, setShowBioModal] = useState<boolean>(false);
   const [bioText, setBioText] = useState<string>('');
@@ -31,10 +31,15 @@ const Profile: React.FC = () => {
           getLeaderboard().catch(() => null)
         ]);
         
-        // Map userName (backend) ke username (frontend)
-        const profileData = {
-          ...profileResponse.data,
-          username: profileResponse.data.username || profileResponse.data.userName || '',
+        const profileData: UserProfile = {
+          username: profileResponse.data!.username || '',
+          avatarUrl: profileResponse.data!.avatarUrl || '/avatars/tiger-1.svg',
+          email: profileResponse.data!.email || '',
+          bio: profileResponse.data!.bio || 'No bio added yet',
+          completedSections: profileResponse.data!.completedSections || 0,
+          rank: profileResponse.data!.rank || 0,
+          streak: profileResponse.data!.streak || 0,
+          totalPoints: profileResponse.data!.totalPoints || 0,
         };
         const leaderboardData = leaderboardResponse?.data || null;
 
@@ -114,7 +119,7 @@ const Profile: React.FC = () => {
       const avatarUrl = response.data?.avatarUrl || response.data?.avatarUrl;
 
       if (avatarUrl) {
-        setProfile(prev => prev ? { ...prev, avatarUrl } : null);        
+        setProfile(prev => ({ ...prev, avatarUrl }));
         setDisplayAvatarUrl(avatarUrl);
         
         if (fileInputRef.current) {
@@ -141,14 +146,11 @@ const Profile: React.FC = () => {
     
     try {
       setIsBioSaving(true);
-      console.log('📝 Saving bio:', bioText);
       
-      const response = await updateUserBio(bioText);
-      console.log('✅ Bio saved response:', response);
+      await updateUserBio(bioText);
       
-      setProfile(prev => prev ? { ...prev, bio: bioText } : null);
+      setProfile(prev => ({ ...prev, bio: bioText }));
       setShowBioModal(false);
-      console.log('✅ Bio updated successfully');
     } catch (e) {
       console.error(e);
     } finally {

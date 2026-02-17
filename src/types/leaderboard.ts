@@ -3,7 +3,7 @@ export type Leaderboard = {
   username: string;
   totalPoints: number;
   avatarUrl: string;
-}
+};
 
 export type UserRank = {
     userId: string;
@@ -11,4 +11,4 @@ export type UserRank = {
     totalPoints: number;
     rank: number;
     avatarUrl: string;
-}
+};

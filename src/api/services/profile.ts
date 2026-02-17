@@ -8,7 +8,7 @@ export const getCurrentUserProfile = async (): Promise<ApiResponse<UserProfile>>
 export const uploadAvatar = async (file: File): Promise<ApiResponse<{ avatarUrl: string }>> => {
     const formData = new FormData();
     formData.append('avatarFile', file);
-    return await api.post("/account/profile/avatar", formData, {
+    return await api.patch("/account/profile/update-avatar", formData, {
         headers: {
             'Content-Type': 'multipart/form-data',
         },
@@ -17,5 +17,5 @@ export const uploadAvatar = async (file: File): Promise<ApiResponse<{ avatarUrl:
 }
 
 export const updateUserBio = async (bio: string): Promise<ApiResponse<null>> => {
-    return await api.post("/account/profile/bio", { bio });
+    return await api.patch("/account/profile/update-bio", { bio });
 };

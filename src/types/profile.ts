@@ -7,11 +7,11 @@ export type UserProfile = {
   rank: number;
   streak: number;
   totalPoints: number;
-}
+};
 
 export type UserStats = {
   streak: number;
   xp: number;
   rank: number;
   completedLessons: number;
-}
+};
