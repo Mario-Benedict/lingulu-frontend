@@ -55,7 +55,7 @@ const SummaryResultPronunciation: React.FC<SummaryResultPronunciationProps> = ({
   };
 
   return (
-    <div className="h-screen bg-white p-4 sm:p-6 md:p-8 flex flex-col font-rubik">
+    <div className="bg-white p-4 sm:p-6 md:p-8 flex flex-col font-rubik">
       <div className="w-full max-w-3xl mx-auto flex flex-col h-full">
         
         {/* Header Title - Fixed */}
@@ -80,7 +80,7 @@ const SummaryResultPronunciation: React.FC<SummaryResultPronunciationProps> = ({
         </div>
 
         {/* Mascot Section - Fixed */}
-        <div className="flex justify-center flex-shrink-0 -mb-6">
+        <div className="flex justify-center flex-shrink-0 -mb-16">
           <img
             src={summaryMascot}
             alt="Pronunciation Mascot"
