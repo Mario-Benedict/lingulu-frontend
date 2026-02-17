@@ -25,7 +25,8 @@ const SummaryResult: React.FC<SummaryResultProps> = ({
   onFinish,
 }) => {
   const { t } = useTranslation();
-  const percentage = Math.round((score / totalQuestions) * 100);
+  const percentage = score;
+
 
   return (
     <div className="h-screen bg-white p-4 sm:p-6 md:p-8 flex flex-col font-rubik">
@@ -74,7 +75,7 @@ const SummaryResult: React.FC<SummaryResultProps> = ({
             {/* Box Header (9/10 Review) */}
             <div className="text-center mb-6">
               <h2 className="text-lg sm:text-xl font-medium text-black mb-1">
-                {score}/{totalQuestions}
+                {answers?.filter(a => a.isCorrect).length}/{totalQuestions}
               </h2>
               <div className="flex items-center justify-center gap-3">
                 <div className="h-[1px] bg-orange-300 flex-1 max-w-[100px]"></div>
