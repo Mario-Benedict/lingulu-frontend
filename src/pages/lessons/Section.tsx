@@ -13,6 +13,7 @@ interface SectionData {
   description?: string;
   icon: typeof BookOpenText;
   type: 'material' | 'exercise' | 'pronunciation';
+  sectionId?: string; // Add sectionId for backend mapping
 }
 
 const Section: React.FC = () => {
@@ -126,6 +127,7 @@ const Section: React.FC = () => {
           
           return {
             id: index + 1,
+            sectionId: section.sectionId, // tambahkan sectionId dari backend
             title: section.sectionTitle || `Section ${index + 1}`,
             description: getDescriptionForSection(type),
             icon,
@@ -248,16 +250,33 @@ const Section: React.FC = () => {
         <div className="flex-1 overflow-y-auto">
           <div className="p-4 sm:p-6 md:p-8">
             <div className="space-y-3 sm:space-y-4">
-              {sections.map((section) => (
-                <SectionCard
-                  key={section.id}
-                  id={section.id}
-                  title={section.title}
-                  description={section.description}
-                  icon={section.icon}
-                  type={section.type}
-                />
-              ))}
+              {sections.map((section) => {
+                // Pass the correct prop for each section type
+                let materialId = undefined;
+                let exerciseId = undefined;
+                let sectionId = undefined;
+                if (section.type === 'material') {
+                  materialId = section.sectionId;
+                } else if (section.type === 'exercise') {
+                  sectionId = section.sectionId;
+                } else if (section.type === 'pronunciation') {
+                  exerciseId = section.sectionId;
+                }
+                return (
+                  <SectionCard
+                    key={section.id}
+                    id={section.id}
+                    sectionId={sectionId}
+                    materialId={materialId}
+                    exerciseId={exerciseId}
+                    title={section.title}
+                    description={section.description}
+                    icon={section.icon}
+                    type={section.type}
+                    status={section.status}
+                  />
+                );
+              })}
             </div>
           </div>
         </div>

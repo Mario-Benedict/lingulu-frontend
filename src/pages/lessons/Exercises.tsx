@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import PageLayout from '@components/common/PageLayout';
 import ExerciseHeader from '@components/lessons/exercises/ExerciseHeader';
@@ -6,165 +6,95 @@ import ProgressBar from '@components/lessons/exercises/ProgressBar';
 import MultipleChoiceQuestion from '@components/lessons/exercises/MultipleChoiceQuestion';
 import NavigationButtons from '@components/lessons/exercises/NavigationButtons';
 import SummaryResult from '@components/lessons/exercises/SummaryResult';
+import { getSectionMCQ, submitSectionMCQ, getSectionMCQRetry } from '@api/services/mcq'; 
 
 const Exercise: React.FC = () => {
   const navigate = useNavigate();
-  const { lessonId } = useParams<{ lessonId: string }>();
+  const { sectionId } = useParams<{ sectionId: string }>();
   const [searchParams] = useSearchParams();
   const courseId = searchParams.get('courseId');
   
   const [currentQuestion, setCurrentQuestion] = useState(1);
   const [selectedAnswers, setSelectedAnswers] = useState<Record<number, string>>({});
-  const [showSummary, setShowSummary] = useState(false);
-  const totalQuestions = 10;
-  const progressPercentage = (currentQuestion / totalQuestions) * 100;
+  const [questions, setQuestions] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [backendSummary, setBackendSummary] = useState<any>(null);
+  const [error, setError] = useState<string>('');
 
-  const questions = [
-    {
-      id: 1,
-      question: 'what does "Good morning" mean in indonesian?',
-      type: 'multiple-choice',
-      options: [
-        { id: 'a', text: 'Selamat pagi', isCorrect: true },
-        { id: 'b', text: 'Selamat malam', isCorrect: false },
-        { id: 'c', text: 'Selamat siang', isCorrect: false },
-        { id: 'd', text: 'Selamat sore', isCorrect: false },
-      ],
-    },
-    {
-      id: 2,
-      question: 'How do you say "Thank you" in Indonesian?',
-      type: 'multiple-choice',
-      options: [
-        { id: 'a', text: 'Terima kasih', isCorrect: true },
-        { id: 'b', text: 'Sama-sama', isCorrect: false },
-        { id: 'c', text: 'Permisi', isCorrect: false },
-        { id: 'd', text: 'Maaf', isCorrect: false },
-      ],
-    },
-    {
-      id: 3,
-      question: 'Translate "How are you?" to Indonesian',
-      type: 'multiple-choice',
-      options: [
-        { id: 'a', text: 'Apa kabar?', isCorrect: true },
-        { id: 'b', text: 'Siapa nama kamu?', isCorrect: false },
-        { id: 'c', text: 'Di mana kamu tinggal?', isCorrect: false },
-        { id: 'd', text: 'Berapa umur kamu?', isCorrect: false },
-      ],
-    },
-    {
-      id: 4,
-      question: 'What is the English word for "Buku"?',
-      type: 'multiple-choice',
-      options: [
-        { id: 'a', text: 'Book', isCorrect: true },
-        { id: 'b', text: 'Pen', isCorrect: false },
-        { id: 'c', text: 'Paper', isCorrect: false },
-        { id: 'd', text: 'Desk', isCorrect: false },
-      ],
-    },
-    {
-      id: 5,
-      question: 'How do you say "Goodbye" in Indonesian?',
-      type: 'multiple-choice',
-      options: [
-        { id: 'a', text: 'Sampai jumpa', isCorrect: true },
-        { id: 'b', text: 'Selamat tinggal', isCorrect: false },
-        { id: 'c', text: 'Sampai nanti', isCorrect: false },
-        { id: 'd', text: 'Dadah', isCorrect: false },
-      ],
-    },
-    {
-      id: 6,
-      question: 'What does "Rumah" mean in English?',
-      type: 'multiple-choice',
-      options: [
-        { id: 'a', text: 'House', isCorrect: true },
-        { id: 'b', text: 'School', isCorrect: false },
-        { id: 'c', text: 'Office', isCorrect: false },
-        { id: 'd', text: 'Hospital', isCorrect: false },
-      ],
-    },
-    {
-      id: 7,
-      question: 'Translate "I am learning English" to simple Indonesian',
-      type: 'multiple-choice',
-      options: [
-        { id: 'a', text: 'Saya belajar bahasa Inggris', isCorrect: true },
-        { id: 'b', text: 'Dia belajar bahasa Indonesia', isCorrect: false },
-        { id: 'c', text: 'Kami berbicara bahasa Inggris', isCorrect: false },
-        { id: 'd', text: 'Mereka belajar bahasa', isCorrect: false },
-      ],
-    },
-    {
-      id: 8,
-      question: 'What is "Makanan" in English?',
-      type: 'multiple-choice',
-      options: [
-        { id: 'a', text: 'Food', isCorrect: true },
-        { id: 'b', text: 'Drink', isCorrect: false },
-        { id: 'c', text: 'Meal', isCorrect: false },
-        { id: 'd', text: 'Plate', isCorrect: false },
-      ],
-    },
-    {
-      id: 9,
-      question: 'How do you say "My name is..." in English?',
-      type: 'multiple-choice',
-      options: [
-        { id: 'a', text: 'My name is...', isCorrect: true },
-        { id: 'b', text: 'I am name...', isCorrect: false },
-        { id: 'c', text: 'My is name...', isCorrect: false },
-        { id: 'd', text: 'The name is...', isCorrect: false },
-      ],
-    },
-    {
-      id: 10,
-      question: 'What does "Waktu" mean?',
-      type: 'multiple-choice',
-      options: [
-        { id: 'a', text: 'Time', isCorrect: true },
-        { id: 'b', text: 'Clock', isCorrect: false },
-        { id: 'c', text: 'Hour', isCorrect: false },
-        { id: 'd', text: 'Day', isCorrect: false },
-      ],
-    },
-  ];
+  const totalQuestions = questions.length;
+  const progressPercentage = totalQuestions > 0 ? (currentQuestion / totalQuestions) * 100 : 0;
+
+  // 👇 Dibuat jadi satu fungsi terpisah supaya mudah dipanggil ulang saat Retry
+  const loadQuestions = async (isRetry = false) => {
+    if (!sectionId) return;
+
+    try {
+      setLoading(true);
+      
+      // Pilih API berdasarkan apakah user sedang mere-try kuis atau tidak
+      const res = isRetry 
+        ? await getSectionMCQRetry(sectionId) 
+        : await getSectionMCQ(sectionId);
+        
+      const data = res.data?.data || res.data;
+
+      // Kalau BUKAN mode retry, dan ternyata dia punya nilai di backend, tampilkan summary
+      if (!isRetry && data?.score !== undefined && data?.answers) {
+
+        console.log("🚨 1. FULL DATA SUMMARY DARI BACKEND:", data);
+        console.log("🚨 2. ISI ARRAY ANSWERS:", data.answers);
+
+        setBackendSummary(data);
+        return; // Hentikan fungsi di sini, jangan lanjut ekstrak soal
+      }
+
+      // Mulai ekstrak soal dari backend (Berlaku untuk user baru atau user yang me-retry)
+      let questionsRaw = [];
+      if (data?.mcq?.questions) {
+        questionsRaw = data.mcq.questions;
+      } else if (data?.questions) {
+        questionsRaw = data.questions;
+      }
+
+      const mcqQuestions = questionsRaw.map((q: any) => ({
+        id: q.questionId || q.id,
+        question: q.question || q.text || '',
+        options: (q.options || []).map((opt: any) => ({
+          id: opt.optionId || opt.id,
+          text: opt.optionText || opt.text || '',
+          isCorrect: opt.isCorrect ?? false,
+        })),
+      }));
+
+      setQuestions(mcqQuestions);
+    } catch (err) {
+      console.error("Error fetching questions:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // 👇 useEffect sekarang hanya memanggil fungsi loadQuestions dengan mode normal (false)
+  useEffect(() => {
+    loadQuestions(false);
+  }, [sectionId]);
 
   const currentQuestionData = questions[currentQuestion - 1];
 
-  // Calculate score
-  const calculateScore = () => {
-    return Object.entries(selectedAnswers).reduce((acc, [questionNum, selectedId]) => {
-      const question = questions[parseInt(questionNum) - 1];
-      const isCorrect = question.options.find((opt) => opt.id === selectedId)?.isCorrect;
-      return acc + (isCorrect ? 1 : 0);
-    }, 0);
-  };
-
-  // Get answers for summary
-  const getAnswersForSummary = () => {
-    return Object.entries(selectedAnswers).map(([questionNum, selectedId]) => {
-      const questionIndex = parseInt(questionNum) - 1;
-      const question = questions[questionIndex];
-      const selectedOption = question.options.find((opt) => opt.id === selectedId);
-      const isCorrect = selectedOption?.isCorrect || false;
-
-      return {
-        questionNumber: parseInt(questionNum),
-        questionText: question.question,
-        selectedOption: selectedOption?.text || 'No answer',
-        isCorrect,
-      };
-    });
-  };
-
   const handleNext = () => {
+    const currentAnswer = selectedAnswers[currentQuestion];
+
+    if (!currentAnswer) {
+      setError('Please select an answer (A, B, or C)');
+      return;
+    }
+
+    setError(''); 
+
     if (currentQuestion < totalQuestions) {
       setCurrentQuestion(currentQuestion + 1);
     } else {
-      setShowSummary(true);
+      handleSubmitToBackend();
     }
   };
 
@@ -181,33 +111,83 @@ const Exercise: React.FC = () => {
     }));
   };
 
+  // 👇 handleRetry sekarang memanggil API baru
   const handleRetry = () => {
-    setCurrentQuestion(1);
+    setBackendSummary(null);
     setSelectedAnswers({});
-    setShowSummary(false);
+    setCurrentQuestion(1);
+    setError('');
+    
+    // Panggil ulang soalnya dengan mode Retry (true) untuk membypass cek history backend
+    loadQuestions(true); 
   };
 
   const handleFinish = () => {
-    if (lessonId) {
-      const params = courseId ? `?courseId=${courseId}` : '';
-      navigate(`/lessons/${lessonId}${params}`);
+    if (courseId) {
+      navigate(`/lessons/course/${courseId}`); 
     } else {
-      navigate('/lessons');
+      navigate(-1);
     }
   };
 
-  if (showSummary) {
+  const handleSubmitToBackend = async () => {
+    if (!sectionId) return;
+
+    try {
+      const payload = {
+        sectionId: String(sectionId),
+        answers: Object.entries(selectedAnswers)
+          .filter(([_, selectedOptionId]) => !!selectedOptionId)
+          .map(([questionNum, selectedOptionId]) => {
+            const questionIndex = parseInt(questionNum) - 1;
+            const question = questions[questionIndex];
+
+            return {
+              questionId: String(question.id),
+              selectedOptionId: String(selectedOptionId),
+            };
+          }),
+      };
+
+      const res = await submitSectionMCQ(payload);
+      const summary = res?.data;
+
+      setBackendSummary(summary); 
+    } catch (err) {
+      console.log("Submit error:", err);
+    }
+  };
+
+ if (backendSummary) {
+    // 👇 1. KITA MAPPING DATANYA DI SINI AGAR SESUAI DENGAN PERMINTAAN SUMMARY RESULT
+    const formattedAnswers = backendSummary.answers?.map((ans: any, index: number) => ({
+      questionNumber: index + 1,              // Menampilkan nomor soal (1, 2, 3...)
+      questionText: ans.questionText,         // Menampilkan teks soal
+      selectedOption: ans.selectedOptionText, // 👈 INI KUNCINYA! Mengubah 'selectedOptionText' jadi 'selectedOption'
+      isCorrect: ans.isCorrect                // Menampilkan icon benar/salah
+    })) || [];
+
     return (
       <PageLayout activeMenu="lessons" showHeader={false}>
         <SummaryResult
-          score={calculateScore()}
-          totalQuestions={totalQuestions}
-          answers={getAnswersForSummary()}
+          score={backendSummary.score}
+          // Tambahkan fallback length supaya aman jika backend lupa kirim totalQuestions
+          totalQuestions={backendSummary.totalQuestions || backendSummary.answers?.length || 0} 
+          answers= {formattedAnswers}
           onRetry={handleRetry}
           onFinish={handleFinish}
         />
       </PageLayout>
     );
+  }
+
+  // Tampilkan loading state supaya layar tidak kosong berkedip saat menekan retry
+  if (loading && questions.length === 0) {
+    return (
+      <PageLayout activeMenu="lessons" showHeader={false}>
+         <div className="flex h-screen items-center justify-center">Loading...</div>
+      </PageLayout>
+    )
   }
 
   return (
@@ -234,6 +214,12 @@ const Exercise: React.FC = () => {
                   />
                 )}
               </div>
+                {error && (
+                 <p className="text-red-500 text-sm mt-3 text-center">
+                  {error}
+                 </p>
+                )}
+              
               <NavigationButtons
                 currentQuestion={currentQuestion}
                 totalQuestions={totalQuestions}
