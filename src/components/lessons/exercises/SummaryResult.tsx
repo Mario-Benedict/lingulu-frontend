@@ -28,7 +28,7 @@ const SummaryResult: React.FC<SummaryResultProps> = ({
   const percentage = Math.round((score / totalQuestions) * 100);
 
   return (
-    <div className="h-screen bg-white p-4 sm:p-6 md:p-8 flex flex-col font-rubik">
+    <div className="bg-white p-4 sm:p-6 md:p-8 flex flex-col font-rubik">
       <div className="w-full max-w-3xl mx-auto flex flex-col h-full">
         
         {/* Header Title */}
@@ -47,7 +47,7 @@ const SummaryResult: React.FC<SummaryResultProps> = ({
           
           {/* Semi-circle base for Score */}
           <div className="bg-yellow-50/80 rounded-t-[100px] w-64 sm:w-80 h-24 sm:h-32 -mt-12 sm:-mt-16 z-0 flex items-end justify-center pb-2 border-t-4 border-white shadow-[0_-10px_20px_rgba(255,255,255,0.8)]">
-            <div className="flex items-baseline relative z-20 transform translate-y-6 sm:translate-y-8">
+            <div className="flex items-baseline relative z-20 transform translate-y-8">
               {/* Score Number with shadow */}
               <span 
                 className="text-6xl sm:text-7xl md:text-8xl font-black text-primary drop-shadow-lg font-poppins"
@@ -63,9 +63,6 @@ const SummaryResult: React.FC<SummaryResultProps> = ({
             </div>
           </div>
         </div>
-
-        {/* Padding for the overlapping score */}
-        <div className="mt-4 sm:mt-4 flex-shrink-0"></div>
 
         {/* Review Box Section - SCROLLABLE */}
         <div className="flex-1">
