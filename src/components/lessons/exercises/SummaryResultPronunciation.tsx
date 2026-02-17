@@ -55,7 +55,7 @@ const SummaryResultPronunciation: React.FC<SummaryResultPronunciationProps> = ({
   };
 
   return (
-    <div className="min-h-screen bg-white p-4 sm:p-6 md:p-8 flex flex-col font-rubik">
+    <div className="h-screen bg-white p-4 sm:p-6 md:p-8 flex flex-col font-rubik">
       <div className="w-full max-w-3xl mx-auto flex flex-col h-full">
         
         {/* Header Title - Fixed */}
@@ -89,7 +89,7 @@ const SummaryResultPronunciation: React.FC<SummaryResultPronunciationProps> = ({
         </div>
 
         {/* Outer Card Container - SCROLLABLE */}
-        <div className="flex-1 overflow-y-auto min-h-0 mb-4">
+        <div className="flex-1 mb-4">
           <div className="bg-white rounded-xl border border-orange-400 shadow-sm p-4 sm:p-5 md:p-6">
             
             {/* List of Scores */}
@@ -124,16 +124,16 @@ const SummaryResultPronunciation: React.FC<SummaryResultPronunciationProps> = ({
         </div>
 
         {/* Action Buttons - Fixed */}
-        <div className="flex justify-center gap-4 sm:gap-6 flex-shrink-0">
+        <div className="flex justify-center gap-4 sm:gap-6 flex-shrink-0 py-6 pb-12">
           <button
             onClick={onRetry}
-            className="w-32 sm:w-40 px-6 py-2.5 sm:py-3 border border-orange-400 text-orange-500 bg-white rounded-xl font-medium text-sm sm:text-base hover:bg-orange-50 transition-colors"
+            className="w-full px-6 py-2.5 sm:py-3 border border-orange-400 text-orange-500 bg-white rounded-xl font-medium text-sm sm:text-base hover:bg-orange-50 transition-colors"
           >
             {t('lessons.retry')}
           </button>
           <button
             onClick={onFinish}
-            className="w-32 sm:w-40 px-6 py-2.5 sm:py-3 bg-orange-500 text-white rounded-xl font-medium text-sm sm:text-base hover:bg-orange-600 transition-colors shadow-sm"
+            className="w-full px-6 py-2.5 sm:py-3 bg-orange-500 text-white rounded-xl font-medium text-sm sm:text-base hover:bg-orange-600 transition-colors shadow-sm"
           >
             {t('lessons.finish')}
           </button>

@@ -28,7 +28,7 @@ const SummaryResult: React.FC<SummaryResultProps> = ({
   const percentage = Math.round((score / totalQuestions) * 100);
 
   return (
-    <div className="min-h-screen bg-white p-4 sm:p-6 md:p-8 flex flex-col font-rubik">
+    <div className="h-screen bg-white p-4 sm:p-6 md:p-8 flex flex-col font-rubik">
       <div className="w-full max-w-3xl mx-auto flex flex-col h-full">
         
         {/* Header Title */}
@@ -68,7 +68,7 @@ const SummaryResult: React.FC<SummaryResultProps> = ({
         <div className="mt-4 sm:mt-4 flex-shrink-0"></div>
 
         {/* Review Box Section - SCROLLABLE */}
-        <div className="flex-1 overflow-y-auto min-h-0">
+        <div className="flex-1">
           <div className="bg-white rounded-xl border border-orange-300 shadow-sm p-4 sm:p-6 mb-8">
             
             {/* Box Header (9/10 Review) */}
@@ -157,16 +157,16 @@ const SummaryResult: React.FC<SummaryResultProps> = ({
         </div>
 
         {/* Action Buttons */}
-        <div className="flex justify-center gap-4 sm:gap-6 mt-4 flex-shrink-0">
+        <div className="flex justify-center gap-4 sm:gap-6 mt-4 flex-shrink-0 pb-12">
           <button
             onClick={onRetry}
-            className="w-32 sm:w-40 px-6 py-2.5 sm:py-3 border-2 border-orange-500 text-orange-500 bg-white rounded-lg font-medium text-sm sm:text-base hover:bg-orange-50 transition-colors"
+            className="w-full px-6 py-2.5 sm:py-3 border-2 border-orange-500 text-orange-500 bg-white rounded-lg font-medium text-sm sm:text-base hover:bg-orange-50 transition-colors"
           >
             {t('lessons.retry')}
           </button>
           <button
             onClick={onFinish}
-            className="w-32 sm:w-40 px-6 py-2.5 sm:py-3 bg-orange-500 text-white rounded-lg font-medium text-sm sm:text-base hover:bg-orange-600 transition-colors shadow-md"
+            className="w-full px-6 py-2.5 sm:py-3 bg-orange-500 text-white rounded-lg font-medium text-sm sm:text-base hover:bg-orange-600 transition-colors shadow-md"
           >
             {t('lessons.finish')}
           </button>
