@@ -85,7 +85,6 @@ const Aiconversation: React.FC = () => {
           setMessages(messagesWithId);
         } else {
           const greetingMessage: ConversationMessage = {
-            id: crypto.randomUUID(),
             role: 'AI',
             text: "Hello! I'm your English tutor. Are you ready to speak with me?",
             createdAt: new Date().toISOString(),
@@ -94,7 +93,6 @@ const Aiconversation: React.FC = () => {
         }
       } catch {
         const greetingMessage: ConversationMessage = {
-          id: crypto.randomUUID(),
           role: 'AI',
           text: "Hello! I'm your English tutor. Are you ready to speak with me?",
           createdAt: new Date().toISOString(),
