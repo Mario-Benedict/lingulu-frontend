@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import RegisterForm from '@components/auth/register/RegisterForm';
 import GoogleSignUpButton from '@components/auth/register/GoogleSignUpButton';
@@ -9,6 +10,7 @@ import { registerUser } from '@/api/services';
 
 const Register: React.FC = () => {
   const navigate = useNavigate()
+  const { t } = useTranslation();
   const [isLoading, setIsLoading] = useState<boolean>(false);
   
   const handleRegisterSubmit = async (username: string, email: string, password: string, confirmPassword: string) => {
@@ -44,12 +46,12 @@ const Register: React.FC = () => {
             <img src={logoVertical} alt="Lingulu" className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 object-contain" />
           </div>
           
-          <h1 className="text-center text-primary text-2xl sm:text-3xl md:text-title font-bold font-rubik m-0 mb-4 sm:mb-5">CREATE ACCOUNT</h1>
+          <h1 className="text-center text-primary text-2xl sm:text-3xl md:text-title font-bold font-rubik m-0 mb-4 sm:mb-5">{t('auth.createAccount')}</h1>
 
           <RegisterForm onSubmit={handleRegisterSubmit} loading={isLoading} />
 
           <div className="text-center text-neutral text-xs my-2 sm:my-3 relative before:content-[''] before:absolute before:top-1/2 before:left-0 before:w-[35%] before:h-px before:bg-border after:content-[''] after:absolute after:top-1/2 after:right-0 after:w-[35%] after:h-px after:bg-border">
-            Or Sign Up with
+            {t('auth.orContinueWith')}
           </div>
 
           <GoogleSignUpButton />

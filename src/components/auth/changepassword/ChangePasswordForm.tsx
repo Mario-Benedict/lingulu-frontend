@@ -1,4 +1,5 @@
 import { useState, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import lockIcon from '@assets/auth/lock-icon.svg';
 import eyeIcon from '@assets/auth/eye-icon.png';
@@ -11,6 +12,7 @@ interface ChangePasswordFormProps {
 
 const ChangePasswordForm: React.FC<ChangePasswordFormProps> = ({ onSubmit, loading = false }) => {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -24,16 +26,16 @@ const ChangePasswordForm: React.FC<ChangePasswordFormProps> = ({ onSubmit, loadi
 
   const validatePassword = (pwd: string): { valid: boolean; message?: string } => {
     if (pwd.length < 8) {
-      return { valid: false, message: 'Password minimal 8 karakter' };
+      return { valid: false, message: t('auth.passwordTooShort') };
     }
     if (!/[A-Z]/.test(pwd)) {
-      return { valid: false, message: 'Password harus mengandung huruf besar' };
+      return { valid: false, message: t('auth.passwordUppercaseLetter') };
     }
     if (!/[a-z]/.test(pwd)) {
-      return { valid: false, message: 'Password harus mengandung huruf kecil' };
+      return { valid: false, message: t('auth.passwordLowercaseLetter') };
     }
     if (!/[0-9]/.test(pwd)) {
-      return { valid: false, message: 'Password harus mengandung angka' };
+      return { valid: false, message: t('auth.passwordNumber') };
     }
     return { valid: true };
   };
@@ -42,23 +44,23 @@ const ChangePasswordForm: React.FC<ChangePasswordFormProps> = ({ onSubmit, loadi
     e.preventDefault();
 
     if (!currentPassword || !newPassword || !confirmPassword) {
-      setError('Semua field harus diisi');
+      setError(t('auth.allFieldsRequired'));
       return;
     }
 
     const passwordValidation = validatePassword(newPassword);
     if (!passwordValidation.valid) {
-      setError(passwordValidation.message || 'Password tidak valid');
+      setError(passwordValidation.message || t('auth.invalidPassword'));
       return;
     }
 
     if (newPassword !== confirmPassword) {
-      setError('Password baru tidak cocok');
+      setError(t('auth.passwordsDoNotMatch'));
       return;
     }
 
     if (currentPassword === newPassword) {
-      setError('Password baru tidak boleh sama dengan password lama');
+      setError(t('auth.newPasswordSameAsOld'));
       return;
     }
 
@@ -68,7 +70,7 @@ const ChangePasswordForm: React.FC<ChangePasswordFormProps> = ({ onSubmit, loadi
       await onSubmit(currentPassword, newPassword, confirmPassword);
     } catch (err: any) {
       // Get error message from backend or error object
-      const backendMessage = err.response?.data?.message || (err instanceof Error ? err.message : 'Gagal mengubah password');
+      const backendMessage = err.response?.data?.message || (err instanceof Error ? err.message : t('auth.failedToChangePassword'));
       
       // Translate backend error messages to Indonesian
       let errorMessage = backendMessage;
@@ -76,11 +78,11 @@ const ChangePasswordForm: React.FC<ChangePasswordFormProps> = ({ onSubmit, loadi
       
       if ((lowerMessage.includes('password') && lowerMessage.includes('invalid')) || 
           (lowerMessage.includes('password') && lowerMessage.includes('tidak valid'))) {
-        errorMessage = 'Password tidak valid';
+        errorMessage = t('auth.invalidPassword');
       } else if ((lowerMessage.includes('current') && lowerMessage.includes('incorrect')) ||
                  (lowerMessage.includes('current') && lowerMessage.includes('salah')) ||
                  (lowerMessage.includes('password') && lowerMessage.includes('salah'))) {
-        errorMessage = 'Password saat ini salah';
+        errorMessage = t('auth.incorrectCurrentPassword');
       }
       
       setError(errorMessage);
@@ -138,7 +140,7 @@ const ChangePasswordForm: React.FC<ChangePasswordFormProps> = ({ onSubmit, loadi
           ref={currentPasswordRef}
           id="currentPassword"
           type={showCurrentPassword ? 'text' : 'password'}
-          placeholder="Current Password"
+          placeholder={t('auth.currentPassword')}
           value={currentPassword}
           onChange={(e) => {
             setCurrentPassword(e.target.value);
@@ -165,7 +167,7 @@ const ChangePasswordForm: React.FC<ChangePasswordFormProps> = ({ onSubmit, loadi
           ref={passwordRef}
           id="newPassword"
           type={showNewPassword ? 'text' : 'password'}
-          placeholder="New Password"
+          placeholder={t('auth.newpass')}
           value={newPassword}
           onChange={(e) => {
             setNewPassword(e.target.value);
@@ -192,7 +194,7 @@ const ChangePasswordForm: React.FC<ChangePasswordFormProps> = ({ onSubmit, loadi
           ref={confirmPasswordRef}
           id="confirmPassword"
           type={showConfirmPassword ? 'text' : 'password'}
-          placeholder="Confirm New Password"
+          placeholder={t('auth.confirmNewPassword')}
           value={confirmPassword}
           onChange={(e) => {
             setConfirmPassword(e.target.value);
@@ -211,17 +213,17 @@ const ChangePasswordForm: React.FC<ChangePasswordFormProps> = ({ onSubmit, loadi
       </div>
 
       <button type="submit" disabled={loading} className="auth-button mt-2">
-        {loading ? 'Changing...' : 'Change Password'}
+        {loading ? t('auth.loading') : t('auth.changePassword')}
       </button>
 
       <p className="text-center text-neutral text-sm mt-3 font-poppins">
-        Change your mind?{' '}
+        {t('auth.changeMind')}{' '}
         <button 
           type="button" 
           onClick={() => navigate('/profile')}
           className="text-primary font-semibold hover:underline bg-transparent border-none cursor-pointer"
         >
-          Back to Profile
+          {t('auth.backToProfile')}
         </button>
       </p>
     </form>

@@ -3,6 +3,7 @@ import userIcon from '@assets/auth/user-icon.svg';
 import lockIcon from '@assets/auth/lock-icon.svg';
 import eyeIcon from '@assets/auth/eye-icon.png';
 import closedEyeIcon from '@assets/auth/closedeye-icon.png';
+import { useTranslation } from 'react-i18next';
 
 interface LoginFormProps {
   onSubmit: (email: string, password: string, isRememberMe: boolean) => Promise<void>;
@@ -11,6 +12,7 @@ interface LoginFormProps {
 }
 
 const LoginForm: React.FC<LoginFormProps> = ({ onSubmit, loading = false, hasGlobalError = false }) => {
+  const { t } = useTranslation();
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [showPassword, setShowPassword] = useState<boolean>(false);
@@ -27,15 +29,15 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSubmit, loading = false, hasGlo
     const newErrors: Record<string, string> = {};
 
     if (!email.trim()) {
-      newErrors.email = 'Email tidak boleh kosong';
+      newErrors.email = t('auth.emailRequired');
     } else if (!validateEmail(email)) {
-      newErrors.email = 'Format email tidak valid';
+      newErrors.email = t('auth.invalidEmailFormat');
     }
 
     if (!password) {
-      newErrors.password = 'Password tidak boleh kosong';
+      newErrors.password = t('auth.passwordRequired');
     } else if (password.length < 8) {
-      newErrors.password = 'Password minimal 8 karakter';
+      newErrors.password = t('auth.passwordTooShort');
     }
 
     setErrors(newErrors);
@@ -55,7 +57,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSubmit, loading = false, hasGlo
         return;
       }
       
-      let errorMessage = 'Login failed';
+      let errorMessage = t('auth.loginFailed');
       
       // Handle axios error response
       if (error && typeof error === 'object' && 'response' in error) {
@@ -128,7 +130,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSubmit, loading = false, hasGlo
             ref={passwordRef}
             id="password"
             type={showPassword ? 'text' : 'password'}
-            placeholder="Password"
+            placeholder={t('auth.password')}
             value={password}
             onChange={(e) => {
               setPassword(e.target.value);
@@ -157,12 +159,12 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSubmit, loading = false, hasGlo
           onChange={(e) => setIsRememberMe(e.target.checked)}
         />
         <label htmlFor="remember" className="text-neutral text-sm cursor-pointer">
-          Remember me
+          {t('auth.rememberMe')}
         </label>
       </div>
 
       <button type="submit" disabled={loading} className="auth-button mb-3">
-        {loading ? 'LOGGING IN...' : 'LOGIN'}
+        {loading ? t('auth.loggingIn') : t('auth.login')}
       </button>
     </form>
   );

@@ -1,4 +1,5 @@
 import { useNavigate } from 'react-router-dom';
+import {useTranslation} from 'react-i18next';
 
 interface ForgotPasswordLinkProps {
   className?: string;
@@ -6,6 +7,7 @@ interface ForgotPasswordLinkProps {
 
 const ForgotPasswordLink: React.FC<ForgotPasswordLinkProps> = ({ className }) => {
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   return (
     <button
@@ -13,7 +15,7 @@ const ForgotPasswordLink: React.FC<ForgotPasswordLinkProps> = ({ className }) =>
       onClick={() => navigate('/reset-password')}
       className={className || 'text-primary text-sm font-semibold hover:underline bg-transparent border-none cursor-pointer'}
     >
-      Forgot Password?
+      {t('auth.forgotPassword')}
     </button>
   );
 };

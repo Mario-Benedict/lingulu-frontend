@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useNavigate, useLocation } from 'react-router-dom';
 import mascotLogin from '@assets/auth/logo-vertical.svg';
 import OtpForm from '@components/auth/otp/OtpForm';
@@ -8,6 +9,7 @@ import { verifyOtp, requestOtp } from '@/api/services';
 const OTP_LENGTH = 6;
 
 const Otp: React.FC = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const location = useLocation();
   const otpRequestedRef = useRef(false);
@@ -47,7 +49,7 @@ const Otp: React.FC = () => {
     e.preventDefault();
     
     if (otp.length !== OTP_LENGTH) {
-      setError('Please enter the complete 6-digit code');
+      setError(t('auth.verifyAccount'));
       return;
     }
 
@@ -58,11 +60,11 @@ const Otp: React.FC = () => {
       await verifyOtp(email, otp);
 
       navigate('/login', { 
-        state: { message: 'Account verified successfully! Please login.' } 
+        state: { message: t('auth.accountVerified') } 
       });
 
     } catch {
-      setError('Verification failed');
+      setError(t('auth.verificationFailed'));
     } finally {
       setIsLoading(false);
     }
@@ -82,7 +84,7 @@ const Otp: React.FC = () => {
       setTimeout(() => setResendSuccess(false), 3000);
 
     } catch {
-      setError('Failed to resend code');
+      setError(t('auth.failedToResendOtp'));
     } finally {
       setIsResending(false);
     }
@@ -103,12 +105,12 @@ const Otp: React.FC = () => {
 
         {/* Title */}
         <h1 className="text-center text-primary text-2xl sm:text-3xl font-bold font-rubik mb-2">
-          Verify Your Account
+          {t('auth.verifyAccountTitle')}
         </h1>
         
         {/* Subtitle */}
         <p className="text-center text-gray-600 text-xs sm:text-sm mb-6 sm:mb-8 font-poppins">
-          We've sent a 6-digit code to your email
+          {t('auth.verifyAccountSubtitle')}
         </p>
 
         {/* OTP Input Form */}

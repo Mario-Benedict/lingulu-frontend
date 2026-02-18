@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import {useTranslation} from 'react-i18next';
 import { useNavigate, useLocation } from 'react-router-dom';
 import mascotLogin from '@assets/auth/mascot-login.svg';
 import logoVertical from '@assets/auth/logo-vertical.svg';
@@ -10,6 +11,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { loginUser, getAuthenticatedUser } from '@/api/services';
 
 const Login: React.FC = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const location = useLocation();
   const { setIsAuthenticated } = useAuth();
@@ -52,7 +54,7 @@ const Login: React.FC = () => {
     // Jika akun Google
     if (message.toLowerCase().includes('google')) {
       setOauthError(
-        'This email is already registered with Google. Please use Google Login to continue.'
+        t('auth.googleAlreadyRegistered')
       );
     }
   } finally {
@@ -82,7 +84,7 @@ const Login: React.FC = () => {
             <img src={logoVertical} alt="Lingulu" className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 object-contain" />
           </div>
           
-          <h1 className="text-center text-primary text-2xl sm:text-3xl md:text-title font-bold font-rubik m-0 mb-4 sm:mb-5">WELCOME BACK</h1>
+          <h1 className="text-center text-primary text-2xl sm:text-3xl md:text-title font-bold font-rubik m-0 mb-4 sm:mb-5">{t('auth.welcomeBack')}</h1>
 
           {oauthError && (
             <div className="bg-red-50 text-red-600 px-3 py-2 rounded-md mb-3 sm:mb-4 border-l-4 border-red-500 text-xs">
@@ -97,7 +99,7 @@ const Login: React.FC = () => {
           </div>
 
           <div className="text-center text-neutral text-xs my-2 sm:my-3 relative before:content-[''] before:absolute before:top-1/2 before:left-0 before:w-[35%] before:h-px before:bg-border after:content-[''] after:absolute after:top-1/2 after:right-0 after:w-[35%] after:h-px after:bg-border">
-            Or Login with
+            {t('auth.orContinueWith')}
           </div>
 
           <GoogleLoginButton onClick={handleGoogleLogin} />

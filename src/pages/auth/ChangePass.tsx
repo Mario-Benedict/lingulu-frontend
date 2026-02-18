@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import mascotLogin from '@assets/auth/logo-vertical.svg';
 import ChangePasswordForm from '@components/auth/changepassword/ChangePasswordForm';
 import { changePassword } from '@/api/services';
 
 const ChangePass: React.FC = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
@@ -21,25 +23,25 @@ const ChangePass: React.FC = () => {
       });
 
       if (!result.success) {
-        throw new Error(result.message || 'Gagal mengubah password');
+        throw new Error(result.message || t('auth.failedToChangePassword'));
       }
 
       setSuccess(true);
       // Redirect to login after 2 seconds
       setTimeout(() => {
         navigate('/login', {
-          state: { message: 'Password berhasil diubah! Silakan login kembali.' },
+          state: { message: t('auth.passwordChangedSuccessfully') },
         });
       }, 2000);
     } catch (error: any) {
-      const backendMessage = error.response?.data?.message || error.message || 'Gagal mengubah password';
+      const backendMessage = error.response?.data?.message || error.message || t('auth.failedToChangePassword');
       
       // Translate common error messages
       let errorMsg = backendMessage;
       if (backendMessage.toLowerCase().includes('password') && backendMessage.toLowerCase().includes('invalid')) {
-        errorMsg = 'Password tidak valid';
+        errorMsg = t('auth.invalidPassword');
       } else if (backendMessage.toLowerCase().includes('current password') && backendMessage.toLowerCase().includes('incorrect')) {
-        errorMsg = 'Password saat ini salah';
+        errorMsg = t('auth.incorrectCurrentPassword');
       }
       
       setError(errorMsg);
@@ -59,19 +61,19 @@ const ChangePass: React.FC = () => {
 
         {/* Title */}
         <h1 className="text-center text-primary text-2xl sm:text-3xl font-bold font-rubik mb-2">
-          Ubah Password
+          {t('auth.changePassword')}
         </h1>
 
         {/* Subtitle */}
         <p className="text-center text-lessongray-600 text-xs sm:text-sm mb-6 sm:mb-8 font-poppins">
-          Masukkan password saat ini dan password baru untuk mengubah password
+          {t('auth.newPassword')}
         </p>
 
         {/* Success Message */}
         {success && (
           <div className="bg-green-50 text-green-600 px-3 sm:px-4 py-2 sm:py-3 rounded-lg mb-4 sm:mb-6 border-l-4 border-green-500 text-xs sm:text-sm flex items-center gap-2">
             <span>✓</span>
-            Password berhasil diubah! Mengarahkan ke login...
+            {t('auth.passwordChangedRedirect')}
           </div>
         )}
 
