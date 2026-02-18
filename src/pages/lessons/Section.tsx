@@ -12,7 +12,7 @@ import type { LucideIcon } from 'lucide-react';
 interface SectionData {
   sectionId: string;
   title: string;
-  description?: string;
+  description: string;
   icon: LucideIcon;
   type: 'material' | 'exercise' | 'pronunciation';
   status: LessonStatus;

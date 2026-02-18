@@ -1,15 +1,10 @@
-import { useState, useRef, useCallback } from 'react';
-import { useTranslation } from 'react-i18next';
+import { useState, useRef, useCallback, useEffect } from 'react';
 import PageLayout from '@components/common/PageLayout';
 import ConversationHeader from '@components/aiconversation/ConversationHeader';
 import MessageList from '@components/aiconversation/MessageList';
 import ConversationInput from '@components/aiconversation/ConversationInput';
-import type { Message } from '@/types';
-import { sendConversationAudio } from '@api/services';
-
-const makeId = () =>
-  crypto.randomUUID?.() ??
-  `${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
+import type { ConversationMessage } from '@/types';
+import { sendConversationAudio, getConversationHistory } from '@/api/services';
 
 const float32ToWavBlob = (samples: Float32Array, sampleRate: number): Blob => {
   const numChannels = 1;
@@ -66,26 +61,52 @@ const downsampleTo16k = (samples: Float32Array, fromRate: number): Float32Array 
 };
 
 const Aiconversation: React.FC = () => {
-  const { t } = useTranslation();
   const streamRef = useRef<MediaStream | null>(null);
   const audioCtxRef = useRef<AudioContext | null>(null);
   const processorRef = useRef<ScriptProcessorNode | null>(null);
   const pcmChunksRef = useRef<Float32Array[]>([]);
-  const conversationIdRef = useRef(makeId());
 
-  const lastAiAudioUrlRef = useRef<string | null>(null);
-  const audioElRef = useRef<HTMLAudioElement | null>(null);
-
-  const [messages, setMessages] = useState<Message[]>([
-    {
-      id: '1',
-      type: 'bot',
-      text: "Hello! I'm your English tutor. Are you ready to speak with me?",
-      timestamp: new Date(Date.now() - 300000),
-    },
-  ]);
+  const [messages, setMessages] = useState<ConversationMessage[]>([]);
   const [isRecording, setIsRecording] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const loadHistory = async () => {
+      try {
+        setIsLoading(true);
+        const response = await getConversationHistory();
+        const data = response.data!;
+
+        if (data.conversationId && data.messages.length > 0) {
+          const messagesWithId = data.messages.map((msg) => ({
+            ...msg,
+            id: crypto.randomUUID(),
+          }));
+          setMessages(messagesWithId);
+        } else {
+          const greetingMessage: ConversationMessage = {
+            id: crypto.randomUUID(),
+            role: 'AI',
+            text: "Hello! I'm your English tutor. Are you ready to speak with me?",
+            createdAt: new Date().toISOString(),
+          };
+          setMessages([greetingMessage]);
+        }
+      } catch {
+        const greetingMessage: ConversationMessage = {
+          id: crypto.randomUUID(),
+          role: 'AI',
+          text: "Hello! I'm your English tutor. Are you ready to speak with me?",
+          createdAt: new Date().toISOString(),
+        };
+        setMessages([greetingMessage]);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadHistory();
+  }, []);
 
   const handleTapToSpeak = useCallback(async () => {
     if (isLoading) return;
@@ -102,7 +123,6 @@ const Aiconversation: React.FC = () => {
         });
 
         streamRef.current = stream;
-
         const ctx = new AudioContext();
         audioCtxRef.current = ctx;
 
@@ -118,17 +138,13 @@ const Aiconversation: React.FC = () => {
 
         source.connect(processor);
         processor.connect(ctx.destination);
-
         setIsRecording(true);
-        console.log('🎤 Recording started');
-      } catch (err: any) {
-        console.error('❌ Mic error:', err);
-        alert('Cannot access microphone: ' + err.message);
+      } catch {
+        alert('Cannot access microphone. Please check your permissions.');
       }
     } else {
       processorRef.current?.disconnect();
       streamRef.current?.getTracks().forEach((t) => t.stop());
-
       setIsRecording(false);
       setIsLoading(true);
 
@@ -137,7 +153,6 @@ const Aiconversation: React.FC = () => {
       const totalFrames = chunks.reduce((n, c) => n + c.length, 0);
 
       if (totalFrames < actualRate * 0.3) {
-        console.warn('⚠️ Recording too short');
         setIsLoading(false);
         return;
       }
@@ -153,30 +168,27 @@ const Aiconversation: React.FC = () => {
       const wavBlob = float32ToWavBlob(resampled, 16000);
 
       try {
-        const data = await sendConversationAudio(wavBlob, conversationIdRef.current);
+        const response = await sendConversationAudio(wavBlob);
+        const data = response.data!;
 
         setMessages((prev) => [
           ...prev,
           {
-            id: makeId(),
-            type: 'user',
+            id: crypto.randomUUID(),
+            role: 'USER',
             text: data.userText,
-            timestamp: new Date(),
+            createdAt: data.createdAt,
+            audioUrl: data.userAudioUrl,
           },
           {
-            id: makeId(),
-            type: 'bot',
+            id: crypto.randomUUID(),
+            role: 'AI',
             text: data.aiText,
-            timestamp: new Date(),
+            createdAt: data.createdAt,
+            audioUrl: data.aiAudioUrl,
           },
         ]);
-
-        if (data.aiAudioUrl) {
-          lastAiAudioUrlRef.current = data.aiAudioUrl;
-          playAudio(data.aiAudioUrl);
-        }
-      } catch (err: any) {
-        console.error('❌ Send error:', err);
+      } catch {
         alert('Failed to process audio. Please try again.');
       } finally {
         setIsLoading(false);
@@ -184,21 +196,16 @@ const Aiconversation: React.FC = () => {
     }
   }, [isRecording, isLoading]);
 
-  const playAudio = useCallback((url: string) => {
-    if (audioElRef.current) {
-      audioElRef.current.pause();
-      audioElRef.current = null;
-    }
-    const audio = new Audio(url);
-    audioElRef.current = audio;
-    audio.play().catch((e) => console.warn('Autoplay blocked:', e));
-  }, []);
-
-  const handleListenAgain = useCallback(() => {
-    const url = lastAiAudioUrlRef.current;
-    if (!url) return;
-    playAudio(url);
-  }, [playAudio]);
+  if (isLoading && messages.length === 0) {
+    return (
+      <PageLayout activeMenu="conversation" showHeader={false} className="flex flex-col">
+        <ConversationHeader />
+        <div className="flex-1 flex items-center justify-center">
+          <div className="text-xl text-gray-600">Loading conversation...</div>
+        </div>
+      </PageLayout>
+    );
+  }
 
   return (
     <PageLayout 
@@ -213,7 +220,6 @@ const Aiconversation: React.FC = () => {
           isRecording={isRecording}
           isLoading={isLoading}
           onTapToSpeak={handleTapToSpeak}
-          onListenAgain={handleListenAgain}
         />
       </div>
     </PageLayout>

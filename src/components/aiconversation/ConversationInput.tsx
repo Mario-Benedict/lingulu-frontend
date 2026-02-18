@@ -1,18 +1,16 @@
 import { useTranslation } from 'react-i18next';
-import { Mic, Volume2, Loader2 } from 'lucide-react';
+import { Mic, Loader2 } from 'lucide-react';
 
 interface ConversationInputProps {
   isRecording: boolean;
   isLoading?: boolean;
   onTapToSpeak: () => void;
-  onListenAgain: () => void;
 }
 
 const ConversationInput: React.FC<ConversationInputProps> = ({
   isRecording,
   isLoading = false,
   onTapToSpeak,
-  onListenAgain,
 }) => {
   const { t } = useTranslation();
 
@@ -49,15 +47,6 @@ const ConversationInput: React.FC<ConversationInputProps> = ({
                 {isRecording ? t('conversation.recording', 'RECORDING...') : t('conversation.tapToSpeak', 'TAP TO SPEAK')}
               </>
             )}
-          </button>
-
-          {/* Listen Again Button */}
-          <button
-            onClick={onListenAgain}
-            className="flex items-center gap-2 text-lessongray-600 hover:text-lessongray-800 transition font-poppins text-sm sm:text-base"
-          >
-            <Volume2 size={16} className="sm:w-[18px] sm:h-[18px]" />
-            {t('conversation.listenAgain', 'Listen again')}
           </button>
         </div>
       </div>
