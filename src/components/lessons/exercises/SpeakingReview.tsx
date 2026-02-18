@@ -18,8 +18,6 @@ const SpeakingReview: React.FC<SpeakingReviewProps> = ({
   onNext,
   onRetry,
 }) => {
-  const { t } = useTranslation();
-
   const renderCorrectionText = (text: string, corrections?: ('correct' | 'okay' | 'incorrect')[]) => {
     const words = text.split(' ');
 
