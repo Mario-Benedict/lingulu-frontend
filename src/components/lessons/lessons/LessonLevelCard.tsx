@@ -1,5 +1,5 @@
 import { Lock, Clock, HelpCircle } from 'lucide-react';
-
+import { useTranslation } from 'react-i18next';
 type LessonLevelCardProps = {
   id: number;
   title: string;
@@ -14,6 +14,8 @@ type LessonLevelCardProps = {
   progress?: number;
   onStart?: () => void;
 };
+
+const { t } = useTranslation();
 
 const LessonLevelCard: React.FC<LessonLevelCardProps> = ({
   title,
@@ -52,13 +54,13 @@ const LessonLevelCard: React.FC<LessonLevelCardProps> = ({
         <div className="flex flex-col sm:flex-row items-center gap-3 sm:gap-4">
           <div className="flex-1 bg-white bg-opacity-20 rounded-lg px-3 sm:px-4 py-2 sm:py-3 flex items-center justify-center sm:justify-start gap-2 sm:gap-3 w-full">
             <Clock size={18} className="sm:w-6 sm:h-6" />
-            <span className="text-sm sm:text-lg font-poppins">Coming Soon - Stay tuned!</span>
+            <span className="text-sm sm:text-lg font-poppins">{t('lessons.comingSoonStayTuned')}</span>
           </div>
           <button
             className="w-full sm:w-auto bg-white bg-opacity-50 text-white px-4 sm:px-8 py-2 sm:py-3 rounded-lg font-semibold font-rubik cursor-not-allowed text-sm sm:text-base"
             disabled
           >
-            Coming Soon
+            {t('lessons.comingSoon')}
           </button>
         </div>
       ) : isLocked ? (

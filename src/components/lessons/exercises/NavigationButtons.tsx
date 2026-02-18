@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 interface NavigationButtonsProps {
   currentQuestion: number;
   totalQuestions: number;
@@ -17,6 +18,7 @@ const NavigationButtons: React.FC<NavigationButtonsProps> = ({
 }) => {
   const isLastQuestion = currentQuestion === totalQuestions;
   const isFirstQuestion = currentQuestion === 1;
+  const { t } = useTranslation();
 
   return (
     <div className="flex gap-3 sm:gap-4 justify-between mt-2 sm:mt-8 md:mt-4">
@@ -30,7 +32,7 @@ const NavigationButtons: React.FC<NavigationButtonsProps> = ({
               : 'bg-lessongray-500 text-white hover:bg-lessongray-600'
           }`}
         >
-          Back
+          {t('lessons.back')}
         </button>
       )}
       <button
@@ -42,7 +44,7 @@ const NavigationButtons: React.FC<NavigationButtonsProps> = ({
             : 'bg-primary hover:bg-primary-dark'
         }`}
       >
-        {isLastQuestion ? 'Submit' : 'Next'}
+        {isLastQuestion ? t('lessons.submit') : t('lessons.next')}
       </button>
     </div>
   );

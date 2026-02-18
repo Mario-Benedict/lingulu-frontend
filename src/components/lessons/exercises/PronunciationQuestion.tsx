@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import MicrophoneButton from './MicrophoneButton';
 import { Volume2, Pause } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 interface PronunciationQuestionProps {
   questionText: string;
@@ -21,6 +22,7 @@ const PronunciationQuestion: React.FC<PronunciationQuestionProps> = ({
 }) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const { t } = useTranslation();
 
   // Reset audio when audioPath changes (question changes)
   useEffect(() => {
@@ -64,13 +66,13 @@ const PronunciationQuestion: React.FC<PronunciationQuestionProps> = ({
       <div className="mb-6">
         <div className="flex items-center gap-3 bg-blue-50 border-l-4 border-primary p-4 rounded-r-lg">
           <span className="text-lessongray-800 font-poppins text-lg">
-            Say: &quot;{questionText}&quot;
+            {t('lessons.say')} &quot;{questionText}&quot;
           </span>
           {audioPath && (
             <button
               onClick={handlePlayAudio}
               className="p-2 rounded-full bg-primary hover:bg-primary-dark transition-colors shrink-0"
-              aria-label={isPlaying ? 'Pause audio' : 'Play audio'}
+              aria-label={isPlaying ? t('lessons.pauseAudio') : t('lessons.playAudio')}
             >
               {isPlaying ? (
                 <Pause size={20} className="text-white" />

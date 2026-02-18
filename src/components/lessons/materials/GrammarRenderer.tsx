@@ -6,6 +6,7 @@ import rehypeRaw from 'rehype-raw';
 import rehypeSanitize from 'rehype-sanitize';
 import remarkGfm from 'remark-gfm';
 import remarkBreaks from 'remark-breaks';
+import { useTranslation } from 'react-i18next';
 
 interface GrammarRendererProps {
   grammarItems: Array<Grammar>;
@@ -15,6 +16,7 @@ const GrammarRenderer: React.FC<GrammarRendererProps> = ({ grammarItems }) => {
   const [markdownContent, setMarkdownContent] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const { t } = useTranslation();
 
   useEffect(() => {
     const fetchAllMarkdownFiles = async () => {
@@ -38,7 +40,7 @@ const GrammarRenderer: React.FC<GrammarRendererProps> = ({ grammarItems }) => {
           const response = await fetch(fileUrl);
 
           if (!response.ok) {
-            throw new Error(`Failed to fetch file: ${item.filePath}`);
+            throw new Error(`${t('lessons.failedToFetchFile')}: ${item.filePath}`);
           }
 
           return await response.text();
@@ -51,8 +53,8 @@ const GrammarRenderer: React.FC<GrammarRendererProps> = ({ grammarItems }) => {
         const combinedContent = allContents.join('\n\n---\n\n');
         setMarkdownContent(combinedContent);
       } catch (err) {
-        console.error('Error fetching markdown files:', err);
-        setError('Failed to load grammar content');
+        console.error(`${t('lessons.errorFetchingFile')}`, err);
+        setError(t('lessons.failedToLoadGrammarContent'));
       } finally {
         setLoading(false);
       }
@@ -65,7 +67,7 @@ const GrammarRenderer: React.FC<GrammarRendererProps> = ({ grammarItems }) => {
     return (
       <div className="flex justify-center items-center py-12">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
-        <p className="ml-4 text-lessongray-600 font-poppins">Loading grammar content...</p>
+        <p className="ml-4 text-lessongray-600 font-poppins">{t('lessons.loadingGrammar')}</p>
       </div>
     );
   }
@@ -81,7 +83,7 @@ const GrammarRenderer: React.FC<GrammarRendererProps> = ({ grammarItems }) => {
   if (!markdownContent) {
     return (
       <div className="bg-yellow-50 border-l-4 border-yellow-500 p-4 rounded-r-lg">
-        <p className="text-yellow-700 font-poppins">No content available.</p>
+        <p className="text-yellow-700 font-poppins">{t('lessons.noContent')}</p>
       </div>
     );
   }

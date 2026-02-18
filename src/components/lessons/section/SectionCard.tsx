@@ -2,6 +2,7 @@ import { createElement } from 'react';
 import { useNavigate } from 'react-router-dom';
 import type { LucideIcon } from 'lucide-react';
 import type { LessonStatus } from '@/types/general';
+import { t } from 'i18next';
 
 interface SectionCardProps {
   sectionId: string;
@@ -41,9 +42,9 @@ const SectionCard: React.FC<SectionCardProps> = ({ sectionId, title, description
   };
 
   const getButtonText = () => {
-    if (status === 'COMPLETED') return 'Review';
-    if (status === 'IN_PROGRESS') return 'Continue';
-    return 'Start';
+    if (status === 'COMPLETED') return t('lessons.review');
+    if (status === 'IN_PROGRESS') return t('lessons.continue');
+    return t('lessons.start');
   };
 
   return (

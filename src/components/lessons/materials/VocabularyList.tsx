@@ -2,6 +2,7 @@ import { useState, useRef } from 'react';
 import type { Vocabulary } from '@/types';
 import { Volume2, Pause } from 'lucide-react';
 import { env } from '@/config/env';
+import { useTranslation } from 'react-i18next';
 
 interface VocabularyListProps {
   vocabularyItems: Array<Vocabulary>;
@@ -10,6 +11,7 @@ interface VocabularyListProps {
 const VocabularyList: React.FC<VocabularyListProps> = ({ vocabularyItems }) => {
   const [playingId, setPlayingId] = useState<string | null>(null);
   const audioRefs = useRef<Map<string, HTMLAudioElement>>(new Map());
+  const { t } = useTranslation();
 
   const handlePlayAudio = (vocabId: string, audioPath: string) => {
     // Stop currently playing audio
@@ -48,7 +50,7 @@ const VocabularyList: React.FC<VocabularyListProps> = ({ vocabularyItems }) => {
   if (!vocabularyItems || vocabularyItems.length === 0) {
     return (
       <div className="bg-yellow-50 border-l-4 border-yellow-500 p-4 rounded-r-lg">
-        <p className="text-yellow-700 font-poppins">No vocabulary items available.</p>
+        <p className="text-yellow-700 font-poppins">{t('lessons.noVocabularyAvailable')}</p>
       </div>
     );
   }
@@ -57,9 +59,9 @@ const VocabularyList: React.FC<VocabularyListProps> = ({ vocabularyItems }) => {
     <div className="space-y-3">
       {/* Header Row */}
       <div className="grid grid-cols-[2fr_2fr_auto] gap-4 pb-3 border-b-2 border-primary font-rubik">
-        <div className="font-bold text-primary text-sm sm:text-base">Word</div>
-        <div className="font-bold text-primary text-sm sm:text-base">Translation</div>
-        <div className="font-bold text-primary text-sm sm:text-base">Audio</div>
+        <div className="font-bold text-primary text-sm sm:text-base">{t('lessons.word')}</div>
+        <div className="font-bold text-primary text-sm sm:text-base">{t('lessons.translation')}</div>
+        <div className="font-bold text-primary text-sm sm:text-base">{t('lessons.audio')}</div>
       </div>
 
       {/* Vocabulary Rows */}

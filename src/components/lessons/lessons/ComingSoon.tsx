@@ -1,11 +1,12 @@
+import { useTranslation } from 'react-i18next';
 interface ComingSoonProps {
   title?: string;
   message?: string;
 }
-
+const { t } = useTranslation();
 const ComingSoon: React.FC<ComingSoonProps> = ({
-  title = 'Coming Soon',
-  message = 'This feature is currently under development. Stay tuned!',
+  title = t('lessons.comingSoon'),
+  message = t('lessons.comingSoonMessage'),
 }) => {
   return (
     <div className="flex-1 flex items-center justify-center">

@@ -1,9 +1,12 @@
+import { useTranslation } from 'react-i18next';
 interface LoadingOverlayProps {
   message?: string;
 }
 
+const { t } = useTranslation();
+
 const LoadingOverlay: React.FC<LoadingOverlayProps> = ({
-  message = 'Loading...',
+  message = t('common.loading'),
 }) => {
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-white bg-opacity-60 z-50">
