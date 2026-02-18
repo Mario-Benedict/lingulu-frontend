@@ -6,7 +6,7 @@ import ProgressBar from '@components/lessons/exercises/ProgressBar';
 import MultipleChoiceQuestion from '@components/lessons/exercises/MultipleChoiceQuestion';
 import NavigationButtons from '@components/lessons/exercises/NavigationButtons';
 import SummaryResult from '@components/lessons/exercises/SummaryResult';
-import { getMcqExercises, submitMcqAnswer } from '@/api/services';
+import { getMcqExercises, getMcqExercisesRetry, submitMcqAnswer } from '@/api/services';
 import type { MCQQuestion, MCQResult } from '@/types';
 
 const Exercise: React.FC = () => {
@@ -36,7 +36,12 @@ const Exercise: React.FC = () => {
 
       setSectionTitle(data.sectionTitle);
       
-      if (data.mcq?.questions) {
+      // Check if section is already completed (has answers and score)
+      if ('answers' in data && 'score' in data && Array.isArray(data.answers)) {
+        // Section already completed, show summary
+        setSummary(data as unknown as MCQResult);
+      } else if (data.mcq?.questions) {
+        // Section not completed, load questions
         setQuestions(data.mcq.questions);
       }
     } catch {
@@ -83,12 +88,29 @@ const Exercise: React.FC = () => {
     setError('');
   };
 
-  const handleRetry = () => {
-    setSummary(null);
-    setSelectedAnswers({});
-    setCurrentQuestion(1);
-    setError('');
-    loadQuestions();
+  const handleRetry = async () => {
+    if (!sectionId) return;
+
+    try {
+      setLoading(true);
+      setSummary(null);
+      setSelectedAnswers({});
+      setCurrentQuestion(1);
+      setError('');
+
+      const response = await getMcqExercisesRetry(sectionId);
+      const data = response.data!;
+
+      setSectionTitle(data.sectionTitle);
+      
+      if (data.mcq?.questions) {
+        setQuestions(data.mcq.questions);
+      }
+    } catch {
+      setError('Failed to retry exercise');
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleFinish = () => {
