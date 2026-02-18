@@ -112,7 +112,9 @@
     "howToUse": "Cara Menggunakan",
     "step1": "Klik 'KETUK UNTUK BICARA' dan berikan akses mikrofon",
     "step2": "Berbicara dengan alami - AI akan mendengarkan dan memahami pesan Anda",
-    "step3": "Dengarkan respons AI dan lanjutkan percakapan"
+    "step3": "Dengarkan respons AI dan lanjutkan percakapan",
+    "cantAccessMic": "Tidak dapat mengakses mikrofon. Harap periksa izin Anda dan coba lagi.",
+    "failedToProcessAudio": "Gagal memproses audio. Harap coba lagi."
   },
   "auth": {
     "login": "Masuk",

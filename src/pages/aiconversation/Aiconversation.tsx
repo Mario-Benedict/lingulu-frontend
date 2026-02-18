@@ -5,6 +5,7 @@ import MessageList from '@components/aiconversation/MessageList';
 import ConversationInput from '@components/aiconversation/ConversationInput';
 import type { ConversationMessage } from '@/types';
 import { sendConversationAudio, getConversationHistory } from '@/api/services';
+import { useTranslation } from 'react-i18next';
 
 const float32ToWavBlob = (samples: Float32Array, sampleRate: number): Blob => {
   const numChannels = 1;
@@ -61,6 +62,7 @@ const downsampleTo16k = (samples: Float32Array, fromRate: number): Float32Array 
 };
 
 const Aiconversation: React.FC = () => {
+  const { t } = useTranslation();
   const streamRef = useRef<MediaStream | null>(null);
   const audioCtxRef = useRef<AudioContext | null>(null);
   const processorRef = useRef<ScriptProcessorNode | null>(null);
@@ -140,7 +142,7 @@ const Aiconversation: React.FC = () => {
         processor.connect(ctx.destination);
         setIsRecording(true);
       } catch {
-        alert('Cannot access microphone. Please check your permissions.');
+        alert(t('conversation.cantAccessMic'));
       }
     } else {
       processorRef.current?.disconnect();
@@ -189,7 +191,7 @@ const Aiconversation: React.FC = () => {
           },
         ]);
       } catch {
-        alert('Failed to process audio. Please try again.');
+        alert(t('conversation.failedToProcessAudio'));
       } finally {
         setIsLoading(false);
       }
@@ -201,7 +203,7 @@ const Aiconversation: React.FC = () => {
       <PageLayout activeMenu="conversation" showHeader={false} className="flex flex-col">
         <ConversationHeader />
         <div className="flex-1 flex items-center justify-center">
-          <div className="text-xl text-gray-600">Loading conversation...</div>
+          <div className="text-xl text-gray-600">{t('common.loading')}</div>
         </div>
       </PageLayout>
     );
