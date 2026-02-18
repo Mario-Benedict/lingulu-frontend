@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import Sidebar from '@components/common/Sidebar';
 import ProfileCard from '@components/profile/ProfileCard';
 import StatsCard from '@components/profile/StatsCard';
@@ -9,7 +10,9 @@ import { getCurrentUserProfile, uploadAvatar, updateUserBio, getLeaderboard } fr
 import LanguageSwitcher from '@/components/common/LanguageSwitcher';
 import type { Leaderboard, UserProfile, UserStats } from '@/types';
 
+
 const Profile: React.FC = () => {
+  const { t } = useTranslation();
   const { logout } = useAuth();
   const navigate = useNavigate();
   const [profile, setProfile] = useState<UserProfile>({} as UserProfile);
@@ -179,7 +182,7 @@ const Profile: React.FC = () => {
       <main className="flex-1 overflow-y-auto">
         <div className="bg-white shadow-sm sticky top-0 z-10 border-b-primary border-b-2 pt-[2.5rem]">
           <div className="flex justify-between items-center px-8 py-4">
-            <h2 className="text-7xl font-bold text-primary font-rubik">Profile</h2>
+            <h2 className="text-7xl font-bold text-primary font-rubik">{t('profile.title')}</h2>
             <LanguageSwitcher/>
           </div>
         </div>
@@ -218,7 +221,7 @@ const Profile: React.FC = () => {
       {showBioModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
           <div className="bg-white rounded-xl p-6 w-full max-w-md mx-4">
-            <h3 className="text-xl font-bold text-primary font-rubik mb-4">Edit Bio</h3>
+            <h3 className="text-xl font-bold text-primary font-rubik mb-4">{t('profile.editBio')}</h3>
             <textarea
               value={bioText}
               onChange={(e) => setBioText(e.target.value)}

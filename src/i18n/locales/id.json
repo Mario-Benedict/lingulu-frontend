@@ -13,7 +13,12 @@
     "refresh": "Refresh",
     "noData": "Tidak ada data",
     "complete": "Selesai"
-  },
+    },
+    "notFound": {
+      "title": "404 - Halaman Tidak Ditemukan",
+      "description": "Halaman yang Anda cari tidak ada.",
+      "goHome": "Kembali ke Beranda"
+    },
   "sidebar": {
     "dashboard": "Dasbor",
     "lessons": "Pelajaran",

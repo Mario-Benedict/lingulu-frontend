@@ -102,8 +102,7 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
               className="flex-1 sm:flex-none px-3 sm:px-6 py-2 border-2 border-primary text-primary hover:bg-lessongray-50 rounded-lg font-semibold font-poppins transition flex items-center justify-center gap-2 text-sm sm:text-base"
             >
               <KeyRound size={16} className="sm:w-[18px] sm:h-[18px]" />
-              <span className="hidden xs:inline">{t('profile.changePassword')}</span>
-              <span className="xs:hidden">Change Password</span>
+              <span className="xs:inline">{t('profile.changePassword')}</span>
             </button>
           )}
           {onLogout && (
