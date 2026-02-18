@@ -49,7 +49,7 @@ const SpeakingReview: React.FC<SpeakingReviewProps> = ({
       <div className="bg-white rounded-2xl shadow-2xl p-6 sm:p-8 w-full max-w-md">
         {/* Title */}
         <h2 className="text-2xl sm:text-3xl font-bold text-center mb-6 text-primary">
-          Speaking Review
+          {t('lessons.speakingReview')}
         </h2>
 
         {/* Score */}
@@ -66,15 +66,15 @@ const SpeakingReview: React.FC<SpeakingReviewProps> = ({
         <div className="flex flex-wrap justify-center gap-3 mb-6 text-xs sm:text-sm font-poppins">
           <div className="flex items-center gap-1.5">
             <div className="w-3 h-3 rounded bg-[#ffcdd2]"></div>
-            <span className="text-gray-700">Perlu diperbaiki</span>
+            <span className="text-gray-700">{t('lessons.incorrect')}</span>
           </div>
           <div className="flex items-center gap-1.5">
             <div className="w-3 h-3 rounded bg-[#fff9c4]"></div>
-            <span className="text-gray-700">Cukup</span>
+            <span className="text-gray-700">{t('lessons.okay')}</span>
           </div>
           <div className="flex items-center gap-1.5">
             <div className="w-3 h-3 rounded bg-[#c8e6c9]"></div>
-            <span className="text-gray-700">Bagus</span>
+            <span className="text-gray-700">{t('lessons.correct')}</span>
           </div>
         </div>
 
@@ -89,13 +89,13 @@ const SpeakingReview: React.FC<SpeakingReviewProps> = ({
             onClick={onRetry}
             className="flex-1 py-2.5 sm:py-3 bg-lessongray-500 text-white font-medium text-base sm:text-lg rounded-lg hover:bg-lessongray-600 transition-colors"
           >
-            Retry
+            {t('lessons.retry')}
           </button>
           <button
             onClick={onNext}
             className="flex-1 py-2.5 sm:py-3 bg-orange-500 text-white font-medium text-base sm:text-lg rounded-lg hover:bg-orange-600 transition-colors"
           >
-            Next
+            {t('lessons.next')}
           </button>
         </div>
       </div>

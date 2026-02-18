@@ -8,8 +8,10 @@ import NavigationButtons from '@components/lessons/exercises/NavigationButtons';
 import SummaryResult from '@components/lessons/exercises/SummaryResult';
 import { getMcqExercises, getMcqExercisesRetry, submitMcqAnswer } from '@/api/services';
 import type { MCQQuestion, MCQResult } from '@/types';
+import { useTranslation } from 'react-i18next';
 
 const Exercise: React.FC = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const { sectionId } = useParams<{ sectionId: string }>();
   const [searchParams] = useSearchParams();
@@ -174,7 +176,7 @@ const Exercise: React.FC = () => {
     return (
       <PageLayout activeMenu="lessons" showHeader={false}>
         <div className="flex h-screen items-center justify-center">
-          <div className="text-xl text-gray-600">Loading...</div>
+          <div className="text-xl text-gray-600">{t('common.loading')}</div>
         </div>
       </PageLayout>
     );
@@ -206,7 +208,7 @@ const Exercise: React.FC = () => {
                     onSelectOption={handleSelectOption}
                   />
                 ) : (
-                  <div className="text-center text-gray-500">No question available</div>
+                  <div className="text-center text-gray-500">{t('lessons.noQuestionAvailable')}</div>
                 )}
               </div>
               {error && (

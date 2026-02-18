@@ -8,6 +8,7 @@ import { getCourseProgressDetail, getLessonProgressDetail, getSectionsProgress }
 import type { SectionProgress } from '@/types/progress';
 import type { LessonStatus, MaterialType } from '@/types/general';
 import type { LucideIcon } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 interface SectionData {
   sectionId: string;
@@ -19,6 +20,7 @@ interface SectionData {
 }
 
 const Section: React.FC = () => {
+  const { t } = useTranslation();
   const { courseId, lessonId } = useParams<{ courseId: string, lessonId: string }>();
   const [sections, setSections] = useState<SectionData[]>([]);
   const [loading, setLoading] = useState(true);
@@ -38,7 +40,7 @@ const Section: React.FC = () => {
         if (courseId) {
           const courseDetailRes = await getCourseProgressDetail({ courseId });
           if (courseDetailRes.data) {
-            setCourseTitle(courseDetailRes.data.courseTitle || 'Learning Course');
+            setCourseTitle(courseDetailRes.data.courseTitle || t('lessons.learningCourse'));
           }
         }
         
@@ -91,11 +93,11 @@ const Section: React.FC = () => {
 
   const getDescriptionForType = (type: 'material' | 'exercise' | 'pronunciation'): string => {
     const descriptionMap = {
-      material: 'Pelajari materi untuk memahami konsep utama',
-      pronunciation: 'Latihan berbicara dengan rekaman suara',
-      exercise: 'Uji pemahaman dengan soal pilihan ganda',
+      material: t('lessons.subtitleMaterial'),
+      pronunciation: t('lessons.subtitlePronunciation'),
+      exercise: t('lessons.subtitleExercise'),
     };
-    return descriptionMap[type] || 'Latihan pembelajaran';
+    return descriptionMap[type] || t('lessons.subtitleLearning');
   };
 
   if (loading) {

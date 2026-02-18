@@ -6,8 +6,10 @@ import { MaterialContent, MaterialNotFound } from '@components/lessons/materials
 import { getMaterialContent, markMaterialAsCompleted } from '@api/services';
 import type { SectionContent } from '@/types';
 import { Check } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 const Materials: React.FC = () => {
+  const { t } = useTranslation();
   const { materialId } = useParams();
   const navigate = useNavigate();
   const [currentData, setCurrentData] = useState<SectionContent | null>(null);
@@ -55,8 +57,8 @@ const Materials: React.FC = () => {
         navigate(-1);
       }, 1000);
     } catch (err) {
-      console.error('Error marking material as done:', err);
-      alert('Failed to mark material as completed. Please try again.');
+      console.error(t('lessons.errorMarkingMaterial'), err);
+      alert(t('lessons.failedToMarkMaterial'));
     } finally {
       setIsMarking(false);
     }
@@ -65,12 +67,12 @@ const Materials: React.FC = () => {
   return (
     <PageLayout activeMenu="lessons" showHeader={false}>
       <div className="flex-1 flex flex-col min-w-0 font-poppins">
-        <MaterialsHeader title={currentData?.sectionTitle || 'Loading...'} />
+        <MaterialsHeader title={currentData?.sectionTitle || t('common.loading')} />
         <div className="flex-1 overflow-y-auto">
           <div className="p-4 sm:p-6 md:p-8">
             {loading && (
               <div className="bg-white rounded-lg p-8 shadow-md text-center">
-                <p className="text-lessongray-600 font-poppins">Loading material...</p>
+                <p className="text-lessongray-600 font-poppins">{t('lessons.loadingMaterial')}</p>
               </div>
             )}
 
@@ -103,17 +105,17 @@ const Materials: React.FC = () => {
                     {isMarking ? (
                       <>
                         <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
-                        <span>Marking...</span>
+                        <span>{t('lessons.markingMaterial')}</span>
                       </>
                     ) : isCompleted ? (
                       <>
                         <Check size={20} />
-                        <span>Completed!</span>
+                        <span>{t('lessons.completed')}</span>
                       </>
                     ) : (
                       <>
                         <Check size={20} />
-                        <span>Mark as Done</span>
+                        <span>{t('lessons.markAsDone')}</span>
                       </>
                     )}
                   </button>

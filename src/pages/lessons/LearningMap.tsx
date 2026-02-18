@@ -6,10 +6,11 @@ import LearningMapHeader from '@components/lessons/learningmap/LearningMapHeader
 import LessonsList from '@components/lessons/learningmap/LessonsList';
 import type { LessonProgress } from '@/types/progress';
 import { getCourseProgressDetail, getLessonsProgress } from '@/api/services';
+import { useTranslation } from 'react-i18next';
 
 const LearningMap: React.FC = () => {
   const { courseId } = useParams();
-  
+  const { t } = useTranslation();
   const [lessons, setLessons] = useState<LessonProgress[]>([]);
   const [courseTitle, setCourseTitle] = useState('Learning Course');
   const [loading, setLoading] = useState(true);
@@ -27,7 +28,7 @@ const LearningMap: React.FC = () => {
         const courseDetailRes = await getCourseProgressDetail({ courseId });
         
         if (courseDetailRes.data) {
-          setCourseTitle(courseDetailRes.data.courseTitle || 'Learning Course');
+          setCourseTitle(courseDetailRes.data.courseTitle || t('lessons.learningCourse'));
         }
         
         const progressRes = await getLessonsProgress({ courseId });
@@ -46,10 +47,10 @@ const LearningMap: React.FC = () => {
 
   const getLevel = (title: string): string => {
     const titleLower = title.toLowerCase();
-    if (titleLower.includes('beginner')) return 'Beginner';
-    if (titleLower.includes('intermediate')) return 'Intermediate';
-    if (titleLower.includes('advanced')) return 'Advanced';
-    return 'Beginner';
+    if (titleLower.includes('beginner')) return t('lessons.beginner');
+    if (titleLower.includes('intermediate')) return t('lessons.intermediate');
+    if (titleLower.includes('advanced')) return t('lessons.advanced');
+    return t('lessons.beginner');
   };
 
   const subtitle = `${lessons.length} Lessons - ${getLevel(courseTitle)}`;
@@ -68,7 +69,7 @@ const LearningMap: React.FC = () => {
           />
           {loading && lessons.length === 0 ? (
             <div className="flex items-center justify-center h-96 relative z-10">
-              <p className="text-white text-lg">Loading lessons...</p>
+              <p className="text-white text-lg">{t('common.loading')}</p>
             </div>
           ) : (
             <LessonsList courseId={courseId} lessons={lessons} />

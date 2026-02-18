@@ -1,6 +1,7 @@
 import type { Grammar, Vocabulary } from '@/types';
 import GrammarRenderer from './GrammarRenderer';
 import VocabularyList from './VocabularyList';
+import { useTranslation } from 'react-i18next';
 
 interface MaterialContentProps {
   content: Array<Grammar> | Array<Vocabulary> | null;
@@ -13,10 +14,11 @@ interface MaterialNotFoundProps {
 }
 
 export const MaterialContent: React.FC<MaterialContentProps> = ({ content, type }) => {
+  const { t } = useTranslation();
   const renderContent = () => {
     if (!content || content.length === 0) {
       return (
-        <p className="text-lessongray-600 font-poppins">No content available for this material.</p>
+        <p className="text-lessongray-600 font-poppins">{t('lessons.noContentAvailable')}</p>
       );
     }
 
@@ -29,7 +31,7 @@ export const MaterialContent: React.FC<MaterialContentProps> = ({ content, type 
       
       default:
         return (
-          <p className="text-lessongray-600 font-poppins">Unknown content type.</p>
+          <p className="text-lessongray-600 font-poppins">{t('lessons.unknownContentType')}</p>
         );
     }
   };
@@ -48,9 +50,10 @@ export const MaterialContent: React.FC<MaterialContentProps> = ({ content, type 
 export const MaterialNotFound: React.FC<MaterialNotFoundProps> = ({
   materialId,
 }) => {
+  const { t } = useTranslation();
   return (
     <div className="bg-white rounded-lg p-8 shadow-md text-center">
-      <p className="text-lessongray-600 font-poppins">Material not found</p>
+      <p className="text-lessongray-600 font-poppins">{t('lessons.materialNotFound')}</p>
       <p className="text-lessongray-500 text-sm mt-2 font-poppins">
         materialId: {materialId}
       </p>

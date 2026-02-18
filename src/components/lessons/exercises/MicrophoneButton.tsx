@@ -1,4 +1,5 @@
 import { Mic, Loader2 } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 interface MicrophoneButtonProps {
   isListening: boolean;
@@ -13,6 +14,7 @@ const MicrophoneButton: React.FC<MicrophoneButtonProps> = ({
   onClick,
   isAnswered = false,
 }) => {
+  const { t } = useTranslation();
   return (
     <div className="flex flex-col items-center justify-center border-b border-b-lessongray-400 pb-4 sm:pb-6">
       <button
@@ -34,12 +36,12 @@ const MicrophoneButton: React.FC<MicrophoneButtonProps> = ({
       </button>
       <p className="mt-4 sm:mt-6 md:mt-8 text-lessongray-600 font-poppins text-sm sm:text-base">
         {isProcessing
-          ? 'Processing...'
+          ? t('lessons.processing')
           : isListening
-          ? 'Listening...'
+          ? t('lessons.listening')
           : isAnswered
-          ? 'Press Next or Back'
-          : 'Tap the microphone to answer'}
+          ? t('lessons.nextOrBack')
+          : t('lessons.tapMicToAnswer')}
       </p>
     </div>
   );

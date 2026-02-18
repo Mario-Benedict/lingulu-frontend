@@ -10,6 +10,7 @@ import LoadingOverlay from '@components/lessons/lessons/LoadingOverlay';
 import ErrorOverlay from '@components/lessons/lessons/ErrorOverlay';
 import { getCoursesProgress } from '@/api/services';
 import type { CourseProgress } from '@/types';
+import { useTranslation } from 'react-i18next';
 
 type LevelType = {
   id: number;
@@ -27,6 +28,7 @@ type LevelType = {
 };
 
 const Lessons: React.FC = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [courses, setCourses] = useState<CourseProgress[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -119,23 +121,23 @@ const Lessons: React.FC = () => {
     id: courses.length + 1,
     courseId: '',
     title: '???',
-    description: 'Something exciting is coming...',
+    description: t('lessons.smthComingSoon'),
     bgColor: 'bg-gradient-to-br from-gray-500 to-gray-700',
     isLocked: true,
     isComingSoon: true,
-    buttonText: 'Coming Soon',
+    buttonText: t('lessons.comingSoon'),
     buttonColor: 'bg-gray-300 text-gray-600',
-    lockMessage: 'Coming Soon',
+    lockMessage: t('lessons.comingSoon'),
     mascotImage: '',
   });
 
   return (
     <div className="flex h-screen bg-gray-100 w-screen">
-      {loading && <LoadingOverlay message="Loading progress..." />}
+      {loading && <LoadingOverlay message={t('common.loading')} />}
       {error && <ErrorOverlay message={error} />}
       <Sidebar activeMenu="lessons" />
       <div className="flex-1 flex flex-col min-w-0">
-        <LessonsHeader title="Start Your Journey" />
+        <LessonsHeader title={t('lessons.title')} />
         <div className="flex-1 overflow-y-auto">
           <div className="p-8">
             <div className="flex flex-col gap-6 mx-auto">

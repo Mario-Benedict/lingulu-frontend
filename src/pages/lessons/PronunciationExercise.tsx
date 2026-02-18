@@ -9,6 +9,7 @@ import SummaryResultPronunciation from '@components/lessons/exercises/SummaryRes
 import SpeakingReview from '@components/lessons/exercises/SpeakingReview';
 import { getSpeakingExercises, getSpeakingExercisesRetry, getSpeakingExerciseScore, attemptSpeakingExercise, submitSpeakingExercise } from '@/api/services';
 import type { SpeakingExercise, SpeakingAttempt, WordRequest } from '@/types';
+import { useTranslation } from 'react-i18next';
 
 // Audio processing utilities
 const float32ToWavBlob = (samples: Float32Array, sampleRate: number): Blob => {
@@ -66,6 +67,7 @@ const downsampleTo16k = (samples: Float32Array, fromRate: number): Float32Array 
 };
 
 const PronunciationExercise: React.FC = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const { sectionId } = useParams<{ sectionId: string }>();
   const [searchParams] = useSearchParams();
@@ -98,6 +100,7 @@ const PronunciationExercise: React.FC = () => {
   const progressPercentage = totalQuestions > 0 ? (currentQuestion / totalQuestions) * 100 : 0;
 
   useEffect(() => {
+    const {t} = useTranslation();
     const fetchExercises = async () => {
       if (!sectionId) {
         setLoading(false);
@@ -118,7 +121,7 @@ const PronunciationExercise: React.FC = () => {
             const retryResponse = await getSpeakingExercisesRetry(sectionId);
             
             if (retryResponse.data) {
-              setSectionTitle(retryResponse.data.sectionTitle || 'Speaking Exercise');
+              setSectionTitle(retryResponse.data.sectionTitle || t('lessons.speakingExercise'));
               const allExercises = retryResponse.data.speakings || [];
               setExercises(allExercises);
               
@@ -147,7 +150,7 @@ const PronunciationExercise: React.FC = () => {
             }
           } else {
             // Normal response with SectionContent structure
-            setSectionTitle(response.data.sectionTitle || 'Speaking Exercise');
+            setSectionTitle(response.data.sectionTitle || t('lessons.speakingExercise'));
             setExercises(response.data.speakings || []);
           }
         }
@@ -172,10 +175,10 @@ const PronunciationExercise: React.FC = () => {
   };
 
   const getFeedbackForScore = (score: number): string => {
-    if (score >= 80) return 'Sempurna! Pelafalan Anda sangat bagus!';
-    if (score >= 70) return 'Bagus! Terus tingkatkan pelafalan Anda!';
-    if (score >= 60) return 'Cukup baik! Terus berlatih!';
-    return 'Perlu lebih banyak latihan. Jangan menyerah!';
+    if (score >= 80) return t('lessons.feedback.perfect');
+    if (score >= 70) return t('lessons.feedback.good');
+    if (score >= 60) return t('lessons.feedback.okay');
+    return t('lessons.feedback.improve');
   };
 
   const currentQuestionData = exercises[currentQuestion - 1];
@@ -221,7 +224,7 @@ const PronunciationExercise: React.FC = () => {
         processor.connect(ctx.destination);
         setIsRecording(true);
       } catch {
-        alert('Cannot access microphone. Please check your permissions.');
+        alert(t('conversation.cantAccessMic'));
       }
     } else {
       // Stop recording and process
@@ -356,13 +359,13 @@ const PronunciationExercise: React.FC = () => {
       const response = await getSpeakingExercisesRetry(sectionId);
       
       if (response.data) {
-        setSectionTitle(response.data.sectionTitle || 'Speaking Exercise');
+        setSectionTitle(response.data.sectionTitle || t('lessons.speakingExercise'));
         setExercises(response.data.speakings || []);
         setQuestionResults({});
         setCurrentQuestion(1);
       }
     } catch {
-      alert('Failed to retry exercise');
+      alert(t('lessons.failedToRetryExercise'));
     } finally {
       setLoading(false);
     }
@@ -406,7 +409,7 @@ const PronunciationExercise: React.FC = () => {
     return (
       <PageLayout activeMenu="lessons" showHeader={false}>
         <div className="flex-1 flex items-center justify-center">
-          <p className="text-lessongray-600">No exercises available</p>
+          <p className="text-lessongray-600">{t('lessons.noQuestionAvailable')}</p>
         </div>
       </PageLayout>
     );

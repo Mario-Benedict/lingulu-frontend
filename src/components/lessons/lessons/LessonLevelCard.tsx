@@ -1,4 +1,5 @@
 import { Lock, Clock, HelpCircle } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 type LessonLevelCardProps = {
   id: number;
@@ -27,8 +28,11 @@ const LessonLevelCard: React.FC<LessonLevelCardProps> = ({
   mascotImage,
   progress,
   onStart,
-}) => (
-  <div className={`${bgColor} rounded-lg p-4 sm:p-6 lg:p-8 py-4 sm:py-6 text-white shadow-lg flex flex-col sm:flex-row items-center gap-4 sm:gap-6 lg:gap-8 min-h-fit sm:min-h-48 lg:min-h-64 overflow-hidden ${isComingSoon ? 'opacity-75' : ''}`}>
+}) => {
+  const { t } = useTranslation();
+
+  return (
+    <div className={`${bgColor} rounded-lg p-4 sm:p-6 lg:p-8 py-4 sm:py-6 text-white shadow-lg flex flex-col sm:flex-row items-center gap-4 sm:gap-6 lg:gap-8 min-h-fit sm:min-h-48 lg:min-h-64 overflow-hidden ${isComingSoon ? 'opacity-75' : ''}`}>
     {/* Character Image */}
     <div className="flex-shrink-0 flex items-center justify-center w-24 h-24 sm:w-40 sm:h-40 lg:w-[280px] lg:h-[280px]">
       {isComingSoon ? (
@@ -52,13 +56,13 @@ const LessonLevelCard: React.FC<LessonLevelCardProps> = ({
         <div className="flex flex-col sm:flex-row items-center gap-3 sm:gap-4">
           <div className="flex-1 bg-white bg-opacity-20 rounded-lg px-3 sm:px-4 py-2 sm:py-3 flex items-center justify-center sm:justify-start gap-2 sm:gap-3 w-full">
             <Clock size={18} className="sm:w-6 sm:h-6" />
-            <span className="text-sm sm:text-lg font-poppins">Coming Soon - Stay tuned!</span>
+            <span className="text-sm sm:text-lg font-poppins">{t('lessons.comingSoonStayTuned')}</span>
           </div>
           <button
             className="w-full sm:w-auto bg-white bg-opacity-50 text-white px-4 sm:px-8 py-2 sm:py-3 rounded-lg font-semibold font-rubik cursor-not-allowed text-sm sm:text-base"
             disabled
           >
-            Coming Soon
+            {t('lessons.comingSoon')}
           </button>
         </div>
       ) : isLocked ? (
@@ -100,6 +104,7 @@ const LessonLevelCard: React.FC<LessonLevelCardProps> = ({
       )}
     </div>
   </div>
-);
+  );
+};
 
 export default LessonLevelCard;
