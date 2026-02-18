@@ -37,13 +37,13 @@ const router = createBrowserRouter([
       <ProtectedRoute />
     ),
     children: [
-      { path: '/dashboard', element: <Dashboard /> },
+      { path: '/dashboard', element: <DashboardPage /> },
       { path: '/lessons', element: <Lessons /> },
-      { path: '/lessons/map', element: <LearningMap /> },
-      { path: '/lessons/:lessonId', element: <Section /> },
+      { path: '/lessons/:courseId/map', element: <LearningMap /> },
+      { path: '/lessons/:courseId/:lessonId', element: <Section /> },
       { path: '/lessons/materials/:materialId', element: <Materials /> },
-      { path: '/lessons/exercises/:exerciseId', element: <Exercises /> },
-      { path: '/lessons/pronunciation/:exerciseId', element: <PronunciationExercise /> },
+      { path: '/lessons/exercises/:sectionId', element: <Exercises /> },
+      { path: '/lessons/pronunciation/:sectionId', element: <PronunciationExercise /> },
       { path: '/leaderboard', element: <LeaderboardPage /> },
       { path: '/conversation', element: <Aiconversation /> },
       { path: '/profile', element: <Profile /> },
