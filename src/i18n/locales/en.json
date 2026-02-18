@@ -22,7 +22,8 @@
     "profile": "Profile"
   },
   "dashboard": {
-    "welcomeBack": "WELCOME BACK, {{username}}!",
+    "welcomeBack": "WELCOME BACK",
+    "continue": "Continue",
     "continueJourney": "Continue Your Journey!",
     "currentLevel": "Current Level",
     "streak": "Streak",
@@ -37,7 +38,7 @@
     "advanced": "Advanced",
     "daysStreak": "{{count}} day streak",
     "practiceWithAI": "Practice with AI",
-    "practiceDescription": "Ready to practice? Let's talk!"
+    "practiceDescription": "Ready to practice? </br> Let's talk!"
   },
   "profile": {
     "title": "Profile",

@@ -27,7 +27,8 @@
     "profile": "Profil"
   },
   "dashboard": {
-    "welcomeBack": "SELAMAT DATANG, {{username}}!",
+    "welcomeBack": "SELAMAT DATANG",
+    "continue": "Lanjutkan",
     "continueJourney": "Lanjutkan Perjalananmu!",
     "currentLevel": "Level Saat Ini",
     "streak": "Streak",
@@ -40,9 +41,8 @@
     "beginner": "Pemula",
     "intermediate": "Menengah",
     "advanced": "Lanjutan",
-    "daysStreak": "{{count}} hari beruntun",
     "practiceWithAI": "Berlatih dengan AI",
-    "practiceDescription": "Siap berlatih? Ayo berbicara!"
+    "practiceDescription": "Siap berlatih? </br> Ayo berbicara!"
   },
   "profile": {
     "title": "Profil",
