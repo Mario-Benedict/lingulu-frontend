@@ -88,7 +88,9 @@
     "noData": "No leaderboard data yet",
     "completeToJoin": "Complete lessons to join the leaderboard!",
     "completeLesson": "Complete lessons to join the leaderboard!",
-    "yourRank": "Your rank on the leaderboard"
+    "yourRank": "Your rank on the leaderboard",
+    "loading": "Loading leaderboard...",
+    "yourAccount": "Your Account"
   },
   "conversation": {
     "title": "AI Conversation",
@@ -123,14 +125,5 @@
     "signIn": "Sign In",
     "orContinueWith": "Or continue with",
     "google": "Google"
-  },
-  "landing": {
-    "heroTitle": "Learn Languages with AI",
-    "heroSubtitle": "Master new languages through interactive lessons and AI-powered conversations",
-    "getStarted": "Get Started",
-    "features": "Features",
-    "aiTutor": "AI Tutor",
-    "challenges": "Challenges",
-    "levels": "Levels"
   }
 }

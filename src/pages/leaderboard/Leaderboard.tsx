@@ -1,5 +1,6 @@
 import Sidebar from '@components/common/Sidebar';
 import { useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next';
 import bannerBg from '@assets/leaderboard/banner-leaderboard.svg'
 import lbEmptyImg from '@assets/leaderboard/LB-empty.svg'
 import LeaderboardRow from '@components/leaderboard/LeaderboardRow';
@@ -7,6 +8,7 @@ import { getLeaderboard, getUserRank } from '@/api/services';
 import type { Leaderboard, UserRank } from '@/types';
 
 const LeaderboardPage: React.FC = () => {
+	const { t } = useTranslation();
 	const [entries, setEntries] = useState<UserRank[]>([]);
 	const [currentUser, setCurrentUser] = useState<UserRank | null>(null);
 	const [loading, setLoading] = useState<boolean>(false);
@@ -69,15 +71,15 @@ const LeaderboardPage: React.FC = () => {
 							☰
 						</button>
 						<div>
-							<h1 className="text-3xl md:text-5xl font-rubik font-medium text-orange-500">Leaderboard</h1>
-							<p className="text-sm md:text-base text-gray-800 mt-1">Based on XP from completed lessons</p>
+							<h1 className="text-3xl md:text-5xl font-rubik font-medium text-orange-500">{t('leaderboard.title')}</h1>
+							<p className="text-sm md:text-base text-gray-800 mt-1">{t('leaderboard.subtitle')}</p>
 						</div>
 					</div>
 				</header>
 
 				<section className="px-4 sm:px-6 py-6 space-y-3">
 					{loading && (
-						<div className="text-gray-600">Loading leaderboard...</div>
+						<div className="text-gray-600">{t('leaderboard.loading')}</div>
 					)}
 
 					{error && (
@@ -87,8 +89,8 @@ const LeaderboardPage: React.FC = () => {
 					{!loading && !error && entries.length === 0 && (
 						<div className="flex flex-col items-center justify-center py-12">
 							<img src={lbEmptyImg} alt="No data" className="w-40 h-40 mb-4 opacity-70" />
-							<div className="text-lg font-semibold text-gray-600 mb-2">Belum ada data leaderboard</div>
-							<div className="text-sm text-gray-400 mb-4">Ayo selesaikan pelajaran untuk masuk leaderboard!</div>
+							<div className="text-lg font-semibold text-gray-600 mb-2">{t('leaderboard.noData')}</div>
+							<div className="text-sm text-gray-400 mb-4">{t('leaderboard.completeToJoin')}</div>
 							<button
 								className="px-4 py-2 bg-orange-500 text-white rounded-lg shadow hover:bg-orange-600 transition"
 								onClick={() => window.location.reload()}
@@ -135,7 +137,7 @@ const LeaderboardPage: React.FC = () => {
 							<div className="text-xl sm:text-3xl font-rubik font-semibold text-white truncate">
 								{currentUser.username}
 							</div>
-							<div className="text-base sm:text-lg text-white/70">Rank kamu di leaderboard</div>
+							<div className="text-base sm:text-lg text-white/70">{t('leaderboard.yourRank')}</div>
 						</div>
 
 						<div className="flex items-baseline gap-2">

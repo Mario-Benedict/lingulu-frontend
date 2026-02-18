@@ -93,7 +93,9 @@
     "noData": "Belum ada data papan peringkat",
     "completeToJoin": "Selesaikan pelajaran untuk masuk papan peringkat!",
     "completeLesson": "Ayo selesaikan pelajaran untuk masuk papan peringkat!",
-    "yourRank": "Peringkatmu di papan peringkat"
+    "yourRank": "Peringkatmu di papan peringkat",
+    "loading": "Memuat papan peringkat...",
+      "yourAccount": "Akun Kamu"
   },
   "conversation": {
     "title": "Percakapan AI",
