@@ -31,7 +31,7 @@ export const MaterialContent: React.FC<MaterialContentProps> = ({ content, type 
       
       default:
         return (
-          <p className="text-lessongray-600 font-poppins">{t('lessons.noContentType')}</p>
+          <p className="text-lessongray-600 font-poppins">{t('lessons.unknownContentType')}</p>
         );
     }
   };
