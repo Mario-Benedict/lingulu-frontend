@@ -24,6 +24,12 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         const response = await getAuthenticatedUser();
         const isValid = response.data?.authenticated || false;
         setIsAuthenticated(isValid);
+      } catch (err: any) {
+        if (err?.response?.status === 401) {
+          setIsAuthenticated(false);
+        } else {
+          console.error('Auth check error:', err);
+        }
       } finally {
         setLoading(false);
       }

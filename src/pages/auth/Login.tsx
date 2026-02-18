@@ -7,7 +7,7 @@ import ForgotPasswordLink from '@components/auth/login/ForgotPasswordLink';
 import GoogleLoginButton from '@components/auth/login/GoogleLoginButton';
 import SignUpLink from '@components/auth/login/SignUpLink';
 import { useAuth } from '@/hooks/useAuth';
-import { loginUser } from '@/api/services';
+import { loginUser, getAuthenticatedUser } from '@/api/services';
 
 const Login: React.FC = () => {
   const navigate = useNavigate();
@@ -22,38 +22,44 @@ const Login: React.FC = () => {
     }
   }, [location.state]);
 
-  const handleLoginSubmit = async (email: string, password: string, isRememberMe: boolean) => {
-    setIsLoading(true);
-    setOauthError(null);
-    try {
-      const response = await loginUser({ email, password, isRememberMe });
+ const handleLoginSubmit = async (email: string, password: string, isRememberMe: boolean) => {
+  setIsLoading(true);
+  setOauthError(null);
 
-      if (!response.success) {
-        throw new Error('Login gagal');
-      }
+  try {
+    const response = await loginUser({ email, password, isRememberMe });
 
+    if (response.success) {
       setIsAuthenticated(true);
       navigate('/dashboard', { replace: true });
-    } catch (error: unknown) {
-      // Check if error message indicates need for Google OAuth
-      if (error && typeof error === 'object' && 'response' in error) {
-        const axiosError = error as { response?: { data?: { message?: string } } };
-        const errorMessage = axiosError.response?.data?.message;
-        
-        if (errorMessage?.includes('Google OAuth') || errorMessage?.includes('google')) {
-          setOauthError('This email is already registered with Google. Please use Google Login to continue.');
-        } else {
-          setOauthError(errorMessage || 'Login failed');
-        }
-      } else if (error instanceof Error) {
-        setOauthError(error.message);
-      } else {
-        setOauthError('Login failed');
-      }
-    } finally {
-      setIsLoading(false);
+      return;
     }
-  };
+  } catch (error: any) {
+    const data = error?.response?.data;
+    const message = data?.message || 'Login failed';
+    const authenticated = data?.data?.authenticated;
+
+    setOauthError(message);
+
+    // Jika email belum verified
+    if (authenticated === false) {
+      setTimeout(() => {
+        navigate('/otp-verify', { state: { email } });
+      }, 1500);
+      return;
+    }
+
+    // Jika akun Google
+    if (message.toLowerCase().includes('google')) {
+      setOauthError(
+        'This email is already registered with Google. Please use Google Login to continue.'
+      );
+    }
+  } finally {
+    setIsLoading(false);
+  }
+};
+
 
   const handleGoogleLogin = () => {
     window.location.href = 'http://localhost:8080/oauth2/authorization/google';
