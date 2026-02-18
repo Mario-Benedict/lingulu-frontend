@@ -9,7 +9,7 @@ import Otp from '@pages/auth/Otp.tsx';
 import ResetPass from '@pages/auth/ResetPass.tsx';
 import ChangePass from '@pages/auth/ChangePass.tsx';
 import NotFoundPage from '@pages/NotFoundPage.tsx';
-import Dashboard from '@pages/dashboard/Dashboard.tsx';
+import DashboardPage from '@pages/dashboard/Dashboard.tsx';
 import Lessons from '@pages/lessons/Lessons.tsx';
 import LearningMap from '@pages/lessons/LearningMap.tsx';
 import Section from '@pages/lessons/Section.tsx';
@@ -32,7 +32,7 @@ const router = createBrowserRouter([
   { path: '/otp-verify', element: <Otp /> },
   { path: '/reset-password', element: <ResetPass /> },
   { path: '/oauth2/success', element: <OAuthSuccess /> },
-  { path: '/dashboard', element: <Dashboard /> },
+  { path: '/dashboard', element: <DashboardPage /> },
       { path: '/lessons', element: <Lessons /> },
       { path: '/lessons/:courseId/map', element: <LearningMap /> },
       { path: '/lessons/:courseId/:lessonId', element: <Section /> },

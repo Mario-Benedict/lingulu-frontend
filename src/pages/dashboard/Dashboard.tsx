@@ -6,7 +6,7 @@ import Sidebar from '@components/common/Sidebar';
 import { getDashboard } from '@/api/services';
 import type { Dashboard } from '@/types';
 
-const Dashboard: FC = () => {
+const DashboardPage: FC = () => {
   const navigate = useNavigate();
   const [data, setData] = useState<Dashboard | null>(null);
   const [loading, setLoading] = useState(true);
@@ -148,4 +148,4 @@ const Dashboard: FC = () => {
   );
 };
 
-export default Dashboard;
+export default DashboardPage;
