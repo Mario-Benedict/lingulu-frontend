@@ -7,6 +7,7 @@ interface SpeakingReviewProps {
   corrections?: ('correct' | 'okay' | 'incorrect')[];
   feedback: string;
   onNext: () => void;
+  onRetry: () => void;
 }
 
 const SpeakingReview: React.FC<SpeakingReviewProps> = ({
@@ -15,6 +16,7 @@ const SpeakingReview: React.FC<SpeakingReviewProps> = ({
   corrections,
   feedback,
   onNext,
+  onRetry,
 }) => {
   const { t } = useTranslation();
 
@@ -84,13 +86,21 @@ const SpeakingReview: React.FC<SpeakingReviewProps> = ({
           {feedback}
         </p>
 
-        {/* Next Button */}
-        <button
-          onClick={onNext}
-          className="w-full py-2.5 sm:py-3 bg-orange-500 text-white font-medium text-base sm:text-lg rounded-lg hover:bg-orange-600 transition-colors"
-        >
-          Next
-        </button>
+        {/* Buttons */}
+        <div className="flex gap-3">
+          <button
+            onClick={onRetry}
+            className="flex-1 py-2.5 sm:py-3 bg-lessongray-500 text-white font-medium text-base sm:text-lg rounded-lg hover:bg-lessongray-600 transition-colors"
+          >
+            Retry
+          </button>
+          <button
+            onClick={onNext}
+            className="flex-1 py-2.5 sm:py-3 bg-orange-500 text-white font-medium text-base sm:text-lg rounded-lg hover:bg-orange-600 transition-colors"
+          >
+            Next
+          </button>
+        </div>
       </div>
     </div>
   );

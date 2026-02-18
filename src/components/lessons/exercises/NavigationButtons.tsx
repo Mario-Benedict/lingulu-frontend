@@ -16,20 +16,23 @@ const NavigationButtons: React.FC<NavigationButtonsProps> = ({
   isRetryDisabled = false,
 }) => {
   const isLastQuestion = currentQuestion === totalQuestions;
+  const isFirstQuestion = currentQuestion === 1;
 
   return (
     <div className="flex gap-3 sm:gap-4 justify-between mt-2 sm:mt-8 md:mt-4">
-      <button
-        onClick={onBack}
-        disabled={isRetryDisabled}
-        className={`flex-1 py-2 sm:py-3 rounded-lg font-semibold transition font-rubik text-sm sm:text-base ${
-          isRetryDisabled
-            ? 'bg-lessongray-300 text-lessongray-500 cursor-not-allowed'
-            : 'bg-lessongray-500 text-white hover:bg-lessongray-600'
-        }`}
-      >
-        Retry Answer
-      </button>
+      {!isFirstQuestion && (
+        <button
+          onClick={onBack}
+          disabled={isRetryDisabled}
+          className={`flex-1 py-2 sm:py-3 rounded-lg font-semibold transition font-rubik text-sm sm:text-base ${
+            isRetryDisabled
+              ? 'bg-lessongray-300 text-lessongray-500 cursor-not-allowed'
+              : 'bg-lessongray-500 text-white hover:bg-lessongray-600'
+          }`}
+        >
+          Back
+        </button>
+      )}
       <button
         onClick={onNext}
         disabled={isNextDisabled}

@@ -68,3 +68,45 @@ export type MCQResult = {
     score: number;
     answers: Array<MCQSelectedAnswer>;
 };
+
+export type PhonemeScore = {
+    phoneme: string;
+    score: number;
+}
+
+export type WordResult = {
+    phonemes: Array<PhonemeScore>;
+    score: number;
+    word: string;
+}
+
+export type PronounciationAssessment = {
+    average_score: number;
+    text: string;
+    words: Array<WordResult>;
+};
+
+export type SpeakingScoreResponse = {
+    audio_duration_seconds: number;
+    audio_samples: number;
+    filename: string;
+    gop_latency_seconds: number;
+    latency_seconds: number;
+    reference_text: string;
+    status: string;
+    transcription: string;
+    pronounciation_assessment: PronounciationAssessment;
+};
+
+export type WordRequest = {
+    word: string;
+    score: number;
+};
+
+export type SpeakingAttempt = {
+    sectionId: string;
+    speakingId: string;
+    sentence: string;
+    averageScore: number;
+    words: Array<WordRequest>;
+};
