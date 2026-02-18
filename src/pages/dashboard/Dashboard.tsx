@@ -7,7 +7,7 @@ import Sidebar from '@components/common/Sidebar';
 import { getDashboard } from '@/api/services';
 import type { Dashboard } from '@/types';
 
-const Dashboard: FC = () => {
+const DashboardPage: FC = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [data, setData] = useState<Dashboard | null>(null);
@@ -150,4 +150,4 @@ const Dashboard: FC = () => {
   );
 };
 
-export default Dashboard;
+export default DashboardPage;

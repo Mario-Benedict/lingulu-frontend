@@ -8,7 +8,7 @@ import ForgotPasswordLink from '@components/auth/login/ForgotPasswordLink';
 import GoogleLoginButton from '@components/auth/login/GoogleLoginButton';
 import SignUpLink from '@components/auth/login/SignUpLink';
 import { useAuth } from '@/hooks/useAuth';
-import { loginUser, getAuthenticatedUser } from '@/api/services';
+import { loginUser } from '@/api/services';
 
 const Login: React.FC = () => {
   const { t } = useTranslation();
@@ -24,43 +24,57 @@ const Login: React.FC = () => {
     }
   }, [location.state]);
 
- const handleLoginSubmit = async (email: string, password: string, isRememberMe: boolean) => {
-  setIsLoading(true);
-  setOauthError(null);
+  const handleLoginSubmit = async (email: string, password: string, isRememberMe: boolean) => {
+    setIsLoading(true);
+    setOauthError(null);
 
-  try {
-    const response = await loginUser({ email, password, isRememberMe });
+    try {
+      const response = await loginUser({ email, password, isRememberMe });
 
-    if (response.success) {
-      setIsAuthenticated(true);
-      navigate('/dashboard', { replace: true });
-      return;
+      if (response.success) {
+        setIsAuthenticated(true);
+        navigate('/dashboard', { replace: true });
+      }
+    } catch (error: unknown) {
+      if (error && typeof error === 'object' && 'response' in error) {
+        const axiosError = error as {
+          response?: {
+            data?: {
+              message?: string;
+              data?: {
+                authenticated?: boolean;
+              };
+            };
+          };
+        };
+
+        const data = axiosError.response?.data;
+        const message = data?.message || 'Login failed';
+        const authenticated = data?.data?.authenticated;
+
+        // Check if user is registered but not verified
+        if (authenticated === false) {
+          setOauthError('Email not verified. Redirecting to verification...');
+          setTimeout(() => {
+            navigate('/otp-verify', { state: { email } });
+          }, 1500);
+          return;
+        }
+
+        // Check if account is linked with Google
+        if (message.toLowerCase().includes('google')) {
+          setOauthError('This email is already registered with Google. Please use Google Login to continue.');
+          return;
+        }
+
+        setOauthError(message);
+      } else {
+        setOauthError('Login failed. Please try again.');
+      }
+    } finally {
+      setIsLoading(false);
     }
-  } catch (error: any) {
-    const data = error?.response?.data;
-    const message = data?.message || 'Login failed';
-    const authenticated = data?.data?.authenticated;
-
-    setOauthError(message);
-
-    // Jika email belum verified
-    if (authenticated === false) {
-      setTimeout(() => {
-        navigate('/otp-verify', { state: { email } });
-      }, 1500);
-      return;
-    }
-
-    // Jika akun Google
-    if (message.toLowerCase().includes('google')) {
-      setOauthError(
-        t('auth.googleAlreadyRegistered')
-      );
-    }
-  } finally {
-    setIsLoading(false);
-  }
-};
+  };
 
 
   const handleGoogleLogin = () => {

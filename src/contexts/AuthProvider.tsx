@@ -24,11 +24,12 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         const response = await getAuthenticatedUser();
         const isValid = response.data?.authenticated || false;
         setIsAuthenticated(isValid);
-      } catch (err: any) {
-        if (err?.response?.status === 401) {
-          setIsAuthenticated(false);
-        } else {
-          console.error('Auth check error:', err);
+      } catch (err: unknown) {
+        if (err && typeof err === 'object' && 'response' in err) {
+          const error = err as { response?: { status?: number } };
+          if (error.response?.status === 401) {
+            setIsAuthenticated(false);
+          }
         }
       } finally {
         setLoading(false);
@@ -51,8 +52,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const logout = async () => {
     try {
       await logoutUser();
-    } catch (error) {
-      console.error('Logout error:', error);
     } finally {
       setIsAuthenticated(false);
       // Dispatch event for other tabs

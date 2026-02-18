@@ -14,7 +14,7 @@ export const getSpeakingExerciseScore = async (
     formData.append('file', audioBlob, 'recording.wav');
     formData.append('text', text);
 
-    return await api.post<SpeakingScoreResponse>("/model/predict", formData, {
+    return await api.post("/model/predict", formData, {
         headers: {
             'Content-Type': 'multipart/form-data',
         },
