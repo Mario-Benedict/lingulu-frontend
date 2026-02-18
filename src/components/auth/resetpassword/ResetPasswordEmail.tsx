@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import emailIcon from '@assets/auth/email-icon.png';
+import { useTranslation } from 'react-i18next';
 
 
 interface ResetPasswordEmailProps {
@@ -9,6 +10,7 @@ interface ResetPasswordEmailProps {
 }
 
 const ResetPasswordEmail: React.FC<ResetPasswordEmailProps> = ({ onSubmit, loading = false }) => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [error, setError] = useState<string>('');
@@ -22,12 +24,12 @@ const ResetPasswordEmail: React.FC<ResetPasswordEmailProps> = ({ onSubmit, loadi
     e.preventDefault();
 
     if (!email.trim()) {
-      setError('Email tidak boleh kosong');
+      setError(t('auth.emailRequired'));
       return;
     }
 
     if (!validateEmail(email)) {
-      setError('Format email tidak valid');
+      setError(t('auth.invalidEmailFormat'));
       return;
     }
 
@@ -36,7 +38,7 @@ const ResetPasswordEmail: React.FC<ResetPasswordEmailProps> = ({ onSubmit, loadi
     try {
       await onSubmit(email);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Gagal mengirim reset link');
+      setError(err instanceof Error ? err.message : t('auth.failedToSendResetLink'));
     }
   };
 
@@ -56,7 +58,7 @@ const ResetPasswordEmail: React.FC<ResetPasswordEmailProps> = ({ onSubmit, loadi
         <input
           id="email"
           type="email"
-          placeholder="Enter your email address"
+          placeholder={t('auth.emailPlaceholder')}
           value={email}
           onChange={(e) => {
             setEmail(e.target.value);
@@ -68,17 +70,17 @@ const ResetPasswordEmail: React.FC<ResetPasswordEmailProps> = ({ onSubmit, loadi
       </div>
 
       <button type="submit" disabled={loading} className="auth-button mt-2">
-        {loading ? 'Sending...' : 'Send Reset Link'}
+        {loading ? t('auth.sending') : t('auth.sendResetLink')}
       </button>
 
       <p className="text-center text-neutral text-sm mt-3 font-poppins">
-        Decided not to reset?{' '}
+        {t('auth.decidedNotToReset')}{' '}
         <button 
           type="button" 
           onClick={() => navigate('/login')}
           className="text-primary font-semibold hover:underline bg-transparent border-none cursor-pointer"
         >
-          Back to Login
+          {t('auth.backToLogin')}
         </button>
       </p>
     </form>

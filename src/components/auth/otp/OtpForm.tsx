@@ -1,5 +1,5 @@
 import OtpInput from '@/components/auth/otp/OtpInput';
-
+import {useTranslation} from 'react-i18next';
 interface OtpFormProps {
   otp: string;
   onChange: (value: string) => void;
@@ -9,6 +9,7 @@ interface OtpFormProps {
 }
 
 const OtpForm: React.FC<OtpFormProps> = ({ otp, onChange, onSubmit, loading = false, error }) => {
+  const { t } = useTranslation();
   return (
     <form onSubmit={onSubmit} className="flex flex-col items-center">
       {error && (
@@ -25,7 +26,7 @@ const OtpForm: React.FC<OtpFormProps> = ({ otp, onChange, onSubmit, loading = fa
         disabled={loading || otp.length !== 6}
         className="w-full mt-10 bg-primary hover:bg-primary/90 text-white font-semibold py-3 px-8 rounded-full transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed font-poppins"
       >
-        {loading ? 'Verifying...' : 'Verify & Continue'}
+        {loading ? t('auth.verifying') : t('auth.verifyAndContinue')}
       </button>
     </form>
   );

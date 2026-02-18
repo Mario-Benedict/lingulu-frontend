@@ -5,6 +5,7 @@ import lockIcon from '@assets/auth/lock-icon.svg';
 import confirmIcon from '@assets/auth/confirm-icon.png';
 import eyeIcon from '@assets/auth/eye-icon.png';
 import closedEyeIcon from '@assets/auth/closedeye-icon.png';
+import { useTranslation } from 'react-i18next';
 
 interface RegisterFormProps {
   onSubmit: (username: string, email: string, password: string, confirmPassword: string) => Promise<void>;
@@ -12,6 +13,7 @@ interface RegisterFormProps {
 }
 
 const RegisterForm: React.FC<RegisterFormProps> = ({ onSubmit, loading = false }) => {
+  const { t } = useTranslation();
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -30,16 +32,16 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onSubmit, loading = false }
 
   const validatePassword = (pwd: string, type: string): { valid: boolean; message?: string } => {
     if (pwd.length < 8) {
-      return { valid: false, message: `${type} must be at least 8 characters` };
+      return { valid: false, message: `${type} ${t('auth.passwordTooShort')}` };
     }
     if (!/[A-Z]/.test(pwd)) {
-      return { valid: false, message: `${type} must contain an uppercase letter` };
+      return { valid: false, message: `${type} ${t('auth.passwordCapitalLetter')}` };
     }
     if (!/[a-z]/.test(pwd)) {
-      return { valid: false, message: `${type} must contain a lowercase letter` };
+      return { valid: false, message: `${type} ${t('auth.passwordLowercaseLetter')}` };
     }
     if (!/[0-9]/.test(pwd)) {
-      return { valid: false, message: `${type} must contain a number` };
+      return { valid: false, message: `${type} ${t('auth.passwordNumber')}` };
     }
     return { valid: true };
   };
@@ -48,33 +50,33 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onSubmit, loading = false }
     const newErrors: Record<string, string> = {};
 
     if (!username.trim()) {
-      newErrors.username = 'Username is required';
+      newErrors.username = t('auth.usernameRequired');
     } else if (username.length < 3) {
-      newErrors.username = 'Username must be at least 3 characters';
+      newErrors.username = t('auth.usernameTooShort');
     }
 
     if (!email.trim()) {
-      newErrors.email = 'Email is required';
+      newErrors.email = t('auth.emailRequired');
     } else if (!validateEmail(email)) {
-      newErrors.email = 'Invalid email format';
+      newErrors.email = t('auth.invalidEmailFormat');
     }
 
-    const passwordValidation = validatePassword(password, "Password");
+    const passwordValidation = validatePassword(password, t('auth.password'));
     if (!passwordValidation.valid) {
-      newErrors.password = passwordValidation.message || 'Invalid password';
+      newErrors.password = passwordValidation.message || t('auth.invalidPassword');
     }
 
-    const confirmPasswordValidation = validatePassword(confirmPassword, "Confirm Password");
+    const confirmPasswordValidation = validatePassword(confirmPassword, t('auth.confirmPassword'));
     if (!confirmPasswordValidation.valid) {
-      newErrors.confirmPassword = confirmPasswordValidation.message || 'Invalid confirm password';
+      newErrors.confirmPassword = confirmPasswordValidation.message || t('auth.invalidConfirmPassword');
     }
 
     if (password !== confirmPassword) {
-      newErrors.confirmPassword = 'Passwords do not match';
+      newErrors.confirmPassword = t('auth.passwordsDoNotMatch');
     }
 
     if (!agreeToTerms) {
-      newErrors.terms = 'You must agree to the terms & privacy';
+      newErrors.terms = t('auth.termsRequired');
     }
 
     setErrors(newErrors);
@@ -82,6 +84,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onSubmit, loading = false }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
+    const { t } = useTranslation();
     e.preventDefault();
 
     if (!validateForm()) return;
@@ -108,13 +111,13 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onSubmit, loading = false }
         
         // If no field errors, show general message
         if (Object.keys(newErrors).length === 0) {
-          errorMessage = axiosError.response?.data?.message || 'Registration failed';
+          errorMessage = axiosError.response?.data?.message || t('auth.registrationFailed');
           newErrors.submit = errorMessage;
         }
       } else if (error instanceof Error) {
         newErrors.submit = error.message;
       } else {
-        newErrors.submit = 'Registration failed';
+        newErrors.submit = t('auth.registrationFailed');
       }
       
       setErrors(newErrors);
@@ -167,7 +170,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onSubmit, loading = false }
           <input
             id="username"
             type="text"
-            placeholder="Username"
+            placeholder= {t('auth.username')}
             value={username}
             onChange={(e) => {
               setUsername(e.target.value);
@@ -207,7 +210,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onSubmit, loading = false }
             ref={passwordRef}
             id="password"
             type={showPassword ? 'text' : 'password'}
-            placeholder="Password"
+            placeholder={t('auth.password')}
             value={password}
             onChange={(e) => {
               setPassword(e.target.value);
@@ -235,7 +238,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onSubmit, loading = false }
             ref={confirmPasswordRef}
             id="confirm-password"
             type={showConfirmPassword ? 'text' : 'password'}
-            placeholder="Confirm Password"
+            placeholder={t('auth.confirmPassword')}
             value={confirmPassword}
             onChange={(e) => {
               setConfirmPassword(e.target.value);
@@ -266,13 +269,13 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onSubmit, loading = false }
           className="auth-checkbox"
         />
         <label htmlFor="agree" className="text-neutral text-sm cursor-pointer">
-          I agree to the terms & privacy
+          {t('auth.agreeToTerms')}
         </label>
       </div>
       {errors.terms && <span className="block text-error text-[11px] mt-0.5 ml-1.5">{errors.terms}</span>}
 
       <button type="submit" disabled={loading} className="auth-button mb-3 mt-4">
-        {loading ? 'SIGNING UP...' : 'SIGN UP'}
+        {loading ? t('auth.signingUp') : t('auth.signUp')}
       </button>
     </form>
   );

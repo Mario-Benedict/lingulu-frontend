@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import lockIcon from '@assets/auth/lock-icon.svg';
 import eyeIcon from '@assets/auth/eye-icon.png';
 import closedEyeIcon from '@assets/auth/closedeye-icon.png';
+import { useTranslation } from 'react-i18next';
 
 interface ResetPasswordFormProps {
   onSubmit: (newPassword: string, confirmPassword: string) => Promise<void>;
@@ -13,6 +14,7 @@ interface ResetPasswordFormProps {
 
 const ResetPasswordForm: React.FC<ResetPasswordFormProps> = ({ onSubmit, onBack, showBackToLogin = false, loading = false }) => {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [showNewPassword, setShowNewPassword] = useState(false);
@@ -23,16 +25,16 @@ const ResetPasswordForm: React.FC<ResetPasswordFormProps> = ({ onSubmit, onBack,
 
   const validatePassword = (pwd: string): { valid: boolean; message?: string } => {
     if (pwd.length < 8) {
-      return { valid: false, message: 'Password minimal 8 karakter' };
+      return { valid: false, message: t('auth.passwordTooShort') };
     }
     if (!/[A-Z]/.test(pwd)) {
-      return { valid: false, message: 'Password harus mengandung huruf besar' };
+      return { valid: false, message: t('auth.passwordUppercaseLetter') };
     }
     if (!/[a-z]/.test(pwd)) {
-      return { valid: false, message: 'Password harus mengandung huruf kecil' };
+      return { valid: false, message: t('auth.passwordLowercaseLetter') };
     }
     if (!/[0-9]/.test(pwd)) {
-      return { valid: false, message: 'Password harus mengandung angka' };
+      return { valid: false, message: t('auth.passwordNumber') };
     }
     return { valid: true };
   };
@@ -41,18 +43,18 @@ const ResetPasswordForm: React.FC<ResetPasswordFormProps> = ({ onSubmit, onBack,
     e.preventDefault();
 
     if (!newPassword || !confirmPassword) {
-      setError('Password tidak boleh kosong');
+      setError(t('auth.passwordRequired'));
       return;
     }
 
     const passwordValidation = validatePassword(newPassword);
     if (!passwordValidation.valid) {
-      setError(passwordValidation.message || 'Password tidak valid');
+      setError(passwordValidation.message || t('auth.invalidPassword'));
       return;
     }
 
     if (newPassword !== confirmPassword) {
-      setError('Password tidak cocok');
+      setError(t('auth.passwordsDoNotMatch'));
       return;
     }
 
@@ -61,7 +63,7 @@ const ResetPasswordForm: React.FC<ResetPasswordFormProps> = ({ onSubmit, onBack,
     try {
       await onSubmit(newPassword, confirmPassword);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Gagal reset password');
+      setError(err instanceof Error ? err.message : t('auth.failedToResetPassword'));
     }
   };
 
@@ -105,7 +107,7 @@ const ResetPasswordForm: React.FC<ResetPasswordFormProps> = ({ onSubmit, onBack,
           ref={passwordRef}
           id="newPassword"
           type={showNewPassword ? 'text' : 'password'}
-          placeholder="New Password"
+          placeholder={t('auth.newpass')}
           value={newPassword}
           onChange={(e) => {
             setNewPassword(e.target.value);
@@ -132,7 +134,7 @@ const ResetPasswordForm: React.FC<ResetPasswordFormProps> = ({ onSubmit, onBack,
           ref={confirmPasswordRef}
           id="confirmPassword"
           type={showConfirmPassword ? 'text' : 'password'}
-          placeholder="Confirm Password"
+          placeholder={t('auth.confirmPassword')}
           value={confirmPassword}
           onChange={(e) => {
             setConfirmPassword(e.target.value);
@@ -151,31 +153,31 @@ const ResetPasswordForm: React.FC<ResetPasswordFormProps> = ({ onSubmit, onBack,
       </div>
 
       <button type="submit" disabled={loading} className="auth-button mt-2">
-        {loading ? 'Resetting...' : 'Reset Password'}
+        {loading ? t('auth.resetting') : t('auth.resetPassword')}
       </button>
 
       {onBack && !showBackToLogin && (
         <p className="text-center text-neutral text-sm mt-3 font-poppins">
-          Changed your mind?{' '}
+          {t('auth.changeMind')}{' '}
           <button 
             type="button" 
             onClick={onBack}
             className="text-primary font-semibold hover:underline bg-transparent border-none cursor-pointer"
           >
-            Edit Email
+            {t('auth.editEmail')}
           </button>
         </p>
       )}
 
       {showBackToLogin && (
         <p className="text-center text-neutral text-sm mt-3 font-poppins">
-          Don't want to continue?{' '}
+          {t('auth.dontWantToContinue')}{' '}
           <button 
             type="button" 
             onClick={() => navigate('/login')}
             className="text-primary font-semibold hover:underline bg-transparent border-none cursor-pointer"
           >
-            Back to Login
+            {t('auth.backToLogin')}
           </button>
         </p>
       )}

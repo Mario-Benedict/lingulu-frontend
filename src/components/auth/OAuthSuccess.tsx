@@ -1,8 +1,10 @@
 import { useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
+import { useTranslation } from 'react-i18next';
 
 const OAuthSuccess: React.FC = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const { setIsAuthenticated } = useAuth();
@@ -37,17 +39,17 @@ const OAuthSuccess: React.FC = () => {
             setIsAuthenticated(true);
             navigate("/dashboard", { replace: true });
           } else {
-            console.error("Authentication check failed:", result);
+            console.error(t('auth.authenticationFailed'), result);
             navigate("/login", { replace: true });
           }
         } else if (response.status === 500) {
-          console.error("Backend error 500 - possibly email conflict");
+          console.error(t('auth.backendError500'));
           navigate("/login", { 
-            state: { error: "Email sudah terdaftar dengan akun lain. Silakan gunakan email/password atau coba dengan akun Google lain." }, 
+            state: { error: t('auth.emailAlreadyRegistered') }, 
             replace: true 
           });
         } else {
-          console.error("Failed authentication check:", response.status);
+          console.error(t('auth.failedAuthCheck'), response.status);
           navigate("/login", { replace: true });
         }
       } catch (error) {
@@ -62,7 +64,7 @@ const OAuthSuccess: React.FC = () => {
   return (
     <div className="flex items-center justify-center w-screen h-screen">
       <div className="text-center">
-        <p className="text-xl font-semibold">Completing sign in...</p>
+        <p className="text-xl font-semibold">{t('auth.completingSignUp')}</p>
       </div>
     </div>
   );

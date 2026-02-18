@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 
 interface LeaderboardRowProps {
   rank: number;
@@ -11,14 +12,14 @@ interface LeaderboardRowProps {
 
 const RankBadge: React.FC<{ rank: number }> = ({ rank }) => {
   const badgeStyle =
-    rank === 1
-      ? 'bg-[linear-gradient(180deg,#ffe082_0%,#f9bf3b_100%)] border-[#e6a800] text-white'
-      : rank === 2
+  rank === 1
+  ? 'bg-[linear-gradient(180deg,#ffe082_0%,#f9bf3b_100%)] border-[#e6a800] text-white'
+  : rank === 2
       ? 'bg-[linear-gradient(180deg,#e8eaed_0%,#b8bcc4_100%)] border-[#9ca3af] text-white'
       : rank === 3
       ? 'bg-[linear-gradient(180deg,#f5a855_0%,#d56214_100%)] border-[#c2410c] text-white'
       : 'bg-[linear-gradient(180deg,#f9fafb_0%,#e5e7eb_100%)] border-gray-300 text-gray-600';
-
+      
   return (
     <div
       className={`relative w-10 h-10 sm:w-12 sm:h-12 rounded-lg ${badgeStyle} border-2 flex items-center justify-center font-rubik font-extrabold text-xl sm:text-3xl`}
@@ -30,6 +31,7 @@ const RankBadge: React.FC<{ rank: number }> = ({ rank }) => {
 };
 
 const LeaderboardRow: React.FC<LeaderboardRowProps> = ({ rank, name, xp, avatarUrl, isCurrentUser }) => {
+  const { t } = useTranslation();
   const innerGradient =
     rank === 1
       ? 'bg-[linear-gradient(90deg,#fee59c_0%,#e6ba1f_48%,#fff1c6_100%)] border-amber-400'
@@ -70,7 +72,7 @@ const LeaderboardRow: React.FC<LeaderboardRowProps> = ({ rank, name, xp, avatarU
           >
             <span className="flex items-center gap-2">
               {name}
-              {isCurrentUser && <span className="text-sm font-bold text-orange-600 bg-orange-100 px-2 py-0.5 rounded">Akun Kamu</span>}
+              {isCurrentUser && <span className="text-sm font-bold text-orange-600 bg-orange-100 px-2 py-0.5 rounded">{t('leaderboard.yourAccount')}</span>}
             </span>
           </span>
         </div>

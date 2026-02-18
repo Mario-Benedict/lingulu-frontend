@@ -5,6 +5,7 @@ import ResetPasswordEmail from '@components/auth/resetpassword/ResetPasswordEmai
 import ResetPasswordForm from '@components/auth/resetpassword/ResetPasswordForm';
 import { forgotPassword, resetPassword } from '@/api/services';
 import { useSearchParams } from 'react-router-dom';
+import { t } from 'i18next';
 
 
 type ResetStep = 'email' | 'form';
@@ -40,7 +41,7 @@ const ResetPass: React.FC = () => {
     setEmailSent(true); // trigger UI sukses
 
   } catch (error: any) {
-    alert(error.response?.data?.message || "Failed to send reset email");
+    alert(error.response?.data?.message || t('auth.failedToSendResetEmail'));
     } finally {
     setLoading(false);
     }
@@ -48,7 +49,7 @@ const ResetPass: React.FC = () => {
 
   const handlePasswordSubmit = async (newPassword: string, confirmPassword: string) => {
   if (!token) {
-    alert("Invalid or missing reset token");
+    alert(t('auth.invalidResetToken'));
     return;
   }
 
@@ -71,12 +72,12 @@ const ResetPass: React.FC = () => {
             navigate('/login', {
               state: {
                 message:
-                  'Password reset successfully! Please login with your new password.',
+                  t('auth.passwordChangedSuccessfully'),
               },
             });
           }, 2000);
         } catch (error: any) {
-          alert(error.response?.data?.message || "Failed to reset password");
+          alert(error.response?.data?.message || t('auth.failedToChangePassword'));
         } finally {
           setLoading(false);
     }
@@ -93,21 +94,21 @@ const ResetPass: React.FC = () => {
 
         {/* Title */}
         <h1 className="text-center text-primary text-2xl sm:text-3xl font-bold font-rubik mb-2">
-          Reset Your Password
+          {t('auth.resetYourPassword')}
         </h1>
 
         {/* Subtitle */}
         <p className="text-center text-lessongray-600 text-xs sm:text-sm mb-6 sm:mb-8 font-poppins">
           {step === 'email'
-            ? "Enter your email address below and we'll send you a link to reset your password !"
-            : 'Enter your new password below'}
+            ? t('auth.enterEmailToResetPassword')
+            : t('auth.enterNewPassword')}
         </p>
 
         {/* Success Message */}
         {success && (
           <div className="bg-green-50 text-green-600 px-3 sm:px-4 py-2 sm:py-3 rounded-lg mb-4 sm:mb-6 border-l-4 border-green-500 text-xs sm:text-sm flex items-center gap-2">
             <span>✓</span>
-            Password reset successfully! Redirecting to login...
+            {t('auth.passwordResetSuccessfully')}
           </div>
         )}
 
@@ -117,8 +118,7 @@ const ResetPass: React.FC = () => {
             <div className="bg-green-50 text-green-600 px-4 py-3 rounded-lg border-l-4 border-green-500">
               <p className="font-semibold">Email sent!</p>
               <p className="mt-1">
-                We've sent a password reset link to <b>{email}</b>.
-                Please check your inbox.
+                {t('auth.passwordResetEmailSent', { email })}
               </p>
             </div>
           </div>
