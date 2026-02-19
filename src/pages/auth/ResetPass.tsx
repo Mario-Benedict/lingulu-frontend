@@ -17,6 +17,7 @@ const ResetPass: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [emailSent, setEmailSent] = useState(false);
+  const [error, setError] = useState('');
   const [searchParams] = useSearchParams();
   const token = searchParams.get('token');
 
@@ -29,61 +30,63 @@ const ResetPass: React.FC = () => {
 
   const handleEmailSubmit = async (emailValue: string) => {
     setLoading(true);
+    setError('');
     try {
        const result = await forgotPassword(emailValue);
 
-    if (!result.success) {
-      throw new Error(result.message);
-    }
+      if (!result.success) {
+        throw new Error(result.message);
+      }
 
-    // Kalau berhasil
-    setEmail(emailValue);
-    setEmailSent(true); // trigger UI sukses
+      // Kalau berhasil
+      setEmail(emailValue);
+      setEmailSent(true); // trigger UI sukses
 
-  } catch (error: unknown) {
-    const errorMessage = (error && typeof error === 'object' && 'response' in error && error.response && typeof error.response === 'object' && 'data' in error.response && error.response.data && typeof error.response.data === 'object' && 'message' in error.response.data && typeof error.response.data.message === 'string') ? error.response.data.message : t('auth.failedToSendResetEmail');
-    alert(errorMessage);
+    } catch (error: unknown) {
+      const errorMessage = (error && typeof error === 'object' && 'response' in error && error.response && typeof error.response === 'object' && 'data' in error.response && error.response.data && typeof error.response.data === 'object' && 'message' in error.response.data && typeof error.response.data.message === 'string') ? error.response.data.message : t('auth.failedToSendResetEmail');
+      setError(errorMessage);
     } finally {
-    setLoading(false);
-    }
-  };
+      setLoading(false);
+      }
+    };
 
   const handlePasswordSubmit = async (newPassword: string, confirmPassword: string) => {
-  if (!token) {
-    alert(t('auth.invalidResetToken'));
-    return;
-  }
+    if (!token) {
+      setError(t('auth.invalidResetToken'));
+      return;
+    }
 
     setLoading(true);
+    setError('');
 
     try {
-          const result = await resetPassword({
-            token,
-            password: newPassword,
-            confirmPassword,
-          });
+      const result = await resetPassword({
+        token,
+        password: newPassword,
+        confirmPassword,
+      });
 
-          if (!result.success) {
-            throw new Error(result.message);
-          }
+      if (!result.success) {
+        throw new Error(result.message);
+      }
 
-          setSuccess(true);
+      setSuccess(true);
 
-          setTimeout(() => {
-            navigate('/login', {
-              state: {
-                message:
-                  t('auth.passwordChangedSuccessfully'),
-              },
-            });
-          }, 2000);
-        } catch (error: unknown) {
-          const errorMessage = (error && typeof error === 'object' && 'response' in error && error.response && typeof error.response === 'object' && 'data' in error.response && error.response.data && typeof error.response.data === 'object' && 'message' in error.response.data && typeof error.response.data.message === 'string') ? error.response.data.message : t('auth.failedToChangePassword');
-          alert(errorMessage);
-        } finally {
-          setLoading(false);
+      setTimeout(() => {
+        navigate('/login', {
+          state: {
+            message:
+              t('auth.passwordChangedSuccessfully'),
+          },
+        });
+      }, 2000);
+    } catch (error: unknown) {
+      const errorMessage = (error && typeof error === 'object' && 'response' in error && error.response && typeof error.response === 'object' && 'data' in error.response && error.response.data && typeof error.response.data === 'object' && 'message' in error.response.data && typeof error.response.data.message === 'string') ? error.response.data.message : t('auth.failedToChangePassword');
+      setError(errorMessage);
+    } finally {
+      setLoading(false);
     }
-};
+  };
 
   return (
     <div className="flex items-center justify-center w-screen h-screen auth-gradient overflow-hidden px-4 py-6">
@@ -106,6 +109,13 @@ const ResetPass: React.FC = () => {
             : t('auth.enterNewPassword')}
         </p>
 
+        {error && (
+          <div className="bg-red-50 text-red-600 px-3 sm:px-4 py-2 sm:py-3 rounded-lg mb-4 sm:mb-6 border-l-4 border-red-500 text-xs sm:text-sm flex items-center gap-2">
+            <span>✕</span>
+            {error}
+          </div>
+        )}
+
         {/* Success Message */}
         {success && (
           <div className="bg-green-50 text-green-600 px-3 sm:px-4 py-2 sm:py-3 rounded-lg mb-4 sm:mb-6 border-l-4 border-green-500 text-xs sm:text-sm flex items-center gap-2">
@@ -120,7 +130,7 @@ const ResetPass: React.FC = () => {
             <div className="bg-green-50 text-green-600 px-4 py-3 rounded-lg border-l-4 border-green-500">
               <p className="font-semibold">Email sent!</p>
               <p className="mt-1">
-                {t('auth.passwordResetEmailSent', { email })}
+                {t('auth.passwordResetEmailSent')} <span className="font-bold">{email}</span>. {t('auth.passwordResetEmailCheckInbox')}
               </p>
             </div>
           </div>
