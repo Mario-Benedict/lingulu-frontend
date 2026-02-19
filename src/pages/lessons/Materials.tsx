@@ -78,7 +78,7 @@ const Materials: React.FC = () => {
 
             {error && (
               <div className="bg-red-50 rounded-lg p-8 shadow-md text-center border border-red-200">
-                <p className="text-red-600 font-poppins font-semibold mb-2">Error</p>
+                <p className="text-red-600 font-poppins font-semibold mb-2">{t('common.error')}</p>
                 <p className="text-red-500 text-sm font-poppins">{error}</p>
               </div>
             )}

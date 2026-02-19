@@ -1,6 +1,6 @@
 import { BookOpenText, FileText, ClipboardList, Mic } from 'lucide-react';
 import { useParams } from 'react-router-dom';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import PageLayout from '@components/common/PageLayout';
 import SectionHeader from '@components/lessons/section/SectionHeader';
 import SectionCard from '@components/lessons/section/SectionCard';
@@ -26,6 +26,15 @@ const Section: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [lessonTitle, setLessonTitle] = useState('Lesson');
   const [courseTitle, setCourseTitle] = useState('Learning Course');
+
+  const getDescriptionForType = useCallback((type: 'material' | 'exercise' | 'pronunciation'): string => {
+    const descriptionMap = {
+      material: t('lessons.subtitleMaterial'),
+      pronunciation: t('lessons.subtitlePronunciation'),
+      exercise: t('lessons.subtitleExercise'),
+    };
+    return descriptionMap[type] || t('lessons.subtitleLearning');
+  }, [t]);
 
   useEffect(() => {
     const fetchSections = async () => {
@@ -74,7 +83,7 @@ const Section: React.FC = () => {
     };
 
     fetchSections();
-  }, [lessonId, courseId]);
+  }, [lessonId, courseId, t, getDescriptionForType]);
 
   const getIconAndType = (sectionType: MaterialType): { icon: LucideIcon; type: 'material' | 'exercise' | 'pronunciation' } => {
     switch (sectionType) {
@@ -91,14 +100,7 @@ const Section: React.FC = () => {
     }
   };
 
-  const getDescriptionForType = (type: 'material' | 'exercise' | 'pronunciation'): string => {
-    const descriptionMap = {
-      material: t('lessons.subtitleMaterial'),
-      pronunciation: t('lessons.subtitlePronunciation'),
-      exercise: t('lessons.subtitleExercise'),
-    };
-    return descriptionMap[type] || t('lessons.subtitleLearning');
-  };
+
 
   if (loading) {
     return (

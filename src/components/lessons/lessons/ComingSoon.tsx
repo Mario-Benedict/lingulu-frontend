@@ -3,11 +3,14 @@ interface ComingSoonProps {
   title?: string;
   message?: string;
 }
-const { t } = useTranslation();
+
 const ComingSoon: React.FC<ComingSoonProps> = ({
-  title = t('lessons.comingSoon'),
-  message = t('lessons.comingSoonMessage'),
+  title: propTitle,
+  message: propMessage,
 }) => {
+  const { t } = useTranslation();
+  const title = propTitle || t('lessons.comingSoon');
+  const message = propMessage || t('lessons.comingSoonMessage');
   return (
     <div className="flex-1 flex items-center justify-center">
       <div className="text-center p-8">

@@ -1,12 +1,16 @@
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
-const NotFoundPage: React.FC = () => (
-    
-        <div style={{textAlign: 'center',display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100vh', width: '100vw'}}>
-            <h1>404 - Page Not Found</h1>
-            <p>The page you are looking for does not exist.</p>
-            <Link to="/">Go to Home Page</Link>
-        </div>
-);
+const NotFoundPage: React.FC = () => {
+  const { t } = useTranslation();
+  
+  return (
+    <div style={{textAlign: 'center',display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100vh', width: '100vw'}}>
+        <h1>{t('notFound.title')}</h1>
+        <p>{t('notFound.description')}</p>
+        <Link to="/">{t('notFound.goHome')}</Link>
+    </div>
+  );
+};
 
 export default NotFoundPage;

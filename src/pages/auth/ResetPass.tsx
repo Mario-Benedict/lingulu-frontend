@@ -40,8 +40,9 @@ const ResetPass: React.FC = () => {
     setEmail(emailValue);
     setEmailSent(true); // trigger UI sukses
 
-  } catch (error: any) {
-    alert(error.response?.data?.message || t('auth.failedToSendResetEmail'));
+  } catch (error: unknown) {
+    const errorMessage = (error && typeof error === 'object' && 'response' in error && error.response && typeof error.response === 'object' && 'data' in error.response && error.response.data && typeof error.response.data === 'object' && 'message' in error.response.data && typeof error.response.data.message === 'string') ? error.response.data.message : t('auth.failedToSendResetEmail');
+    alert(errorMessage);
     } finally {
     setLoading(false);
     }
@@ -76,8 +77,9 @@ const ResetPass: React.FC = () => {
               },
             });
           }, 2000);
-        } catch (error: any) {
-          alert(error.response?.data?.message || t('auth.failedToChangePassword'));
+        } catch (error: unknown) {
+          const errorMessage = (error && typeof error === 'object' && 'response' in error && error.response && typeof error.response === 'object' && 'data' in error.response && error.response.data && typeof error.response.data === 'object' && 'message' in error.response.data && typeof error.response.data.message === 'string') ? error.response.data.message : t('auth.failedToChangePassword');
+          alert(errorMessage);
         } finally {
           setLoading(false);
     }

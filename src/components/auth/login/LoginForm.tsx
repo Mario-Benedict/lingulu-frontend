@@ -108,7 +108,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSubmit, loading = false, hasGlo
           <input
             id="email"
             // type="email"
-            placeholder="Email"
+            placeholder={t('auth.email')}
             value={email}
             onChange={(e) => {
               setEmail(e.target.value);

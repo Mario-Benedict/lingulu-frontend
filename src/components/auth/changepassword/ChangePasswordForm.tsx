@@ -68,9 +68,9 @@ const ChangePasswordForm: React.FC<ChangePasswordFormProps> = ({ onSubmit, loadi
 
     try {
       await onSubmit(currentPassword, newPassword, confirmPassword);
-    } catch (err: any) {
+    } catch (err: unknown) {
       // Get error message from backend or error object
-      const backendMessage = err.response?.data?.message || (err instanceof Error ? err.message : t('auth.failedToChangePassword'));
+      const backendMessage = (err && typeof err === 'object' && 'response' in err && err.response && typeof err.response === 'object' && 'data' in err.response && err.response.data && typeof err.response.data === 'object' && 'message' in err.response.data && typeof err.response.data.message === 'string') ? err.response.data.message : (err instanceof Error ? err.message : t('auth.failedToChangePassword'));
       
       // Translate backend error messages to Indonesian
       let errorMessage = backendMessage;

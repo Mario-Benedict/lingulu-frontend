@@ -57,7 +57,9 @@
     "logout": "Keluar",
     "noBio": "Belum ada bio",
     "language": "Bahasa",
-    "languageSettings": "Pengaturan Bahasa"
+    "languageSettings": "Pengaturan Bahasa",
+    "accountSettings": "Pengaturan Akun",
+    "editBio": "Edit Bio"
   },
   "lessons": {
     "title": "Mulai Perjalananmu",

@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 
 interface SpeakingReviewProps {
   score: number;
@@ -17,8 +18,10 @@ const SpeakingReview: React.FC<SpeakingReviewProps> = ({
   onNext,
   onRetry,
 }) => {
+  const { t } = useTranslation(); 
   const renderCorrectionText = (text: string, corrections?: ('correct' | 'okay' | 'incorrect')[]) => {
     const words = text.split(' ');
+
 
     const correctionColors = {
       correct: 'bg-[#c8e6c9] text-[#2e7d32]',       // Background hijau pastel terang, text hijau gelap

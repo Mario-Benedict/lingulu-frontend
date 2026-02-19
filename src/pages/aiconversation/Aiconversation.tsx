@@ -194,7 +194,7 @@ const Aiconversation: React.FC = () => {
         setIsLoading(false);
       }
     }
-  }, [isRecording, isLoading]);
+  }, [isRecording, isLoading, t]);
 
   if (isLoading && messages.length === 0) {
     return (

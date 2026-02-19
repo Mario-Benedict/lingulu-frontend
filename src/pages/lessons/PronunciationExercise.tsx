@@ -99,8 +99,17 @@ const PronunciationExercise: React.FC = () => {
   const totalQuestions = exercises.length;
   const progressPercentage = totalQuestions > 0 ? (currentQuestion / totalQuestions) * 100 : 0;
 
+  const generateWordCorrections = useCallback((
+    words: WordRequest[]
+  ): ('correct' | 'okay' | 'incorrect')[] => {
+    return words.map((word) => {
+      if (word.score >= 70) return 'correct';
+      if (word.score >= 50) return 'okay';
+      return 'incorrect';
+    });
+  }, []);
+
   useEffect(() => {
-    const {t} = useTranslation();
     const fetchExercises = async () => {
       if (!sectionId) {
         setLoading(false);
@@ -162,17 +171,7 @@ const PronunciationExercise: React.FC = () => {
     };
 
     fetchExercises();
-  }, [sectionId]);
-
-  const generateWordCorrections = (
-    words: WordRequest[]
-  ): ('correct' | 'okay' | 'incorrect')[] => {
-    return words.map((word) => {
-      if (word.score >= 70) return 'correct';
-      if (word.score >= 50) return 'okay';
-      return 'incorrect';
-    });
-  };
+  }, [sectionId, t, generateWordCorrections]);
 
   const getFeedbackForScore = (score: number): string => {
     if (score >= 80) return t('lessons.feedback.perfect');
@@ -307,7 +306,7 @@ const PronunciationExercise: React.FC = () => {
         setIsProcessing(false);
       }
     }
-  }, [isRecording, isProcessing, sectionId, currentQuestion, totalQuestions, currentQuestionData]);
+  }, [isRecording, isProcessing, sectionId, currentQuestion, totalQuestions, currentQuestionData, t, generateWordCorrections]);
 
   const handleNext = () => {
     setShowReview(false);

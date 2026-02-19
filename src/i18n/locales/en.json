@@ -14,6 +14,11 @@
     "noData": "No data available",
     "complete": "Complete"
   },
+  "notFound": {
+    "title": "404 - Page Not Found",
+    "description": "The page you are looking for does not exist.",
+    "goHome": "Go to Home Page"
+  },
   "sidebar": {
     "dashboard": "Dashboard",
     "lessons": "Lessons",
@@ -53,7 +58,9 @@
     "logout": "Log Out",
     "noBio": "No bio added yet",
     "language": "Language",
-    "languageSettings": "Language Settings"
+    "languageSettings": "Language Settings",
+    "accountSettings": "Account Settings",
+    "editBio": "Edit Bio"
   },
   "lessons": {
     "title": "Start Your Journey",

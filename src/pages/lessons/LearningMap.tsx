@@ -43,7 +43,7 @@ const LearningMap: React.FC = () => {
     };
 
     fetchData();
-  }, [courseId]);
+  }, [courseId, t]);
 
   const getLevel = (title: string): string => {
     const titleLower = title.toLowerCase();

@@ -99,12 +99,12 @@ const DashboardPage: FC = () => {
                       style={{ width: `${data.courseResponse.progressPercentage}%` }}
                     ></div>
                   </div>
-                  <p className="text-sm mt-2 opacity-90">{Math.round(data.courseResponse.progressPercentage)}% Complete</p>
+                  <p className="text-sm mt-2 opacity-90">{Math.round(data.courseResponse.progressPercentage)}% {t('common.complete')}</p>
                 </div>
                 <button 
                   onClick={handleContinueLearning}
                   className="bg-white text-primary px-6 py-2 rounded-full font-semibold hover:bg-gray-100 transition self-end mt-6 font-rubik">
-                  Continue
+                  {t('dashboard.continue')}
                 </button>
               </div>
               )}

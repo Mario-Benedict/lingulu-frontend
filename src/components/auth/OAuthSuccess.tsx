@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
+import { getAuthenticatedUser } from '@/api/services';
 import { useTranslation } from 'react-i18next';
 
 const OAuthSuccess: React.FC = () => {
@@ -12,7 +13,6 @@ const OAuthSuccess: React.FC = () => {
   useEffect(() => {
     const errorParam = searchParams.get('error');
     if (errorParam) {
-      console.error("OAuth error:", errorParam);
       const errorMessage = errorParam;
       
       navigate("/login", { state: { error: errorMessage }, replace: true });
@@ -21,45 +21,24 @@ const OAuthSuccess: React.FC = () => {
 
     const fetchUserData = async () => {
       try {
-        const response = await fetch(
-          "http://localhost:8080/api/account/authenticated",
-          {
-            method: "GET",
-            credentials: "include",
-            headers: {
-              'Content-Type': 'application/json'
-            }
-          }
-        );
+        const response = await getAuthenticatedUser();
 
-        if (response.ok) {
-          const result = await response.json();
-
-          if (result.success && result.data) {
-            setIsAuthenticated(true);
-            navigate("/dashboard", { replace: true });
-          } else {
-            console.error(t('auth.authenticationFailed'), result);
-            navigate("/login", { replace: true });
-          }
-        } else if (response.status === 500) {
-          console.error(t('auth.backendError500'));
+        if (response.success && response.data) {
+          setIsAuthenticated(true);
+          navigate("/dashboard", { replace: true });
+        } else {
           navigate("/login", { 
-            state: { error: t('auth.emailAlreadyRegistered') }, 
+            state: { error: response.message || t('auth.emailAlreadyRegistered') }, 
             replace: true 
           });
-        } else {
-          console.error(t('auth.failedAuthCheck'), response.status);
-          navigate("/login", { replace: true });
         }
-      } catch (error) {
-        console.error("Fetch error:", error);
+      } catch {
         navigate("/login", { replace: true });
       }
     };
     // Run once on mount
     fetchUserData();
-  }, [navigate, setIsAuthenticated, searchParams]);
+  }, [navigate, setIsAuthenticated, searchParams, t]);
 
   return (
     <div className="flex items-center justify-center w-screen h-screen">

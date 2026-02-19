@@ -84,7 +84,6 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onSubmit, loading = false }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
-    const { t } = useTranslation();
     e.preventDefault();
 
     if (!validateForm()) return;
@@ -92,8 +91,8 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onSubmit, loading = false }
     try {
       await onSubmit(username, email, password, confirmPassword);
     } catch (error: unknown) {
+      const newErrors: Record<string, string> = {};
       let errorMessage = 'Registration failed';
-      let newErrors: Record<string, string> = {};
       
       if (error && typeof error === 'object' && 'response' in error) {
         const axiosError = error as { response?: { data?: { message?: string; data?: Record<string, string[]> } } };
@@ -189,7 +188,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onSubmit, loading = false }
           </label>
           <input
             id="email"
-            placeholder="Email"
+            placeholder={t('auth.email')}
             value={email}
             onChange={(e) => {
               setEmail(e.target.value);

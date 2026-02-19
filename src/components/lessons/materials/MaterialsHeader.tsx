@@ -1,5 +1,6 @@
 import { ArrowLeft } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 interface MaterialsHeaderProps {
   title: string;
@@ -8,9 +9,11 @@ interface MaterialsHeaderProps {
 
 const MaterialsHeader: React.FC<MaterialsHeaderProps> = ({
   title,
-  label = 'Material',
+  label,
 }) => {
   const navigate = useNavigate();
+  const { t } = useTranslation();
+  const displayLabel = label || t('lessons.materials');
 
   return (
     <div className="bg-white shadow-sm sticky top-0 z-10 border-b-primary border-b-2 py-1 sm:py-2">
@@ -25,7 +28,7 @@ const MaterialsHeader: React.FC<MaterialsHeaderProps> = ({
           />
         </button>
         <div className="text-lessongray-600 min-w-0">
-          <p className="text-sm sm:text-base md:text-md text-lessongray-600 font-poppins">{label}</p>
+          <p className="text-sm sm:text-base md:text-md text-lessongray-600 font-poppins">{displayLabel}</p>
           <h2 className="text-lg sm:text-3xl md:text-3xl font-bold text-primary font-rubik truncate">{title}</h2>
         </div>
       </div>

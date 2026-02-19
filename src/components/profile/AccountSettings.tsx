@@ -1,5 +1,6 @@
 import React from 'react';
 import { User, KeyRound } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 interface SettingItemProps {
   label: string;
@@ -33,20 +34,22 @@ const AccountSettings: React.FC<AccountSettingsProps> = ({
   onChangePasswordClick,
   onLogout,
 }) => {
+  const { t } = useTranslation();
+  
   return (
     <div className="bg-white rounded-xl shadow-md p-6">
-      <h3 className="text-xl font-bold text-primary font-rubik mb-4">Account Setting</h3>
+      <h3 className="text-xl font-bold text-primary font-rubik mb-4">{t('profile.accountSettings')}</h3>
       
       <div className="flex flex-col gap-1">
-        <SettingItem label="Account" icon={<User size={20} />} onClick={onAccountClick} />
-        <SettingItem label="Change Password" icon={<KeyRound size={20} />} onClick={onChangePasswordClick} />
+        <SettingItem label={t('leaderboard.yourAccount')} icon={<User size={20} />} onClick={onAccountClick} />
+        <SettingItem label={t('profile.changePassword')} icon={<KeyRound size={20} />} onClick={onChangePasswordClick} />
       </div>
       
       <button
         onClick={onLogout}
         className="w-full mt-4 bg-primary hover:bg-primary/90 text-white font-semibold py-3 rounded-lg transition-colors"
       >
-        Log Out
+        {t('profile.logout')}
       </button>
     </div>
   );
