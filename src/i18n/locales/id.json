@@ -41,8 +41,9 @@
     "beginner": "Pemula",
     "intermediate": "Menengah",
     "advanced": "Lanjutan",
+    "daysStreak": "{{count}} hari beruntun",
     "practiceWithAI": "Berlatih dengan AI",
-    "practiceDescription": "Siap berlatih? </br> Ayo berbicara!"
+    "practiceDescription": "Siap berlatih? Ayo berbicara!"
   },
   "profile": {
     "title": "Profil",
@@ -131,7 +132,9 @@
     "word": "Kata",
     "translation": "Terjemahan",
     "audio": "Audio",
-    "start": "Mulai"
+    "start": "Mulai",
+    "progress": "Progres",
+    "failedToLoadGrammarContent": "Gagal memuat konten tata bahasa. Silakan coba lagi."
   },
   "leaderboard": {
     "title": "Papan Peringkat",
@@ -144,7 +147,8 @@
     "completeLesson": "Ayo selesaikan pelajaran untuk masuk papan peringkat!",
     "yourRank": "Peringkatmu di papan peringkat",
     "loading": "Memuat papan peringkat...",
-      "yourAccount": "Akun Kamu"
+      "yourAccount": "Akun Kamu",
+    "subtitle": "Berdasarkan XP dari pelajaran yang diselesaikan"
   },
   "conversation": {
     "title": "Percakapan AI",
@@ -184,6 +188,8 @@
     "signIn": "Masuk",
     "orContinueWith": "Atau lanjutkan dengan",
     "google": "Google",
+    "continueWithGoogle": "Lanjutkan dengan Google",
+    "username": "Nama Pengguna",
     "failedToChangePassword": "Gagal mengubah kata sandi. Harap coba lagi.",
     "passwordChangedSuccessfully": "Password berhasil diubah! Silakan login kembali.",
     "invalidPassword": "Password tidak valid.",
@@ -213,9 +219,11 @@
     "loading": "Mengubah...",
     "passwordsDoNotMatch": "Password baru tidak cocok",
     "newPasswordSameAsOld": "Password baru tidak boleh sama dengan password lama",
+    "failedToResetPassword": "Gagal mereset kata sandi. Harap coba lagi.",
     "newpass":"Password baru",
     "currentPassword":"Password saat ini",
     "comfirmNewPassword":"Konfirmasi password baru",
+    "confirmNewPassword":"Konfirmasi password baru",
     "emailRequired": "Email tidak boleh kosong",
     "invalidEmailFormat": "Format email tidak valid",
     "rememberMe": "Ingat saya",
@@ -227,6 +235,7 @@
     "verifyAndContinue":"Verifikasi & Lanjutkan",
     "otpResentSuccessfully": "Kode berhasil dikirim ulang!",
     "didntReceiveCode": "Tidak menerima kode?",
+    "didNotReceiveCode": "Tidak menerima kode?",
     "resend": "Kirim ulang",
     "sending": "Mengirim...",
     "usernameRequired": "Username tidak boleh kosong",

@@ -1,8 +1,9 @@
+import { env } from '@/config/env';
 import googleIcon from '@assets/auth/google-icon.svg';
 import { useTranslation } from 'react-i18next';
 
 const handleGoogleSignUp = () => {
-  window.location.href = 'http://localhost:8080/oauth2/authorization/google';
+  window.location.href = `${env.API_BASE_URL}/oauth2/authorization/google`;
 };
 
 const GoogleSignUpButton: React.FC = () => {

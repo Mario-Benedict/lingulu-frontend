@@ -43,7 +43,7 @@
     "advanced": "Advanced",
     "daysStreak": "{{count}} day streak",
     "practiceWithAI": "Practice with AI",
-    "practiceDescription": "Ready to practice? </br> Let's talk!"
+    "practiceDescription": "Ready to practice? Let's talk!"
   },
   "profile": {
     "title": "Profile",
@@ -132,8 +132,9 @@
     "word": "Word",
     "translation": "Translation",
     "audio": "Audio",
-    "start": "Start"
-    
+    "start": "Start",
+    "progress": "Progress",
+    "failedToLoadGrammarContent": "Failed to load grammar content. Please try again."
   },
   "leaderboard": {
     "title": "Leaderboard",
@@ -146,7 +147,8 @@
     "completeLesson": "Complete lessons to join the leaderboard!",
     "yourRank": "Your rank on the leaderboard",
     "loading": "Loading leaderboard...",
-    "yourAccount": "Your Account"
+    "yourAccount": "Your Account",
+    "subtitle": "Based on XP from completed lessons"
   },
   "conversation": {
     "title": "AI Conversation",
@@ -186,6 +188,8 @@
     "signIn": "Sign In",
     "orContinueWith": "Or continue with",
     "google": "Google",
+    "continueWithGoogle": "Continue with Google",
+    "username": "Username",
     "failedToChangePassword": "Failed to change password. Please try again.",
     "passwordChangedSuccessfully": "Password changed successfully! Please log in again.",
     "invalidPassword": "Invalid password.",
@@ -209,17 +213,21 @@
     "changeMind": "Change your mind?",
     "passwordTooShort": "Password must be at least 8 characters long",
     "passwordCapitalLetter": "Password must contain at least one uppercase letter",
+    "passwordUppercaseLetter": "Password must contain at least one uppercase letter",
     "passwordNumber": "Password must contain at least one number",
     "passwordLowercaseLetter": "Password must contain at least one lowercase letter",
     "loading": "Changing...",
     "allFieldsRequired": "All fields are required.",
     "passwordsDoNotMatch": "New password does not match",
     "newPasswordSameAsOld": "New password cannot be the same as the old password",
+    "failedToResetPassword": "Failed to reset password. Please try again.",
     "newpass":"New Password",
     "currentPassword":"Current Password",
     "comfirmNewPassword":"Confirm New Password",
+    "confirmNewPassword":"Confirm New Password",
     "emailRequired": "Email cannot be empty",
     "invalidEmailFormat": "Invalid email format",
+    "rememberMe": "Remember me",
     "passwordRequired": "Password cannot be empty",
     "loginFailed": "Login failed",
     "loggingIn": "Logging in...",
@@ -228,6 +236,7 @@
     "verifyAndContinue":"Verify & Continue",
     "otpResentSuccessfully": "Code resent successfully!",
     "didntReceiveCode": "Didn't receive the code?",
+    "didNotReceiveCode": "Didn't receive the code?",
     "resend": "Resend",
     "sending": "Sending...",
     "usernameRequired": "Username cannot be empty",
