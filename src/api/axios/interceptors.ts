@@ -2,6 +2,7 @@ import { api } from "./instance";
 
 export const setupInterceptors = () => {
   const publicEndpoints = [
+    "/",
     "/login",
     "/register",
     "/forgot-password",
