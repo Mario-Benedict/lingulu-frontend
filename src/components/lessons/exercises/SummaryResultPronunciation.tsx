@@ -114,7 +114,7 @@ const SummaryResultPronunciation: React.FC<SummaryResultPronunciationProps> = ({
                 {/* Right side: Average Score */}
                 <div className="w-full sm:w-40 flex-shrink-0 flex items-center justify-center sm:justify-end px-4 py-2 sm:py-0 border-t sm:border-t-0 sm:border-l border-orange-100 sm:border-transparent bg-gray-50/50 sm:bg-transparent">
                   <p className="text-sm sm:text-base font-medium text-gray-800 uppercase">
-                    {t('lessons.avgScore')} : {item.score}
+                    {t('lessons.avgScore')} : {item.score.toFixed(1).replace('.', ',')}
                   </p>
                 </div>
               </div>

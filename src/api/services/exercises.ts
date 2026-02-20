@@ -1,5 +1,5 @@
 import type { ApiResponse, MCQResult, MCQSubmitData, SectionContent, SpeakingAttempt, SpeakingScoreResponse } from "@/types";
-import { api } from "@api/axios";
+import { api, modelApi } from "@api/axios";
 
 export const getSpeakingExercises = async (sectionId: string): Promise<ApiResponse<SectionContent>> => {
     return await api.get(`/learning/sections/${sectionId}/content`);
@@ -14,12 +14,14 @@ export const getSpeakingExerciseScore = async (
     formData.append('file', audioBlob, 'recording.wav');
     formData.append('text', text);
 
-    return await api.post("/model/predict", formData, {
+    const response = await modelApi.post<SpeakingScoreResponse>("/model/predict", formData, {
         headers: {
             'Content-Type': 'multipart/form-data',
         },
         timeout: 120_000,
     });
+    
+    return response.data;
 }
 
 export const attemptSpeakingExercise = async (data: SpeakingAttempt): Promise<ApiResponse<SpeakingAttempt>> => {

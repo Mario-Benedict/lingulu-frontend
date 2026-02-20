@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import PageLayout from '@components/common/PageLayout';
 import ExerciseHeader from '@components/lessons/exercises/ExerciseHeader';
@@ -10,61 +10,8 @@ import SpeakingReview from '@components/lessons/exercises/SpeakingReview';
 import { getSpeakingExercises, getSpeakingExercisesRetry, getSpeakingExerciseScore, attemptSpeakingExercise, submitSpeakingExercise } from '@/api/services';
 import type { SpeakingExercise, SpeakingAttempt, WordRequest } from '@/types';
 import { useTranslation } from 'react-i18next';
-
-// Audio processing utilities
-const float32ToWavBlob = (samples: Float32Array, sampleRate: number): Blob => {
-  const numChannels = 1;
-  const bytesPerSample = 2;
-  const blockAlign = numChannels * bytesPerSample;
-  const dataBytes = samples.length * blockAlign;
-  const buffer = new ArrayBuffer(44 + dataBytes);
-  const v = new DataView(buffer);
-
-  const writeStr = (off: number, s: string) => {
-    for (let i = 0; i < s.length; i++) v.setUint8(off + i, s.charCodeAt(i));
-  };
-
-  writeStr(0, 'RIFF');
-  v.setUint32(4, 36 + dataBytes, true);
-  writeStr(8, 'WAVE');
-  writeStr(12, 'fmt ');
-  v.setUint32(16, 16, true);
-  v.setUint16(20, 1, true);
-  v.setUint16(22, numChannels, true);
-  v.setUint32(24, sampleRate, true);
-  v.setUint32(28, sampleRate * blockAlign, true);
-  v.setUint16(32, blockAlign, true);
-  v.setUint16(34, 16, true);
-  writeStr(36, 'data');
-  v.setUint32(40, dataBytes, true);
-
-  let off = 44;
-  for (let i = 0; i < samples.length; i++) {
-    const s = Math.max(-1, Math.min(1, samples[i]));
-    v.setInt16(off, s < 0 ? s * 0x8000 : s * 0x7FFF, true);
-    off += 2;
-  }
-
-  return new Blob([buffer], { type: 'audio/wav' });
-};
-
-const downsampleTo16k = (samples: Float32Array, fromRate: number): Float32Array => {
-  if (fromRate === 16000) return samples;
-
-  const ratio = fromRate / 16000;
-  const newLength = Math.round(samples.length / ratio);
-  const result = new Float32Array(newLength);
-
-  for (let i = 0; i < newLength; i++) {
-    const srcIndex = i * ratio;
-    const lo = Math.floor(srcIndex);
-    const hi = Math.min(lo + 1, samples.length - 1);
-    const frac = srcIndex - lo;
-    result[i] = samples[lo] * (1 - frac) + samples[hi] * frac;
-  }
-
-  return result;
-};
+import { useAudioRecorder } from '@/hooks/useAudioRecorder';
+import { convertToWav16k, validateAudioDuration } from '@/utils/audioUtils';
 
 const PronunciationExercise: React.FC = () => {
   const { t } = useTranslation();
@@ -73,18 +20,14 @@ const PronunciationExercise: React.FC = () => {
   const [searchParams] = useSearchParams();
   const courseId = searchParams.get('courseId');
   
-  // Audio recording refs
-  const streamRef = useRef<MediaStream | null>(null);
-  const audioCtxRef = useRef<AudioContext | null>(null);
-  const processorRef = useRef<ScriptProcessorNode | null>(null);
-  const pcmChunksRef = useRef<Float32Array[]>([]);
+  // Use modern audio recorder hook
+  const { isRecording, startRecording, stopRecording, error: audioError } = useAudioRecorder();
   
   // State
   const [exercises, setExercises] = useState<SpeakingExercise[]>([]);
   const [sectionTitle, setSectionTitle] = useState('Speaking Exercise');
   const [loading, setLoading] = useState(true);
   const [currentQuestion, setCurrentQuestion] = useState(1);
-  const [isRecording, setIsRecording] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
   const [showSummary, setShowSummary] = useState(false);
   const [showReview, setShowReview] = useState(false);
@@ -94,6 +37,7 @@ const PronunciationExercise: React.FC = () => {
     score: number;
     corrections: ('correct' | 'okay' | 'incorrect')[];
     words: WordRequest[];
+    saved: boolean; // Track if this result has been saved to backend
   }>>({});
   
   const totalQuestions = exercises.length;
@@ -139,6 +83,7 @@ const PronunciationExercise: React.FC = () => {
                 score: number;
                 corrections: ('correct' | 'okay' | 'incorrect')[];
                 words: WordRequest[];
+                saved: boolean;
               }> = {};
               
               allExercises.forEach((exercise, index) => {
@@ -148,9 +93,10 @@ const PronunciationExercise: React.FC = () => {
                 
                 if (matchingAttempt) {
                   results[index + 1] = {
-                    score: Math.round(matchingAttempt.averageScore),
+                    score: matchingAttempt.averageScore,
                     corrections: generateWordCorrections(matchingAttempt.words),
                     words: matchingAttempt.words,
+                    saved: true, // Already saved to backend
                   };
                 }
               });
@@ -183,6 +129,13 @@ const PronunciationExercise: React.FC = () => {
   const currentQuestionData = exercises[currentQuestion - 1];
   const currentResult = questionResults[currentQuestion];
 
+  // Show audio error if any
+  useEffect(() => {
+    if (audioError) {
+      alert(t('conversation.cantAccessMic'));
+    }
+  }, [audioError, t]);
+
   // Auto-show review when navigating to a question with existing results
   useEffect(() => {
     if (currentResult && !showReview && !isRecording && !isProcessing) {
@@ -195,98 +148,95 @@ const PronunciationExercise: React.FC = () => {
 
     if (!isRecording) {
       // Start recording
-      try {
-        const stream = await navigator.mediaDevices.getUserMedia({
-          audio: {
-            echoCancellation: true,
-            noiseSuppression: true,
-            autoGainControl: true,
-            channelCount: 1,
-          },
-        });
-
-        streamRef.current = stream;
-        const ctx = new AudioContext();
-        audioCtxRef.current = ctx;
-
-        const source = ctx.createMediaStreamSource(stream);
-        const processor = ctx.createScriptProcessor(4096, 1, 1);
-        processorRef.current = processor;
-        pcmChunksRef.current = [];
-
-        processor.onaudioprocess = (e) => {
-          const input = e.inputBuffer.getChannelData(0);
-          pcmChunksRef.current.push(new Float32Array(input));
-        };
-
-        source.connect(processor);
-        processor.connect(ctx.destination);
-        setIsRecording(true);
-      } catch {
-        alert(t('conversation.cantAccessMic'));
-      }
+      await startRecording();
     } else {
       // Stop recording and process
-      processorRef.current?.disconnect();
-      streamRef.current?.getTracks().forEach((t) => t.stop());
-      setIsRecording(false);
       setIsProcessing(true);
+      const audioBlob = await stopRecording();
 
-      const chunks = pcmChunksRef.current;
-      const actualRate = audioCtxRef.current?.sampleRate ?? 48000;
-      const totalFrames = chunks.reduce((n, c) => n + c.length, 0);
+      if (!audioBlob) {
+        setIsProcessing(false);
+        alert('Failed to record audio. Please try again.');
+        return;
+      }
 
-      if (totalFrames < actualRate * 0.3) {
+      // Validate audio duration
+      const isValid = await validateAudioDuration(audioBlob);
+      if (!isValid) {
         setIsProcessing(false);
         alert('Recording too short. Please try again.');
         return;
       }
 
-      const merged = new Float32Array(totalFrames);
-      let off = 0;
-      for (const c of chunks) {
-        merged.set(c, off);
-        off += c.length;
-      }
-
-      const resampled = downsampleTo16k(merged, actualRate);
-      const wavBlob = float32ToWavBlob(resampled, 16000);
-
       try {
+        // Convert to WAV 16kHz format
+        const wavBlob = await convertToWav16k(audioBlob);
+
+        // Get score from model API (external endpoint)
         const scoreData = await getSpeakingExerciseScore(
           wavBlob,
           currentQuestionData.sentence
         );
         
-        const words: WordRequest[] = scoreData.pronounciation_assessment.words.map(
+        // Validate response structure
+        if (!scoreData || !scoreData.pronounciation_assessment) {
+          throw new Error('Invalid response from pronunciation assessment API');
+        }
+
+        const { pronounciation_assessment } = scoreData;
+        
+        if (!pronounciation_assessment.words || !Array.isArray(pronounciation_assessment.words)) {
+          throw new Error('No words data in pronunciation assessment response');
+        }
+
+        const words: WordRequest[] = pronounciation_assessment.words.map(
           (w) => ({
             word: w.word,
             score: w.score,
           })
         );
         
-        const averageScore = Math.round(
-          scoreData.pronounciation_assessment.average_score
-        );
+        const averageScore = pronounciation_assessment.average_score || 0;
         const corrections = generateWordCorrections(words);
 
-        // Store result for this question
+        // Store result for this question (NOT saved yet)
         setQuestionResults((prev) => ({
           ...prev,
           [currentQuestion]: {
             score: averageScore,
             corrections,
             words,
+            saved: false, // Will be saved when user clicks Next
           },
         }));
 
-        // Save attempt
+        // Show review popup immediately
+        setShowReview(true);
+      } catch (error) {
+        console.error('Failed to process audio:', error);
+        
+        // Show more specific error message
+        const errorMessage = error instanceof Error 
+          ? error.message 
+          : 'Failed to process audio. Please try again.';
+        
+        alert(errorMessage);
+      } finally {
+        setIsProcessing(false);
+      }
+    }
+  }, [isRecording, isProcessing, sectionId, currentQuestion, currentQuestionData, generateWordCorrections, startRecording, stopRecording]);
+
+  const handleNext = async () => {
+    // Save the current result if not already saved
+    if (currentResult && !currentResult.saved && sectionId) {
+      try {
         const attemptData: SpeakingAttempt = {
           sectionId,
           speakingId: currentQuestionData.speakingId,
           sentence: currentQuestionData.sentence,
-          averageScore,
-          words,
+          averageScore: currentResult.score,
+          words: currentResult.words,
         };
 
         // If last question, use submitSpeakingExercise
@@ -297,18 +247,21 @@ const PronunciationExercise: React.FC = () => {
           await attemptSpeakingExercise(attemptData);
         }
 
-        // Show review popup
-        setShowReview(true);
+        // Mark as saved
+        setQuestionResults((prev) => ({
+          ...prev,
+          [currentQuestion]: {
+            ...currentResult,
+            saved: true,
+          },
+        }));
       } catch (error) {
-        console.error('Failed to process audio:', error);
-        alert('Failed to process audio. Please try again.');
-      } finally {
-        setIsProcessing(false);
+        console.error('Failed to save attempt:', error);
+        alert('Failed to save your attempt. Please try again.');
+        return;
       }
     }
-  }, [isRecording, isProcessing, sectionId, currentQuestion, totalQuestions, currentQuestionData, t, generateWordCorrections]);
 
-  const handleNext = () => {
     setShowReview(false);
     if (currentQuestion < totalQuestions) {
       setCurrentQuestion(currentQuestion + 1);

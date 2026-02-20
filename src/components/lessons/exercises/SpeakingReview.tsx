@@ -58,7 +58,7 @@ const SpeakingReview: React.FC<SpeakingReviewProps> = ({
         {/* Score */}
         <div className="text-center mb-6">
           <div className="text-6xl sm:text-7xl font-bold text-orange-500 mb-2" style={{ textShadow: '0 4px 12px rgba(255, 107, 53, 0.6), 0 8px 20px rgba(0, 0, 0, 0.2)' }}>
-            {score}
+            {score.toFixed(1).replace('.', ',')}
           </div>
         </div>
 

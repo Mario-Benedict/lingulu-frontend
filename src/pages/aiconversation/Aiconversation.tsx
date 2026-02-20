@@ -1,4 +1,4 @@
-import { useState, useRef, useCallback, useEffect } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import PageLayout from '@components/common/PageLayout';
 import ConversationHeader from '@components/aiconversation/ConversationHeader';
 import MessageList from '@components/aiconversation/MessageList';
@@ -6,71 +6,22 @@ import ConversationInput from '@components/aiconversation/ConversationInput';
 import type { ConversationMessage } from '@/types';
 import { sendConversationAudio, getConversationHistory } from '@/api/services';
 import { useTranslation } from 'react-i18next';
-
-const float32ToWavBlob = (samples: Float32Array, sampleRate: number): Blob => {
-  const numChannels = 1;
-  const bytesPerSample = 2;
-  const blockAlign = numChannels * bytesPerSample;
-  const dataBytes = samples.length * blockAlign;
-  const buffer = new ArrayBuffer(44 + dataBytes);
-  const v = new DataView(buffer);
-
-  const writeStr = (off: number, s: string) => {
-    for (let i = 0; i < s.length; i++) v.setUint8(off + i, s.charCodeAt(i));
-  };
-
-  writeStr(0, 'RIFF');
-  v.setUint32(4, 36 + dataBytes, true);
-  writeStr(8, 'WAVE');
-  writeStr(12, 'fmt ');
-  v.setUint32(16, 16, true);
-  v.setUint16(20, 1, true);
-  v.setUint16(22, numChannels, true);
-  v.setUint32(24, sampleRate, true);
-  v.setUint32(28, sampleRate * blockAlign, true);
-  v.setUint16(32, blockAlign, true);
-  v.setUint16(34, 16, true);
-  writeStr(36, 'data');
-  v.setUint32(40, dataBytes, true);
-
-  let off = 44;
-  for (let i = 0; i < samples.length; i++) {
-    const s = Math.max(-1, Math.min(1, samples[i]));
-    v.setInt16(off, s < 0 ? s * 0x8000 : s * 0x7FFF, true);
-    off += 2;
-  }
-
-  return new Blob([buffer], { type: 'audio/wav' });
-};
-
-const downsampleTo16k = (samples: Float32Array, fromRate: number): Float32Array => {
-  if (fromRate === 16000) return samples;
-
-  const ratio = fromRate / 16000;
-  const newLength = Math.round(samples.length / ratio);
-  const result = new Float32Array(newLength);
-
-  for (let i = 0; i < newLength; i++) {
-    const srcIndex = i * ratio;
-    const lo = Math.floor(srcIndex);
-    const hi = Math.min(lo + 1, samples.length - 1);
-    const frac = srcIndex - lo;
-    result[i] = samples[lo] * (1 - frac) + samples[hi] * frac;
-  }
-
-  return result;
-};
+import { useAudioRecorder } from '@/hooks/useAudioRecorder';
+import { convertToWav16k, validateAudioDuration } from '@/utils/audioUtils';
 
 const Aiconversation: React.FC = () => {
   const { t } = useTranslation();
-  const streamRef = useRef<MediaStream | null>(null);
-  const audioCtxRef = useRef<AudioContext | null>(null);
-  const processorRef = useRef<ScriptProcessorNode | null>(null);
-  const pcmChunksRef = useRef<Float32Array[]>([]);
+  const { isRecording, startRecording, stopRecording, error: audioError } = useAudioRecorder();
 
   const [messages, setMessages] = useState<ConversationMessage[]>([]);
-  const [isRecording, setIsRecording] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+
+  // Show audio error if any
+  useEffect(() => {
+    if (audioError) {
+      alert(t('conversation.cantAccessMic'));
+    }
+  }, [audioError, t]);
 
   useEffect(() => {
     const loadHistory = async () => {
@@ -112,62 +63,29 @@ const Aiconversation: React.FC = () => {
     if (isLoading) return;
 
     if (!isRecording) {
-      try {
-        const stream = await navigator.mediaDevices.getUserMedia({
-          audio: {
-            echoCancellation: true,
-            noiseSuppression: true,
-            autoGainControl: true,
-            channelCount: 1,
-          },
-        });
-
-        streamRef.current = stream;
-        const ctx = new AudioContext();
-        audioCtxRef.current = ctx;
-
-        const source = ctx.createMediaStreamSource(stream);
-        const processor = ctx.createScriptProcessor(4096, 1, 1);
-        processorRef.current = processor;
-        pcmChunksRef.current = [];
-
-        processor.onaudioprocess = (e) => {
-          const input = e.inputBuffer.getChannelData(0);
-          pcmChunksRef.current.push(new Float32Array(input));
-        };
-
-        source.connect(processor);
-        processor.connect(ctx.destination);
-        setIsRecording(true);
-      } catch {
-        alert(t('conversation.cantAccessMic'));
-      }
+      // Start recording
+      await startRecording();
     } else {
-      processorRef.current?.disconnect();
-      streamRef.current?.getTracks().forEach((t) => t.stop());
-      setIsRecording(false);
+      // Stop recording and process
       setIsLoading(true);
+      const audioBlob = await stopRecording();
 
-      const chunks = pcmChunksRef.current;
-      const actualRate = audioCtxRef.current?.sampleRate ?? 48000;
-      const totalFrames = chunks.reduce((n, c) => n + c.length, 0);
-
-      if (totalFrames < actualRate * 0.3) {
+      if (!audioBlob) {
         setIsLoading(false);
         return;
       }
 
-      const merged = new Float32Array(totalFrames);
-      let off = 0;
-      for (const c of chunks) {
-        merged.set(c, off);
-        off += c.length;
+      // Validate audio duration
+      const isValid = await validateAudioDuration(audioBlob);
+      if (!isValid) {
+        setIsLoading(false);
+        return;
       }
 
-      const resampled = downsampleTo16k(merged, actualRate);
-      const wavBlob = float32ToWavBlob(resampled, 16000);
-
       try {
+        // Convert to WAV 16kHz format for conversation API
+        const wavBlob = await convertToWav16k(audioBlob);
+        
         const response = await sendConversationAudio(wavBlob);
         const data = response.data!;
 
@@ -194,7 +112,7 @@ const Aiconversation: React.FC = () => {
         setIsLoading(false);
       }
     }
-  }, [isRecording, isLoading, t]);
+  }, [isRecording, isLoading, t, startRecording, stopRecording]);
 
   if (isLoading && messages.length === 0) {
     return (
