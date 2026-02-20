@@ -9,6 +9,7 @@ import GoogleLoginButton from '@components/auth/login/GoogleLoginButton';
 import SignUpLink from '@components/auth/login/SignUpLink';
 import { useAuth } from '@/hooks/useAuth';
 import { loginUser } from '@/api/services';
+import { env } from '@/config/env';
 
 const Login: React.FC = () => {
   const { t } = useTranslation();
@@ -78,7 +79,7 @@ const Login: React.FC = () => {
 
 
   const handleGoogleLogin = () => {
-    window.location.href = 'http://localhost:8080/oauth2/authorization/google';
+    window.location.href = env.API_BASE_URL + '/oauth2/authorization/google';
   };
 
   return (
