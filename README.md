@@ -102,6 +102,169 @@ npm run preview
 
 ---
 
+## 🚀 Deployment to Vercel
+
+### 📋 Prerequisites
+
+Before deploying this frontend application, ensure the following services are already deployed and running:
+
+1. **Backend Core API** - [lingulu-backend-core](https://github.com/Mario-Benedict/lingulu-backend-core/)
+   - This is the main backend service that handles authentication, user data, lessons, and business logic
+   - Must be deployed and accessible via HTTPS
+   - Note the deployed URL (e.g., `https://your-backend-api.com`)
+
+2. **Machine Learning Service** - [lingulu-machine-learning](https://github.com/Mario-Benedict/lingulu-machine-learning)
+   - This service handles pronunciation evaluation and AI conversation features
+   - Must be deployed and accessible via HTTPS
+   - Note the deployed URL (e.g., `https://your-ml-service.com`)
+
+> ⚠️ **Important**: Without these services running, the frontend will not function properly as it depends on them for core features.
+
+---
+
+### 📝 Deployment Steps
+
+#### 1. Import Repository to Vercel
+
+1. Go to [Vercel Dashboard](https://vercel.com/dashboard)
+2. Click **"Add New..."** → **"Project"**
+3. Click **"Import Git Repository"**
+4. Select or authenticate your GitHub account
+5. Search for and select the `lingulu-frontend` repository
+6. Click **"Import"**
+
+#### 2. Configure Project Settings
+
+When prompted with the project configuration screen:
+
+**Framework Preset**: Vercel should auto-detect **Vite**
+
+**Root Directory**: `.` (leave as default)
+
+**Build Command**: 
+```bash
+npm run build
+```
+
+**Output Directory**: 
+```
+dist
+```
+
+**Install Command**:
+```bash
+npm install
+```
+
+#### 3. Configure Environment Variables
+
+Add the following environment variables in the **"Environment Variables"** section:
+
+| Variable Name | Description | Example Value |
+|---------------|-------------|---------------|
+| `VITE_BASE_API_URL` | URL of the deployed backend core API | `https://your-backend-api.com` |
+| `VITE_MODEL_API_URL` | URL of the deployed ML service | `https://your-ml-service.com` |
+| `VITE_API_TIMEOUT` | API request timeout in milliseconds (optional) | `30000` |
+
+**How to add:**
+1. In the Environment Variables section, enter the variable name
+2. Enter the corresponding value
+3. Select environment: **Production**, **Preview**, and **Development** (check all three)
+4. Click **"Add"**
+5. Repeat for each variable
+
+> 💡 **Tip**: Make sure to use the actual deployed URLs from your backend and ML services, not localhost URLs!
+
+#### 4. Deploy
+
+1. Review all settings
+2. Click **"Deploy"**
+3. Wait for the deployment to complete (usually 1-3 minutes)
+4. Once deployed, Vercel will provide you with a URL (e.g., `https://lingulu-frontend.vercel.app`)
+
+---
+
+### 🔧 Post-Deployment Configuration
+
+#### Vercel Configuration File
+
+The repository already includes a `vercel.json` file with the following configuration:
+
+```json
+{
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ]
+}
+```
+
+This configuration ensures that all routes are handled by React Router (client-side routing), which is essential for SPAs.
+
+#### Custom Domain (Optional)
+
+To add a custom domain:
+1. Go to your project in Vercel Dashboard
+2. Navigate to **Settings** → **Domains**
+3. Click **"Add"**
+4. Enter your domain name
+5. Follow the DNS configuration instructions provided by Vercel
+
+---
+
+### ✅ Verification Steps
+
+After deployment, verify that everything works:
+
+1. **Access the application**: Visit your Vercel URL
+2. **Test authentication**: Try logging in or registering a new account
+3. **Check API connectivity**: 
+   - Open browser DevTools (F12)
+   - Go to Network tab
+   - Perform actions that call the backend (e.g., login)
+   - Verify requests are going to the correct backend URLs
+4. **Test pronounciation features**: Try the voice recording features to ensure ML service connection
+5. **Check console for errors**: Look for any CORS or API connection errors
+
+#### Common Issues & Solutions
+
+**CORS Errors**:
+- Ensure your backend is configured to allow requests from your Vercel domain
+- Check backend CORS configuration to include your frontend URL
+
+**API Connection Failed**:
+- Verify environment variables are set correctly
+- Ensure backend and ML services are running and accessible
+- Check that URLs don't have trailing slashes if not expected
+
+**404 on Page Refresh**:
+- Verify `vercel.json` is present in the repository
+- Check that the rewrite rules are applied
+
+---
+
+### 🔄 Continuous Deployment
+
+Vercel automatically sets up continuous deployment:
+
+- **Main branch**: Auto-deploys to production on every push to `main`
+- **Other branches**: Creates preview deployments for pull requests
+- **Rollback**: Use Vercel dashboard to rollback to previous deployments if needed
+
+---
+
+### 📊 Monitoring
+
+After deployment, you can monitor your application:
+
+1. **Analytics**: Visit **Analytics** tab in Vercel Dashboard
+2. **Logs**: Check **Deployments** → Select a deployment → **View Function Logs**
+3. **Performance**: Monitor Core Web Vitals in the Speed Insights tab
+
+---
+
 ## 🌍 Multi-Language Support
 
 The project supports internationalization through:
